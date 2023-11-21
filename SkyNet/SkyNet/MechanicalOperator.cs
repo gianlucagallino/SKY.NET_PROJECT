@@ -16,7 +16,9 @@ namespace SkyNet
         protected float currentLoad;
         protected float optimalSpeed;
         protected double currentLocationX;
-        protected double currentLocationY;  
+        protected double currentLocationY;
+        //lo cambiaria por
+        protected Location location;
 
         public string Id { get; set; }
         public Battery Battery { get; set; }
@@ -27,6 +29,7 @@ namespace SkyNet
         public float OptimalSpeed { get; set; }
         public double CurrentLocationX { get; set; }
         public double CurrentLocationY { get; set; }
+        public Location LocationP { get; set; }
 
 
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
@@ -41,6 +44,7 @@ namespace SkyNet
             optimalSpeed = 100;
             currentLocationX = HeadQuarters.GetInstance().LocationX;
             currentLocationY = HeadQuarters.GetInstance().LocationY;
+            LocationP = new Location();
         }
         public double CalculateMovementSpeed()
         {
@@ -49,7 +53,7 @@ namespace SkyNet
             double finalSpeed = optimalSpeed - ((optimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
-        public void MoveTo(double x, double y)
+        public void MoveTo(double x, double y)//esto deberia ser int, si me autorizan cambio todo esto
         {
             long movX = 0;
             long movY = 0;
