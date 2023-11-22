@@ -10,14 +10,43 @@ namespace SkyNet
     {
         private int mAhCapacity;
         private string type;
+        private double currentCharge;
+        private double maxCharge;
 
         public int MAHCapacity { get; set; }
         public string Type { get; set; }
+        public double CurrentCharge { get; set; }
+        public double MaxCharge { get; set; }
 
         public Battery()
         {
             this.mAhCapacity = 0;
             this.type = string.Empty;
+            this.currentCharge = 0;
+            this.maxCharge = 100;
+        }
+
+        public void ChargeBattery(double amountBattery)
+        {
+            if (currentCharge + amountBattery <= maxCharge)
+            {
+                currentCharge += amountBattery;
+            }
+            else { Console.WriteLine("The battery is at its maximum charge level"); }
+        }
+
+        public void CompleteBatteryLevel()
+        {
+            currentCharge = maxCharge;
+        }
+
+        public void DecreaseBattery(double amountBattery)
+        {
+            if (currentCharge - amountBattery >= 0)
+            {
+                currentCharge-= amountBattery;
+            }
+            else { Console.WriteLine("The battery level cannot go below 0; it is not possible to perform that task."); }
         }
     }
 }
