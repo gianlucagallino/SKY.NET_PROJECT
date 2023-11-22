@@ -8,21 +8,28 @@ namespace SkyNet
 {
     class M8 : MechanicalOperator
     {
-        public M8() {
-            this.loadCapacity = 0;
-            this.appendageType = 0;
-        }
+       
         private float loadCapacity;
         private float appendageType;
 
         public float LoadCapacity { get; set; }
         public float AppendageType { get; set; }
 
-     
+        public M8(/*float loadCapacity, float appendageType,*/ string id, float maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
+        {
+            //this.loadCapacity = 0;
+            //this.appendageType = 0;
+            maxLoad = 40;
+            optimalSpeed = 250;
+            battery.MAHCapacity = 12250;
+            battery.MaxCharge = 100;
+            battery.CurrentCharge = 100;
+            battery.Type = 2;
+        }
 
-        public void Reconnoiter()
+       /* public void Reconnoiter()
         {
 
-        }
+        }*/
     }
 }

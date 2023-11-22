@@ -8,22 +8,19 @@ namespace SkyNet
 {
     public class Battery
     {
-        private int mAhCapacity;
-        private string type;
+        private double mAhCapacity;
+        private int type;
         private double currentCharge;
         private double maxCharge;
 
-        public int MAHCapacity { get; set; }
-        public string Type { get; set; }
+        public double MAHCapacity { get; set; }
+        public int Type { get; set; }
         public double CurrentCharge { get; set; }
         public double MaxCharge { get; set; }
 
         public Battery()
         {
-            this.mAhCapacity = 0;
-            this.type = string.Empty;
-            this.currentCharge = 0;
-            this.maxCharge = 100;
+           
         }
 
         public void ChargeBattery(double amountBattery)

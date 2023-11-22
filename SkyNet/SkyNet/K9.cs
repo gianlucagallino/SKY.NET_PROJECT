@@ -8,19 +8,28 @@ namespace SkyNet
 {
     class K9 : MechanicalOperator
     {
-        public K9() : base()
-        {
-            this.sensorType = string.Empty;
-            this.movility = string.Empty;
-        }
+      
         private string sensorType;
         private string movility;
 
         public string SensorType { get; set; }
         public string Movility { get; set; }
-        public void Patrol()
+      
+        public K9(/*string sensorType, string Movility, */string id, float maxLoad, Battery battery, Location location, string status) 
+            : base(maxLoad, battery, location, status, id)
         {
+            //this.sensorType = string.Empty;
+            //this.movility = string.Empty;
+            maxLoad = 250;
+            optimalSpeed = 100;
+            battery.MAHCapacity = 6500;
+            battery.MaxCharge = 100;
+            battery.CurrentCharge = 100;
+            battery.Type = 1;
         }
+        /*public void Patrol()
+        {
+        }*/
     }
 }
 
