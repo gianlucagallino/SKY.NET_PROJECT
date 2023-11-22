@@ -62,8 +62,10 @@ namespace SkyNet
             double finalSpeed = optimalSpeed - ((optimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
-        public void MoveTo(int x, int y)
+        public void MoveTo(Location loc)
         {
+            double x = loc.CurrentLocationX;
+            double y = loc.CurrentLocationY;
             int movX = 0;
             int movY = 0;
             //Se asigna que tipo de movimiento debe ser realizado para llegar a la cuadrilla que corresponde. 
