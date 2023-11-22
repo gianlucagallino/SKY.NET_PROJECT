@@ -8,11 +8,17 @@ namespace SkyNet
 {
     class UAV : MechanicalOperator
     {
-        public UAV() : base()
+        public UAV(/*float flightHeight, int bladeAmount, bool integratedCamera,*/ string id, float maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
         {
-            this.flightHeight = 0;
-            this.bladeAmount = 0;
-            this.integratedCamera = false;
+            //flightHeight = 0;
+            //bladeAmount = 0;
+            //integratedCamera = true;
+            maxLoad = 5;
+            optimalSpeed = 150;
+            battery.MAHCapacity = 4000;
+            battery.MaxCharge = 100;
+            battery.CurrentCharge = 100;
+            battery.Type = 3;
         }
 
         private float flightHeight;
@@ -22,9 +28,9 @@ namespace SkyNet
         public float FlightHeight { get; set; }
         public int BladeAmount { get; set; }
         public bool IntegratedCamera { get; set; }
-        public void Fly()
+       /* public void Fly()
         {
 
-        }
+        }*/
     }
 }

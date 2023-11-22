@@ -17,7 +17,6 @@ namespace SkyNet
         protected float optimalSpeed;
         protected double currentLocationX;
         protected double currentLocationY;
-        //lo cambiaria por
         protected Location location;
 
         public string Id { get; set; }
@@ -46,6 +45,16 @@ namespace SkyNet
             currentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
             LocationP = new Location();
         }
+
+       protected MechanicalOperator(float maxLoad, Battery battery, Location location, string status, string id)
+        {
+            this.maxLoad = maxLoad;
+            this.battery = battery;
+            this.location = location;
+            this.status = status;
+            this.id = id;
+        }
+
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - ((Battery.CurrentCharge / Battery.MAHCapacity) * 100);
@@ -53,7 +62,7 @@ namespace SkyNet
             double finalSpeed = optimalSpeed - ((optimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
-        public void MoveTo(int x, int y)//esto deberia ser int, si me autorizan cambio todo esto
+        public void MoveTo(int x, int y)
         {
             int movX = 0;
             int movY = 0;
@@ -128,7 +137,7 @@ namespace SkyNet
         {
             CurrentLocationX= HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
             CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
-            CurrentLoad=battery.MAHCapacity;
+            battery.CompleteBatteryLevel();
         }
     }
 }
