@@ -34,29 +34,41 @@ namespace SkyNet
         }
         public void ShowOperatorStatus()
         {
-
+            foreach (MechanicalOperator op in operators)
+            {
+                Console.WriteLine(op.Status);
+            }
         }
-        public void ShowOperatorStatusAtLocation(string loc)
+        public void ShowOperatorStatusAtLocation(Location loc)
         {
-
+            foreach (MechanicalOperator op in operators)
+            {
+                if (op.LocationP == loc)
+                {
+                    Console.WriteLine(op.Status);
+                }
+            }
         }
         public void TotalRecall()
         {
-
+            foreach (MechanicalOperator op in operators)
+            {
+                op.MoveTo(locationHeadQuarters);
+            }
         }
-
+        //esto depende para donde lo encaremos. 
        /* public MechanicalOperator SelectOperator(string id)
         {
             return ;
         }*/
 
-        public void AddReserveOperator(string opId)
+        public void AddReserveOperator(MechanicalOperator oper)
         {
-
+            operators.Add(oper);
         }
-        public void RemoveReserveOperator (string opId)
+        public void RemoveReserveOperator (MechanicalOperator oper)
         {
-
+            operators.Remove(oper);
         }
 
 
