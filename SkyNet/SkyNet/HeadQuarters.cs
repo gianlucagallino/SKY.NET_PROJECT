@@ -11,20 +11,17 @@ namespace SkyNet
         //HeadQuarters utiliza el patron singleton. 
 
         private List <string> operatorIds;
-        private double locationX;
-        private double locationY;
+        private Location locationHeadQuarters;
 
         public List<string> OperatorIds { get; set; }
-        public double LocationX { get; set; }
-        public double LocationY { get; set; }
+        public Location LocationHeadQuarters { get; set; }
 
 
         //este constructor es temporal, debemos mejorarlo al implementar el mapa. 
         private HeadQuarters()
         {
-            operatorIds = new List<string>();
-            locationX = 0;
-            locationY = 0;
+            OperatorIds = new List<string>();
+            LocationHeadQuarters = new Location();
         }
 
         private static HeadQuarters _instance;
