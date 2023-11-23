@@ -8,7 +8,7 @@ namespace SkyNet
 {
     class UAV : MechanicalOperator
     {
-        public UAV(/*float flightHeight, int bladeAmount, bool integratedCamera,*/ string id, float maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
+        public UAV(/*float flightHeight, int bladeAmount, bool integratedCamera,*/ string id, double maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
         {
             //flightHeight = 0;
             //bladeAmount = 0;
