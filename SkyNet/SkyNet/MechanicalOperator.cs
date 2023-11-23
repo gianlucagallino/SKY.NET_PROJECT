@@ -10,24 +10,18 @@ namespace SkyNet
     {
         protected string id;
         protected Battery battery;
-        protected double currentBattery;
         protected string status;
         protected double maxLoad;
         protected double currentLoad;
         protected float optimalSpeed;
-        protected double currentLocationX;
-        protected double currentLocationY;
         protected Location location;
 
         public string Id { get; set; }
         public Battery Battery { get; set; }
-        public double CurrentBattery { get; set; }
         public string Status { get; set; }
         public double MaxLoad { get; set; }
         public double CurrentLoad { get; set; }
         public float OptimalSpeed { get; set; }
-        public double CurrentLocationX { get; set; }
-        public double CurrentLocationY { get; set; }
         public Location LocationP { get; set; }
 
 
@@ -36,13 +30,11 @@ namespace SkyNet
         {
             id= string.Empty;
             battery = new Battery();
-            currentBattery = battery.MAHCapacity;
+            //battery.CurrentCharge = battery.MAHCapacity;
             status = "ACTIVE";
             maxLoad = 1000;
             currentLoad = 0;
             optimalSpeed = 100;
-            currentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
-            currentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
             LocationP = new Location();
         }
 
@@ -57,9 +49,9 @@ namespace SkyNet
 
         public double CalculateMovementSpeed()
         {
-            double batteryPercentageSpent = 100 - ((Battery.CurrentCharge / Battery.MAHCapacity) * 100);
+            double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MAHCapacity) * 100);
             double slownessMultiplier = batteryPercentageSpent % 10; //this line calculates how many times to apply the speed debuff
-            double finalSpeed = optimalSpeed - ((optimalSpeed / 10) * slownessMultiplier);
+            double finalSpeed = OptimalSpeed - ((OptimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
         public void MoveTo(Location loc)
@@ -111,43 +103,42 @@ namespace SkyNet
             }
         }
 
-        public void TransferBattery(MechanicalOperator destination, double amount)
+        public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
             //calcula que la carga no sea negativa
-            if (amount < 0)
+            if (amountPercentage < 0)
             {
                 Console.WriteLine("Amount must be non-negative for Transfer Battery.");
                 return;
             }
             if (AreOperatorsInSameLocation(destination))
             {
-                //compara tipos de bateria
+                //compara tipos de bateria PREGUNTAR SI ES LA MEJOR MANERA HACIENDOLO DESDE TIPO O CON DATO CRUDO
                 if (destination.battery.Type == battery.Type)
                 {
-                    destination.battery.ChargeBattery(amount);
-                    battery.DecreaseBattery(amount);
+                    destination.battery.ChargeBattery(amountPercentage);
+                    battery.DecreaseBattery(amountPercentage);
                 }
+            }
+            else
+            { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+                MoveTo(destination.LocationP);
 
-                else
-                { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                    MoveTo(destination.LocationP);
-
-                    // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                    double distance = CalculateDistance(destination.LocationP);
-                    double batteryConsumptionPercentage = 0.05 * (distance / 10);
-                    battery.DecreaseBattery(currentBattery * batteryConsumptionPercentage);
-                    if (destination.battery.Type == battery.Type)
-                    {
-                        destination.battery.ChargeBattery(amount);
-                        battery.DecreaseBattery(amount);
-                    }
+                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                double distance = CalculateDistance(destination.LocationP);
+                double batteryConsumptionPercentage = 0.05 * (distance / 10);// TODO valores a revisar
+                
+                if (destination.battery.Type == battery.Type)
+                {
+                    destination.battery.ChargeBattery(amountPercentage);
+                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
                 }
             }
         }
 
-        public void TransferLoad(MechanicalOperator destination, double amount)
+        public void TransferLoad(MechanicalOperator destination, double amountKG)
         {
-            if (amount < 0)
+            if (amountKG < 0)
             {
                 Console.WriteLine("Amount must be non-negative for TransferLoad.");
                 return;
@@ -156,10 +147,10 @@ namespace SkyNet
             if (AreOperatorsInSameLocation(destination))
             {
                 //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
-                if (destination.currentLoad + amount < destination.MaxLoad)
+                if (destination.currentLoad + amountKG < destination.MaxLoad)
                 {
-                    destination.currentLoad += amount;
-                    currentLoad -= amount;
+                    destination.currentLoad += amountKG;
+                    currentLoad -= amountKG;
                 }
                 else
                 {
@@ -173,14 +164,15 @@ namespace SkyNet
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
-                double batteryConsumptionPercentage = 0.05 * (distance / 10);
-                battery.DecreaseBattery(currentBattery * batteryConsumptionPercentage);
+                double batteryConsumptionPercentage = 0.05 * (distance / 10);//TODO valores a revisar
+                
 
                 // Luego, realiza la transferencia de carga.
-                if (destination.currentLoad + amount <= destination.MaxLoad)
+                if (destination.currentLoad + amountKG <= destination.MaxLoad)
                 {
-                    destination.currentLoad += amount;
-                    currentLoad -= amount;
+                    destination.currentLoad += amountKG;
+                    currentLoad -= amountKG;
+                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
                 }
                 else
                 {
@@ -191,14 +183,17 @@ namespace SkyNet
 
         private double CalculateDistance(Location destinationLocation)
         {
+
             double difCoordX = Math.Abs(LocationP.CurrentLocationX - destinationLocation.CurrentLocationX);
             double difCoordY = Math.Abs(LocationP.CurrentLocationY - destinationLocation.CurrentLocationY);
-            return Math.Sqrt(difCoordX * difCoordX + difCoordY * difCoordY);
+            double distance = difCoordX + difCoordY;
+            
+            return  distance ;
         }
 
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
-            return this.location == destination.location;
+            return location == destination.location;
         }
         /*Estos eran los metodos anteriores:
         Los transfer me dejan en duda del tipo que deberian ser, considerando que para los k9 se le deberia meter un k9, un m8 debe ingresar un m8 y asi. Lo dejo comentado por ahora. 
@@ -220,15 +215,15 @@ namespace SkyNet
         */
         public void ReturnToHQandRemoveLoad()
         {
-            CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
-            CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
+            LocationP.CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
+            LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
             CurrentLoad=0;
         }
 
         public void ReturnToHQandChargeBattery()
         {
-            CurrentLocationX= HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
-            CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
+            LocationP.CurrentLocationX= HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
+            LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
             battery.CompleteBatteryLevel();
         }
     }
