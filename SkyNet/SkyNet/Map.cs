@@ -16,7 +16,7 @@ namespace SkyNet
 
         Map()
         {
-            mapMatrix = new Cell[10, 10];
+            mapMatrix = new Cell[100, 100];
         }
 
         //ES NECESARIO AGREGAR LOS LIMITES DE CANTIDADES.
