@@ -8,14 +8,14 @@ namespace SkyNet
 {
     public class Battery
     {
-        private double mAhCapacity;
-        private int type;
-        private double currentCharge;
-        private double maxCharge;
+        private double mAhCapacity;//amperios 
+        private int type;//tipo bateria
+        private double currentChargePercentage;//porcentaje carga actual
+ 
 
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
-        public double CurrentCharge { get; set; }
+        public double CurrentChargePercentage { get; set; }
         public double MaxCharge { get; set; }
 
         public Battery()
@@ -23,25 +23,25 @@ namespace SkyNet
            
         }
 
-        public void ChargeBattery(double amountBattery)
+        public void ChargeBattery(double amountBatteryPercentage)
         {
-            if (currentCharge + amountBattery <= maxCharge)
+            if (currentChargePercentage + amountBatteryPercentage <= 100)
             {
-                currentCharge += amountBattery;
+                currentChargePercentage += amountBatteryPercentage;
             }
             else { Console.WriteLine("The battery is at its maximum charge level"); }
         }
 
         public void CompleteBatteryLevel()
         {
-            currentCharge = maxCharge;
+            currentChargePercentage = 100;
         }
 
-        public void DecreaseBattery(double amountBattery)
+        public void DecreaseBattery(double amountBatteryPercentage)
         {
-            if (currentCharge - amountBattery >= 0)
+            if (currentChargePercentage - amountBatteryPercentage >= 0)
             {
-                currentCharge-= amountBattery;
+                currentChargePercentage-= amountBatteryPercentage;
             }
             else { Console.WriteLine("The battery level cannot go below 0; it is not possible to perform that task."); }
         }

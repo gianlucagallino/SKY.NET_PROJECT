@@ -22,8 +22,7 @@ namespace SkyNet
             maxLoad = 40;
             optimalSpeed = 250;
             battery.MAHCapacity = 12250;
-            battery.MaxCharge = 100;
-            battery.CurrentCharge = 100;
+            battery.CurrentChargePercentage = 100;
             battery.Type = 2;
         }
 
