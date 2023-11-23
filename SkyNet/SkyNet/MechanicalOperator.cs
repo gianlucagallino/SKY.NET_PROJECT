@@ -191,8 +191,8 @@ namespace SkyNet
 
         private double CalculateDistance(Location destinationLocation)
         {
-            double difCoordX = Math.Abs(currentLocationX - destinationLocation.CurrentLocationX);
-            double difCoordY = Math.Abs(currentLocationY - destinationLocation.CurrentLocationY);
+            double difCoordX = Math.Abs(LocationP.CurrentLocationX - destinationLocation.CurrentLocationX);
+            double difCoordY = Math.Abs(LocationP.CurrentLocationY - destinationLocation.CurrentLocationY);
             return Math.Sqrt(difCoordX * difCoordX + difCoordY * difCoordY);
         }
 
