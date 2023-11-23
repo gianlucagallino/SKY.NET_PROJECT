@@ -12,8 +12,8 @@ namespace SkyNet
         protected Battery battery;
         protected double currentBattery;
         protected string status;
-        protected float maxLoad;
-        protected float currentLoad;
+        protected double maxLoad;
+        protected double currentLoad;
         protected float optimalSpeed;
         protected double currentLocationX;
         protected double currentLocationY;
@@ -23,8 +23,8 @@ namespace SkyNet
         public Battery Battery { get; set; }
         public double CurrentBattery { get; set; }
         public string Status { get; set; }
-        public float MaxLoad { get; set; }
-        public float CurrentLoad { get; set; }
+        public double MaxLoad { get; set; }
+        public double CurrentLoad { get; set; }
         public float OptimalSpeed { get; set; }
         public double CurrentLocationX { get; set; }
         public double CurrentLocationY { get; set; }
@@ -46,7 +46,7 @@ namespace SkyNet
             LocationP = new Location();
         }
 
-       protected MechanicalOperator(float maxLoad, Battery battery, Location location, string status, string id)
+       protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
             this.battery = battery;
@@ -111,10 +111,100 @@ namespace SkyNet
             }
         }
 
-        //Los transfer me dejan en duda del tipo que deberian ser, considerando que para los k9 se le deberia meter un k9, un m8 debe ingresar un m8 y asi. Lo dejo comentado por ahora. 
-        //Este seria un buen uso de genericos?
-        //ademas, no haria las verificaciones aca, pero si en el metodo que llama los transfer. 
-        /*
+        public void TransferBattery(MechanicalOperator destination, double amount)
+        {
+            //calcula que la carga no sea negativa
+            if (amount < 0)
+            {
+                Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+                return;
+            }
+            if (AreOperatorsInSameLocation(destination))
+            {
+                //compara tipos de bateria
+                if (destination.battery.Type == battery.Type)
+                {
+                    destination.battery.ChargeBattery(amount);
+                    battery.DecreaseBattery(amount);
+                }
+
+                else
+                { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+                    MoveTo(destination.LocationP);
+
+                    // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                    double distance = CalculateDistance(destination.LocationP);
+                    double batteryConsumptionPercentage = 0.05 * (distance / 10);
+                    battery.DecreaseBattery(currentBattery * batteryConsumptionPercentage);
+                    if (destination.battery.Type == battery.Type)
+                    {
+                        destination.battery.ChargeBattery(amount);
+                        battery.DecreaseBattery(amount);
+                    }
+                }
+            }
+        }
+
+        public void TransferLoad(MechanicalOperator destination, double amount)
+        {
+            if (amount < 0)
+            {
+                Console.WriteLine("Amount must be non-negative for TransferLoad.");
+                return;
+            }
+            //compara si estan en la misma ubicacion
+            if (AreOperatorsInSameLocation(destination))
+            {
+                //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
+                if (destination.currentLoad + amount < destination.MaxLoad)
+                {
+                    destination.currentLoad += amount;
+                    currentLoad -= amount;
+                }
+                else
+                {
+                    Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                }
+            }
+            else
+            {
+                // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+                MoveTo(destination.LocationP);
+
+                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                double distance = CalculateDistance(destination.LocationP);
+                double batteryConsumptionPercentage = 0.05 * (distance / 10);
+                battery.DecreaseBattery(currentBattery * batteryConsumptionPercentage);
+
+                // Luego, realiza la transferencia de carga.
+                if (destination.currentLoad + amount <= destination.MaxLoad)
+                {
+                    destination.currentLoad += amount;
+                    currentLoad -= amount;
+                }
+                else
+                {
+                    Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                }
+            }
+        }
+
+        private double CalculateDistance(Location destinationLocation)
+        {
+            double difCoordX = Math.Abs(LocationP.CurrentLocationX - destinationLocation.CurrentLocationX);
+            double difCoordY = Math.Abs(LocationP.CurrentLocationY - destinationLocation.CurrentLocationY);
+            return Math.Sqrt(difCoordX * difCoordX + difCoordY * difCoordY);
+        }
+
+        private bool AreOperatorsInSameLocation(MechanicalOperator destination)
+        {
+            return this.location == destination.location;
+        }
+        /*Estos eran los metodos anteriores:
+        Los transfer me dejan en duda del tipo que deberian ser, considerando que para los k9 se le deberia meter un k9, un m8 debe ingresar un m8 y asi. Lo dejo comentado por ahora. 
+        Este seria un buen uso de genericos?
+        ademas, no haria las verificaciones aca, pero si en el metodo que llama los transfer. 
+        
         public void TransferBattery(TIPO A ARREGLAR destination, float amount)
         {
             currentBattery-=amount;

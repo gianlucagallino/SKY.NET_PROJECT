@@ -15,7 +15,7 @@ namespace SkyNet
         public float LoadCapacity { get; set; }
         public float AppendageType { get; set; }
 
-        public M8(/*float loadCapacity, float appendageType,*/ string id, float maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
+        public M8(/*float loadCapacity, float appendageType,*/ string id, double maxLoad, Battery battery, Location location, string status) : base(maxLoad, battery, location, status, id)
         {
             //this.loadCapacity = 0;
             //this.appendageType = 0;
