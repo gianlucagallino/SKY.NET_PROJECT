@@ -8,14 +8,14 @@ namespace SkyNet
 {
     class K9 : MechanicalOperator
     {
-      
+
         private string sensorType;
         private string movility;
 
         public string SensorType { get; set; }
         public string Movility { get; set; }
-      
-        public K9(/*string sensorType, string Movility, */string id, double maxLoad, Battery battery, Location location, string status) 
+
+        public K9(/*string sensorType, string Movility, */string id, double maxLoad, Battery battery, Location location, string status)
             : base(maxLoad, battery, location, status, id)
         {
             //this.sensorType = string.Empty;

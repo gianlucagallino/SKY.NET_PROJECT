@@ -11,7 +11,7 @@ namespace SkyNet
         private double mAhCapacity;//amperios 
         private int type;//tipo bateria
         private double currentChargePercentage;//porcentaje carga actual
- 
+
 
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
@@ -20,7 +20,7 @@ namespace SkyNet
 
         public Battery()
         {
-           
+
         }
 
         public void ChargeBattery(double amountBatteryPercentage)
@@ -41,7 +41,7 @@ namespace SkyNet
         {
             if (currentChargePercentage - amountBatteryPercentage >= 0)
             {
-                currentChargePercentage-= amountBatteryPercentage;
+                currentChargePercentage -= amountBatteryPercentage;
             }
             else { Console.WriteLine("The battery level cannot go below 0; it is not possible to perform that task."); }
         }

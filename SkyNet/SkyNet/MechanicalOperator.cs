@@ -28,7 +28,7 @@ namespace SkyNet
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
         public MechanicalOperator()
         {
-            id= string.Empty;
+            id = string.Empty;
             battery = new Battery();
             //battery.CurrentCharge = battery.MAHCapacity;
             status = "ACTIVE";
@@ -38,7 +38,7 @@ namespace SkyNet
             LocationP = new Location();
         }
 
-       protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
+        protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
             this.battery = battery;
@@ -127,7 +127,7 @@ namespace SkyNet
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
                 double batteryConsumptionPercentage = 0.05 * (distance / 10);// TODO valores a revisar
-                
+
                 if (destination.battery.Type == battery.Type)
                 {
                     destination.battery.ChargeBattery(amountPercentage);
@@ -165,7 +165,7 @@ namespace SkyNet
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
                 double batteryConsumptionPercentage = 0.05 * (distance / 10);//TODO valores a revisar
-                
+
 
                 // Luego, realiza la transferencia de carga.
                 if (destination.currentLoad + amountKG <= destination.MaxLoad)
@@ -187,8 +187,8 @@ namespace SkyNet
             double difCoordX = Math.Abs(LocationP.CurrentLocationX - destinationLocation.CurrentLocationX);
             double difCoordY = Math.Abs(LocationP.CurrentLocationY - destinationLocation.CurrentLocationY);
             double distance = difCoordX + difCoordY;
-            
-            return  distance ;
+
+            return distance;
         }
 
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
@@ -217,12 +217,12 @@ namespace SkyNet
         {
             LocationP.CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
             LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
-            CurrentLoad=0;
+            CurrentLoad = 0;
         }
 
         public void ReturnToHQandChargeBattery()
         {
-            LocationP.CurrentLocationX= HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
+            LocationP.CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
             LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
             battery.CompleteBatteryLevel();
         }

@@ -10,7 +10,7 @@ namespace SkyNet
     {
         //HeadQuarters utiliza el patron singleton. 
 
-        private List <MechanicalOperator> operators;
+        private List<MechanicalOperator> operators;
         private Location locationHeadQuarters;
 
         public List<MechanicalOperator> Operators { get; set; }
@@ -30,7 +30,7 @@ namespace SkyNet
         {
             if (_instance == null) { _instance = new HeadQuarters(); }
             return _instance;
-            
+
         }
         public void ShowOperatorStatus()
         {
@@ -57,16 +57,16 @@ namespace SkyNet
             }
         }
         //esto depende para donde lo encaremos. 
-       /* public MechanicalOperator SelectOperator(string id)
-        {
-            return ;
-        }*/
+        /* public MechanicalOperator SelectOperator(string id)
+         {
+             return ;
+         }*/
 
         public void AddReserveOperator(MechanicalOperator oper)
         {
             operators.Add(oper);
         }
-        public void RemoveReserveOperator (MechanicalOperator oper)
+        public void RemoveReserveOperator(MechanicalOperator oper)
         {
             operators.Remove(oper);
         }

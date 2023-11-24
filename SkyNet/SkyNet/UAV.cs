@@ -27,9 +27,9 @@ namespace SkyNet
         public float FlightHeight { get; set; }
         public int BladeAmount { get; set; }
         public bool IntegratedCamera { get; set; }
-       /* public void Fly()
-        {
+        /* public void Fly()
+         {
 
-        }*/
+         }*/
     }
 }

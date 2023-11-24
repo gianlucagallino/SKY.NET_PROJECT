@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ namespace SkyNet
 {
     class M8 : MechanicalOperator
     {
-       
+
         private float loadCapacity;
         private float appendageType;
 
@@ -26,9 +26,9 @@ namespace SkyNet
             battery.Type = 2;
         }
 
-       /* public void Reconnoiter()
-        {
+        /* public void Reconnoiter()
+         {
 
-        }*/
+         }*/
     }
 }
