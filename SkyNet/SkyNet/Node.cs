@@ -53,7 +53,7 @@ namespace SkyNet
                 IsObstacle = true;
             }
         }
-
+         
         //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
