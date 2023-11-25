@@ -15,7 +15,7 @@ namespace SkyNet
             //integratedCamera = true;
             maxLoad = 5;
             optimalSpeed = 150;
-            battery.MAHCapacity = 4000;
+            battery.MaxCharge = 4000;
             battery.CurrentChargePercentage = 100;
             battery.Type = 3;
         }

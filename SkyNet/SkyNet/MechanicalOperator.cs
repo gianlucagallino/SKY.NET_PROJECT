@@ -49,7 +49,7 @@ namespace SkyNet
 
         public double CalculateMovementSpeed()
         {
-            double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MAHCapacity) * 100);
+            double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MaxCharge) * 100);
             double slownessMultiplier = batteryPercentageSpent % 10; //this line calculates how many times to apply the speed debuff
             double finalSpeed = OptimalSpeed - ((OptimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;

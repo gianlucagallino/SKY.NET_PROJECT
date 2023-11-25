@@ -22,7 +22,7 @@ namespace SkyNet
             //this.movility = string.Empty;
             maxLoad = 250;
             optimalSpeed = 100;
-            battery.MAHCapacity = 6500;
+            battery.MaxCharge = 6500;
             battery.CurrentChargePercentage = 100;
             battery.Type = 1;
         }
