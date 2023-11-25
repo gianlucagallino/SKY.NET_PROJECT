@@ -56,34 +56,34 @@ namespace SkyNet
         }
         public void MoveTo(Location loc)
         {
-            double x = loc.CurrentLocationX;
-            double y = loc.CurrentLocationY;
+            double x = loc.LocationX;
+            double y = loc.LocationY;
             int movX = 0;
             int movY = 0;
             //Se asigna que tipo de movimiento debe ser realizado para llegar a la cuadrilla que corresponde. 
-            if (LocationP.CurrentLocationX < x)
+            if (LocationP.LocationX < x)
             {
                 movX = 1;
             }
-            else if (LocationP.CurrentLocationX > x)
+            else if (LocationP.LocationX > x)
             {
                 movX = -1;
             }
 
-            if (LocationP.CurrentLocationY < y)
+            if (LocationP.LocationY < y)
             {
                 movY = 1;
             }
-            else if (LocationP.CurrentLocationY > y)
+            else if (LocationP.LocationY > y)
             {
                 movY = -1;
             }
 
             //se desplaza la posicion actual a la posicion buscada 
 
-            while (LocationP.CurrentLocationY != y)
+            while (LocationP.LocationY != y)
             {
-                LocationP.CurrentLocationY += movY;
+                LocationP.LocationY += movY;
                 /*
                 InteractuarConPosicion() 
 
@@ -91,9 +91,9 @@ namespace SkyNet
                  que dependiendo del tipo de terreno tiene diferentes efectos
                 */
             }
-            while (LocationP.CurrentLocationX != x)
+            while (LocationP.LocationX != x)
             {
-                LocationP.CurrentLocationX += movX;
+                LocationP.LocationX += movX;
                 /*
                 InteractuarConPosicion() 
 
@@ -184,8 +184,8 @@ namespace SkyNet
         private double CalculateDistance(Location destinationLocation)
         {
 
-            double difCoordX = Math.Abs(LocationP.CurrentLocationX - destinationLocation.CurrentLocationX);
-            double difCoordY = Math.Abs(LocationP.CurrentLocationY - destinationLocation.CurrentLocationY);
+            double difCoordX = Math.Abs(LocationP.LocationX - destinationLocation.LocationX);
+            double difCoordY = Math.Abs(LocationP.LocationY - destinationLocation.LocationY);
             double distance = difCoordX + difCoordY;
 
             return distance;
@@ -215,15 +215,15 @@ namespace SkyNet
         */
         public void ReturnToHQandRemoveLoad()
         {
-            LocationP.CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
-            LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
+            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
+            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
             CurrentLoad = 0;
         }
 
         public void ReturnToHQandChargeBattery()
         {
-            LocationP.CurrentLocationX = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationX;
-            LocationP.CurrentLocationY = HeadQuarters.GetInstance().LocationHeadQuarters.CurrentLocationY;
+            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
+            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
             battery.CompleteBatteryLevel();
         }
     }

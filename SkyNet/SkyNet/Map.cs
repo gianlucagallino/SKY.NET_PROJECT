@@ -10,28 +10,75 @@ namespace SkyNet
 {
     internal class Map
     {
-        private Cell[,] mapMatrix;
 
-        public Cell[,] MapMatrix { get; set; }
+        //Esto, idealmente, deberia ser un singleton. No realmente, por el tema de tener varias partidas. Capaz se puede reutilizar el mismo mapa. 
+        //Igualmente, opino que no deberia ser infinitamente instanciable, asi que hay que pensar algo. 
+
+        private Node[,] grid;
+        private double headquarterCounter;
+        private double recyclingCounter;
+
+        public Node[,] Grid { get; set; }
+        public double HeadquarterCounter { get; set; }
+        public double RecyclingCounter { get; set; }
 
         Map()
         {
-            mapMatrix = new Cell[100, 100];
+            Grid = new Node[100, 100];
+            HeadquarterCounter = 0;
+            RecyclingCounter = 0;
         }
-
-        //ES NECESARIO AGREGAR LOS LIMITES DE CANTIDADES.
-        public void CreateMapDistribution(Cell[,] mapMatrix)
+        public void CreateMapDistribution(Node[,] wholegrid)
         {
-            foreach (Cell cell in mapMatrix)
+            
+
+            for (int i = 0; i < 100; i++)
             {
-                SetRandomTerrainType(cell);
+                for (int j = 0; j < 100; j++)
+                {
+                    // Initialize each node in the grid
+                    int type = SetRandomTerrainType();
+                    wholegrid[i, j] = new Node(i, j, type);
+                }
             }
         }
-        public void SetRandomTerrainType(Cell cell)
+        public int SetRandomTerrainType()
         {
+            bool repeatingFlag = false;
             Random rng = new Random();
-            int x = rng.Next(0, 5);
-            cell.TerrainType = x;
+            int n = rng.Next(0, 5);
+            repeatingFlag = true;
+            while (repeatingFlag == true)
+            {
+                if (n == 4)
+                {
+                    if (RecyclingCounter >= 5)
+                    {
+                        n = rng.Next(0, 5);
+                    }
+                    else
+                    {
+                        RecyclingCounter++;
+                        repeatingFlag = false;
+                    }
+
+                }
+                else if (n == 5)
+                {
+                    if (HeadquarterCounter >= 5)
+                    {
+                        n = rng.Next(0, 5);
+                    }
+                    else
+                    {
+                        HeadquarterCounter++;
+                        repeatingFlag = false;
+                    }
+                }
+                else repeatingFlag = false;
+            }
+
+            return n;
         }
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
