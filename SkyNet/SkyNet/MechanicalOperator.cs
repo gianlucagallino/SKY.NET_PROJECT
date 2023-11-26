@@ -35,7 +35,7 @@ namespace SkyNet
             maxLoad = 1000;
             currentLoad = 0;
             optimalSpeed = 100;
-            LocationP = new Location();
+           // LocationP = new Location(); lo mismo, lo comento porque debe ser inicializado
         }
 
         protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
@@ -213,6 +213,8 @@ namespace SkyNet
         
         }
         */
+
+        /* comento esto, ya que hay que alterarlo para que funcione con varios cuarteles generales.
         public void ReturnToHQandRemoveLoad()
         {
             LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
@@ -226,5 +228,6 @@ namespace SkyNet
             LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
             battery.CompleteBatteryLevel();
         }
+        */
     }
 }

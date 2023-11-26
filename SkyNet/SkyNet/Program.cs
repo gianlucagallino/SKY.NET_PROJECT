@@ -16,6 +16,9 @@ namespace SkyNet
             // El codigo anterior deberia estar disponible en el segundo repo que hizo cata. 
 
             Introduction.GetInstance().Play();
+            Map.GetInstance().PrintMap(Map.GetInstance().Grid);
+            
+
             //Menu();
 
         }

@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
+
+    //TODO: Testear que todo ande, primero que nada.  Abstraer patrones repetitivos a funciones y reducir valores hardcodeados. 
+    //Preferiblemente tambien, refuncionar la misma funcion para que se adapte a los 4 patrones de busqueda A*
+    //(terrestre con optimizacion de peligro, terrestre sin importar peligro, aereo con optimizacion de peligro, aereo sin importar peligro)
+    //Diria de incluir el patron manhattan, pero seria solo util en caso de unidades aereas, por lo que lo veo innecesario. 
+    //En otras palabras, hay que refaccionar el moveTo, otra vez (para variar)
     internal class Search
     {
 
