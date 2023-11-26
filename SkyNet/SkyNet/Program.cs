@@ -17,8 +17,6 @@ namespace SkyNet
 
             Introduction.GetInstance().Play();
             Map.GetInstance().PrintMap(Map.GetInstance().Grid);
-            
-
             //Menu();
 
         }

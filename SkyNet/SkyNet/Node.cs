@@ -19,6 +19,7 @@ namespace SkyNet
         private int g;  // Cost from the start node to the current node
         private int h;  // Heuristic estimate from the current node to the goal node
         public Node parent;  // Reference to the previous node in the path
+        private int type;
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
@@ -48,6 +49,11 @@ namespace SkyNet
                 IsDangerous = false;
                 IsObstacle = true;
             }
+        }
+
+        public Node(int horizontal, int vertical, int type) : this(horizontal, vertical)
+        {
+            this.type = type;
         }
 
         public int SetRandomTerrainType()

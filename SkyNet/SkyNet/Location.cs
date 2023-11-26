@@ -13,6 +13,8 @@ namespace SkyNet
         //private int[,] locationMatrix;
         private int locationX;
         private int locationY;
+        private int horizontal;
+        private int vertical;
 
         public int LocationId { get; set; }
         public string LocationName { get; set; }
@@ -21,16 +23,19 @@ namespace SkyNet
         public int LocationX { get; set; }
         public int LocationY { get; set; }
 
-        public Location(int hor, int vert)
+        public Location()
         {
             LocationId = 0;
             LocationName = string.Empty;
             //LocationMatrix = new int[10, 10];
-            LocationX = hor;
-            LocationY = vert;
+            LocationX = 0;
+            LocationY = 0;
         }
 
-
-
+        public Location(int horizontal, int vertical)
+        {
+            this.horizontal = horizontal;
+            this.vertical = vertical;
+        }
     }
 }

@@ -14,8 +14,6 @@ namespace SkyNet
         //Esto, idealmente, deberia ser un singleton. No realmente, por el tema de tener varias partidas. Capaz se puede reutilizar el mismo mapa. 
         //Igualmente, opino que no deberia ser infinitamente instanciable, asi que hay que pensar algo. 
 
-        //Ah, y reducir hardcodeo + abstraer patrones repetitivos a funciones. 
-
         private Node[,] grid;
         private double headquarterCounter;
         private double recyclingCounter;
@@ -24,18 +22,11 @@ namespace SkyNet
         public double HeadquarterCounter { get; set; }
         public double RecyclingCounter { get; set; }
 
-
-        private Map() {
+        Map()
+        {
             Grid = new Node[100, 100];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
-            for (int i = 0; i < 100; i++)
-            {
-                for (int j = 0; j < 100; j++)
-                {
-                    Grid[i, j] = new Node(i, j);
-                }
-            }
         }
         private static Map _instance;
         public static Map GetInstance()
@@ -47,7 +38,7 @@ namespace SkyNet
             return _instance;
         }
 
-        public void PrintMap (Node[,] Grid)
+        public void PrintMap(Node[,] Grid)
         {
 
             //PrintColumnIndicators(100);
@@ -58,79 +49,63 @@ namespace SkyNet
                 {
                     // Initialize each node in the grid
                     Console.SetCursorPosition(Grid[i, j].NodeLocation.LocationX, Grid[i, j].NodeLocation.LocationY);
-                    Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
+                    //Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     Console.WriteLine(" ");
                 }
             }
         }
-
-        //Esta funcion deberia ser optimizada. es un desastre 
-        private ConsoleColor ReadPositionColor(Node input)
+        public void CreateMapDistribution(Node[,] wholegrid)
         {
-            int type = input.TerrainType;
-            if (type == 0)
+            
+
+            for (int i = 0; i < 100; i++)
             {
-                return ConsoleColor.DarkBlue;
+                for (int j = 0; j < 100; j++)
+                {
+                    // Initialize each node in the grid
+                    int type = SetRandomTerrainType();
+                    wholegrid[i, j] = new Node(i, j, type);
+                }
             }
-            else if (type == 1)
-            {
-                return ConsoleColor.DarkGreen;
-            }
-            else if (type == 2)
-            {
-                return ConsoleColor.Cyan;
-            }
-            else if (type == 3)
-            {
-                return ConsoleColor.Yellow;
-            }
-            else if (type == 4)
-            {
-                return ConsoleColor.Gray;
-            }
-            else if (type == 5)
-            {
-                return ConsoleColor.Green;
-            }
-            else return ConsoleColor.Black;
         }
+        public int SetRandomTerrainType()
+        {
+            bool repeatingFlag = false;
+            Random rng = new Random();
+            int n = rng.Next(0, 5);
+            repeatingFlag = true;
+            while (repeatingFlag == true)
+            {
+                if (n == 4)
+                {
+                    if (RecyclingCounter >= 5)
+                    {
+                        n = rng.Next(0, 5);
+                    }
+                    else
+                    {
+                        RecyclingCounter++;
+                        repeatingFlag = false;
+                    }
 
-        /* code assorted
-         * 
-         * 
-         * public static void WriteAt(string s, int x, int y, int origCol=0, int origRow=0)
-{
+                }
+                else if (n == 5)
+                {
+                    if (HeadquarterCounter >= 5)
+                    {
+                        n = rng.Next(0, 5);
+                    }
+                    else
+                    {
+                        HeadquarterCounter++;
+                        repeatingFlag = false;
+                    }
+                }
+                else repeatingFlag = false;
+            }
 
-    try
-    {
-        Console.SetCursorPosition(origCol + x, origRow + y);
-        Console.Write(s);
-    }
-    catch (ArgumentOutOfRangeException e)
-    {
-        Console.Clear();
-        Console.WriteLine(e.Message);
-    }
-}
-
-
-pero antes de llamarlo le cambio el color a la letra y al fondo de la consola, si pones los dos del mismo color pintas un espacio de ese color, si pones colores diferentes podes ver la letra q pones
-
-
-Console.BackgroundColor = ConsoleColor.Blue;
-Console.ForegroundColor = ConsoleColor.Blue;
-
-
-ConsoleHelper.WriteAt("@", (i - coord[0]) * 2 + 2, j - coord[1] + 2);
-tambien, en el WriteAt, el origCol y origRow no recomiendo usarlos porq es a partir de donde queres dibujar, si lo dejas en 0, dibuja desde el primer espacio hacia abajo y es más facil guiarse
-         * 
-         * 
-         * 
-         * 
-         * namespace SkyNet.Entidades.Mundiales
-{
-
-}
+            return n;
+        }
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
          * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
