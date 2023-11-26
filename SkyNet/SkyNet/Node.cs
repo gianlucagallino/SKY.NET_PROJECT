@@ -9,8 +9,8 @@ namespace SkyNet
 {
     internal class Node
     {
+        private static Random rng = new Random();
 
-        //los ints son necesarios, ya que ciertas funciones en A* toman solamente ints, y no se puede transformar double a int. 
         private int terrainType;
         private bool isDangerous;
         private bool isObstacle;
@@ -20,29 +20,25 @@ namespace SkyNet
         private int h;  // Heuristic estimate from the current node to the goal node
         public Node parent;  // Reference to the previous node in the path
 
-        public int TerrainType { set; get; }
-        public bool IsDangerous { set; get; }
-        public bool IsObstacle { set; get; }
-        public Location NodeLocation { set; get; }
-        public int F { set; get; }
-        public int G { set; get; }
-        public int H { set; get; }
-        public Node Parent { set; get; }
+        public int TerrainType { get; set; }
+        public bool IsDangerous { get; set; }
+        public bool IsObstacle { get; set; }
+        public Location NodeLocation { get; set; }
+        public int F { get; set; }
+        public int G { get; set; }
+        public int H { get; set; }
+        public Node Parent { get; set; }
 
-        
-
-
-        public Node(int horizontal, int vertical, int type)
+        public Node(int horizontal, int vertical)
         {
-            NodeLocation.LocationX = horizontal;
-            NodeLocation.LocationY = vertical;
-            terrainType = type;
-            if (type == 1 || type == 3 )
+            NodeLocation = new Location(horizontal, vertical);
+            TerrainType = SetRandomTerrainType();
+            if (TerrainType == 1 || TerrainType == 3)
             {
                 IsDangerous = true;
                 IsObstacle = true;
             }
-            else if (type == 2)
+            else if (TerrainType == 2)
             {
                 IsDangerous = false;
                 IsObstacle = false;
@@ -53,16 +49,57 @@ namespace SkyNet
                 IsObstacle = true;
             }
         }
-         
-        //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
 
-        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
-         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
-         * 1- Vertedero
-         * 2-Lago
-         * 3-Vertedero electronico
-         * 4-Sitio de reciclaje (Implementar maximo 5)
-         * 5-Cuartel general(maximo 3)
-         */
+        public int SetRandomTerrainType()
+        {
+            bool repeatingFlag = false;
+            int n = rng.Next(0, 6); // Updated to include 6 as well
+
+            repeatingFlag = true;
+            while (repeatingFlag)
+            {
+                if (n == 4)
+                {
+                    if (Map.GetInstance().RecyclingCounter >= 5) // Assuming RecyclingCounter is a property of the Map class
+                    {
+                        n = rng.Next(0, 6);
+                    }
+                    else
+                    {
+                        Map.GetInstance().RecyclingCounter++;
+                        repeatingFlag = false;
+                    }
+                }
+                else if (n == 5)
+                {
+                    if (Map.GetInstance().HeadquarterCounter >= 3) // Assuming HeadquarterCounter is a property of the Map class
+                    {
+                        n = rng.Next(0, 6);
+                    }
+                    else
+                    {
+                        Map.GetInstance().HeadquarterCounter++;
+                        repeatingFlag = false;
+                    }
+                }
+                else
+                {
+                    repeatingFlag = false;
+                }
+            }
+
+            return n;
+        }
     }
+    //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
+
+    /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
+     * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
+     * 1- Vertedero
+     * 2-Lago
+     * 3-Vertedero electronico
+     * 4-Sitio de reciclaje (Implementar maximo 5)
+     * 5-Cuartel general(maximo 3)
+     */
 }
+

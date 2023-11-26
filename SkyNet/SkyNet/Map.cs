@@ -24,67 +24,30 @@ namespace SkyNet
         public double HeadquarterCounter { get; set; }
         public double RecyclingCounter { get; set; }
 
-        public Map()
-        {
+
+        private Map() {
             Grid = new Node[100, 100];
-             
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
-            CreateMapDistribution(Grid);
-        }
-        public void CreateMapDistribution(Node[,] wholegrid)
-        {
-
-
             for (int i = 0; i < 100; i++)
             {
                 for (int j = 0; j < 100; j++)
                 {
-                    // Initialize each node in the grid
-                    int type = SetRandomTerrainType();
-                    wholegrid[i, j].TerrainType = type;
+                    Grid[i, j] = new Node(i, j);
                 }
             }
         }
-        public int SetRandomTerrainType()
+        private static Map _instance;
+        public static Map GetInstance()
         {
-            bool repeatingFlag = false;
-            Random rng = new Random();
-            int n = rng.Next(0, 5);
-            repeatingFlag = true;
-            while (repeatingFlag == true)
+            if (_instance == null)
             {
-                if (n == 4)
-                {
-                    if (RecyclingCounter >= 5)
-                    {
-                        n = rng.Next(0, 5);
-                    }
-                    else
-                    {
-                        RecyclingCounter++;
-                        repeatingFlag = false;
-                    }
-
-                }
-                else if (n == 5)
-                {
-                    if (HeadquarterCounter >= 5)
-                    {
-                        n = rng.Next(0, 5);
-                    }
-                    else
-                    {
-                        HeadquarterCounter++;
-                        repeatingFlag = false;
-                    }
-                }
-                else repeatingFlag = false;
+                _instance = new Map();
             }
-
-            return n;
+            return _instance;
         }
-        public void PrintMap (Node[,] wholegrid)
+
+        public void PrintMap (Node[,] Grid)
         {
 
             //PrintColumnIndicators(100);
@@ -94,8 +57,8 @@ namespace SkyNet
                 for (int j = 0; j < 100; j++)
                 {
                     // Initialize each node in the grid
-                    Console.SetCursorPosition(wholegrid[i, j].NodeLocation.LocationX, wholegrid[i, j].NodeLocation.LocationY);
-                    Console.BackgroundColor = ReadPositionColor(wholegrid[i, j]);
+                    Console.SetCursorPosition(Grid[i, j].NodeLocation.LocationX, Grid[i, j].NodeLocation.LocationY);
+                    Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     Console.WriteLine(" ");
                 }
             }
