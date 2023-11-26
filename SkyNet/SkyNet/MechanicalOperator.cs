@@ -214,7 +214,7 @@ namespace SkyNet
             destination.setCurrentLoad = destination.getCurrentLoad + amount;
         
         }
-        */
+        
         public void ReturnToHQandRemoveLoad()
         {
             LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
@@ -227,7 +227,7 @@ namespace SkyNet
             LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
             LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
             battery.CompleteBatteryLevel();
-        }
+        }*/
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
             double increaseAmperes = (destination.battery.MAHCapacity*amountPercentage)/100;
