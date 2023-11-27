@@ -35,7 +35,7 @@ namespace SkyNet
             maxLoad = 1000;
             currentLoad = 0;
             optimalSpeed = 100;
-           // LocationP = new Location(); lo mismo, lo comento porque debe ser inicializado
+            LocationP = new Location();
         }
 
         protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
@@ -113,12 +113,12 @@ namespace SkyNet
             }
             if (AreOperatorsInSameLocation(destination))
             {
-                //compara tipos de bateria PREGUNTAR SI ES LA MEJOR MANERA HACIENDOLO DESDE TIPO O CON DATO CRUDO
-                if (destination.battery.Type == battery.Type)
+                if (ValidateBatteryTransfer(amountPercentage))
                 {
                     destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(amountPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
                 }
+                else { Console.WriteLine("Transfer Battery aborted due to battery validation failure."); }
             }
             else
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
@@ -126,12 +126,13 @@ namespace SkyNet
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
-                double batteryConsumptionPercentage = 0.05 * (distance / 10);// TODO valores a revisar
+                double batteryConsumptionPercentage = 0.05 * (distance / 10);// TODO valores a revisar creo q vuelve a ser el optimal speed
 
-                if (destination.battery.Type == battery.Type)
+                if (ValidateBatteryTransfer(amountPercentage))
                 {
                     destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    battery.DecreaseBattery(batteryConsumptionPercentage);
                 }
             }
         }
@@ -164,15 +165,16 @@ namespace SkyNet
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
-                double batteryConsumptionPercentage = 0.05 * (distance / 10);//TODO valores a revisar
+                double batteryConsumptionPercentage = 0.05 * (distance / 10);//TODO valores a revisar esto no esta calculado en la velocidad optima?
 
 
                 // Luego, realiza la transferencia de carga.
-                if (destination.currentLoad + amountKG <= destination.MaxLoad)
+                if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(batteryConsumptionPercentage))
                 {
                     destination.currentLoad += amountKG;
                     currentLoad -= amountKG;
-                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
+                    
+                    battery.DecreaseBattery(batteryConsumptionPercentage);
                 }
                 else
                 {
@@ -212,9 +214,7 @@ namespace SkyNet
             destination.setCurrentLoad = destination.getCurrentLoad + amount;
         
         }
-        */
-
-        /* comento esto, ya que hay que alterarlo para que funcione con varios cuarteles generales.
+        
         public void ReturnToHQandRemoveLoad()
         {
             LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
@@ -227,7 +227,27 @@ namespace SkyNet
             LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
             LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
             battery.CompleteBatteryLevel();
+        }*/
+        public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
+        {
+            double increaseAmperes = (destination.battery.MAHCapacity*amountPercentage)/100;
+            double decreasePercentage = (100 * increaseAmperes) / battery.MAHCapacity;
+            
+            return decreasePercentage;
         }
-        */
+        public bool ValidateBatteryTransfer(double amountPercentage)
+        {
+            double decreasePercentage = CalculatePercentage(this, amountPercentage);
+
+            if (battery.CurrentChargePercentage >= decreasePercentage)
+            {
+                return true; 
+            }
+            else
+            {
+                Console.WriteLine("Battery validation failed. Not enough battery capacity for the transfer.");
+                return false; 
+            }
+        }
     }
 }
