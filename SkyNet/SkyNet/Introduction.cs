@@ -60,7 +60,7 @@ namespace SkyNet
             Console.SetCursorPosition(W, H);
 
             H++;
-            Console.WriteLine("|   This experience is best enjoyed with a Fullscreen console.   |");
+            Console.WriteLine("|   This experience is made with a fullscreen console in mind.   |");
             Console.SetCursorPosition(W, H);
 
             H++;
@@ -122,7 +122,7 @@ namespace SkyNet
             Console.SetCursorPosition(W, H);
             Console.WriteLine("\t                                    PRESS ANY KEY TO CONTINUE                                              ");
             Console.ReadKey();
-
+            Console.Clear();
         }
     }
 }

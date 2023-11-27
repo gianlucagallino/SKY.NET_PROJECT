@@ -18,7 +18,9 @@ namespace SkyNet
             // Habria que agarrar el menu del proyecto anterior, y pasarlo a command. 
             // El codigo anterior deberia estar disponible en el segundo repo que hizo cata. 
 
-            //Introduction.GetInstance().Play();
+
+            Introduction.GetInstance().Play();
+
             Map.GetInstance().PrintMap();
              
 

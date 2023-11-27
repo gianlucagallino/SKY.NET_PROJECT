@@ -40,8 +40,10 @@ namespace SkyNet
             maxLoad = 1000;
             currentLoad = 0;
             optimalSpeed = 100;
+           simulateDamage = new SimulateDamage();
+
            //LocationP = new Location();
-            simulateDamage = new SimulateDamage();
+         
         }
 
         protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
