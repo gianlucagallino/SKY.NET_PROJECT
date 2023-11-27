@@ -25,7 +25,8 @@ namespace SkyNet
         public double RecyclingCounter { get; set; }
 
 
-        private Map() {
+        private Map()
+        {
             Grid = new Node[100, 100];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
@@ -47,7 +48,7 @@ namespace SkyNet
             return _instance;
         }
 
-        public void PrintMap (Node[,] Grid)
+        public void PrintMap(Node[,] Grid)
         {
 
             //PrintColumnIndicators(100);
