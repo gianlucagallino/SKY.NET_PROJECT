@@ -33,6 +33,11 @@ namespace SkyNet
         {
             NodeLocation = new Location(horizontal, vertical);
             TerrainType = SetRandomTerrainType();
+            TerrainTypeMethod();
+        }
+
+        public void TerrainTypeMethod()
+        {
             if (TerrainType == 1 || TerrainType == 3)
             {
                 IsDangerous = true;
@@ -50,46 +55,48 @@ namespace SkyNet
             }
         }
 
-        public int SetRandomTerrainType()
-        {
-            bool repeatingFlag = false;
-            int n = rng.Next(0, 6); // Updated to include 6 as well
-
-            repeatingFlag = true;
-            while (repeatingFlag)
-            {
-                if (n == 4)
-                {
-                    if (Map.GetInstance().RecyclingCounter >= 5) // Assuming RecyclingCounter is a property of the Map class
-                    {
-                        n = rng.Next(0, 6);
-                    }
-                    else
-                    {
-                        Map.GetInstance().RecyclingCounter++;
-                        repeatingFlag = false;
-                    }
-                }
-                else if (n == 5)
-                {
-                    if (Map.GetInstance().HeadquarterCounter >= 3) // Assuming HeadquarterCounter is a property of the Map class
-                    {
-                        n = rng.Next(0, 6);
-                    }
-                    else
-                    {
-                        Map.GetInstance().HeadquarterCounter++;
-                        repeatingFlag = false;
-                    }
-                }
-                else
-                {
-                    repeatingFlag = false;
-                }
-            }
+         public int SetRandomTerrainType()
+         {
+             bool repeatingFlag = true;
+             int n = rng.Next(0, 5);  // Updated to include 6 as well
 
             return n;
-        }
+            while (repeatingFlag)
+             {
+                
+                 if (n == 4)
+                 {
+                     if (Map.GetInstance().RecyclingCounter < 5) // Assuming RecyclingCounter is a property of the Map class
+                     {
+                       /*  n = rng.Next(0, 5);
+                     }
+                     else
+                     {*/
+                         Map.GetInstance().RecyclingCounter++;
+                         repeatingFlag = false;
+                     }
+                 }
+                 else if (n == 5)
+                 {
+                     if (Map.GetInstance().HeadquarterCounter < 3) // Assuming HeadquarterCounter is a property of the Map class
+                     {
+                       /*  n = rng.Next(0, 5);
+                     }
+                     else
+                     {*/
+                         Map.GetInstance().HeadquarterCounter++;
+                         repeatingFlag = false;
+                     }
+                 }
+                 else
+                 {
+                     repeatingFlag = false;
+                 }
+             }
+
+             return n;
+         }
+        
     }
     //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
 
