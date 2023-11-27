@@ -20,7 +20,7 @@ namespace SkyNet
         private double headquarterCounter;
         private double recyclingCounter;
 
-        public Node[,] Grid { get; set; }
+        public Node[,] Grid { get { return grid; } set { grid = value; } }
         public double HeadquarterCounter { get; set; }
         public double RecyclingCounter { get; set; }
 
@@ -30,14 +30,26 @@ namespace SkyNet
             Grid = new Node[100, 100];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
-            for (int i = 0; i < 100; i++)
+            FillGrid();
+        
+        }
+        private void FillGrid()
+        {
+            
+            for ( int j=0; j < 100; j++)
             {
-                for (int j = 0; j < 100; j++)
+                for (int k = 0; k < 100; k++)
                 {
-                    Grid[i, j] = new Node(i, j);
+                    if (Grid[j, k] == null)
+                    {
+                        Grid[j, k] = new Node(j, k);
+                    }
                 }
+                
             }
         }
+
+
         private static Map _instance;
         public static Map GetInstance()
         {
@@ -48,7 +60,7 @@ namespace SkyNet
             return _instance;
         }
 
-        public void PrintMap(Node[,] Grid)
+        public void PrintMap ()
         {
 
             //PrintColumnIndicators(100);
@@ -58,9 +70,12 @@ namespace SkyNet
                 for (int j = 0; j < 100; j++)
                 {
                     // Initialize each node in the grid
-                    Console.SetCursorPosition(Grid[i, j].NodeLocation.LocationX, Grid[i, j].NodeLocation.LocationY);
+                    int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX, Console.BufferWidth - 1);
+                    int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY, Console.BufferHeight - 1);
+
+                    Console.SetCursorPosition(consoleX, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
-                    Console.WriteLine(" ");
+                    Console.Write(" ");
                 }
             }
         }
@@ -95,7 +110,8 @@ namespace SkyNet
             }
             else return ConsoleColor.Black;
         }
-
+        
+        
         /* code assorted
          * 
          * 
