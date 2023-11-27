@@ -102,7 +102,7 @@ namespace SkyNet
             Console.WriteLine("Performing total recall...");
             foreach (var oper in operators)
             {
-                oper.LocationP = new Location { LocationId = "headquarters" };
+                oper.LocationP = new Location { LocationId = "" };  // aca me falta
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             Console.ReadLine();
