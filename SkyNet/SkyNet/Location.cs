@@ -30,7 +30,9 @@ namespace SkyNet
             LocationY = 0;
         }
 
-
-
+        public static implicit operator Location(Location v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
