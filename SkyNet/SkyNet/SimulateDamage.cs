@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    internal class SimulateDamage
+    internal class DamageSimulator
     {
         private readonly List<Action<MechanicalOperator>> damageActions;
         private bool damagedEngine;
@@ -21,8 +21,7 @@ namespace SkyNet
         public bool DisconnectedBatteryPort { get; set; }
         public bool PaintScratch { get; set; }
 
-
-        public SimulateDamage()
+        public DamageSimulator()
         {
             DamagedEngine = false;
             StuckServo = false;
@@ -66,8 +65,7 @@ namespace SkyNet
 
         public void PerforatedBatterySimulate(MechanicalOperator oper)
         {
-            oper.Battery.MaxCharge = 50;
-            PerforatedBattery = true;
+           PerforatedBattery = true;
         }
 
         public void DisconnectedBatteryPortSimulate(MechanicalOperator oper)
@@ -81,10 +79,6 @@ namespace SkyNet
             PaintScratch = true;
         }
 
-
-
-       
-
         public void Repair(MechanicalOperator oper)
         {
             DamagedEngine = false;
@@ -95,6 +89,15 @@ namespace SkyNet
             oper.Battery.MaxCharge = 100;
             oper.Battery.CompleteBatteryLevel();
             oper.OptimalSpeed = 100;
+            
+        }
+        public void RepairBatteryOnly(MechanicalOperator oper)
+        {
+            PerforatedBattery = false;
+            oper.Battery.MaxCharge = 100;
+            oper.Battery.CompleteBatteryLevel();
+            oper.OptimalSpeed = 100;
+            oper.MaxLoad = oper.MaxLoadOriginal;
         }
 
     }
