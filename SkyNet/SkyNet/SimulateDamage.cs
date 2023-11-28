@@ -9,21 +9,22 @@ namespace SkyNet
     internal class SimulateDamage
     {
         private readonly List<Action<MechanicalOperator>> damageActions;
-        private bool demagedEngine;
+        private bool damagedEngine;
         private bool stuckServo;
         private bool perforatedBattery;
         private bool disconectedBatteryPort;
         private bool paintScratch;
 
-        public bool DemagedEngine { get; set; }
+        public bool DamagedEngine { get; set; }
         public bool StuckServo { get; set; }
         public bool PerforatedBattery { get; set; }
         public bool DisconnectedBatteryPort { get; set; }
         public bool PaintScratch { get; set; }
 
+
         public SimulateDamage()
         {
-            DemagedEngine = false;
+            DamagedEngine = false;
             StuckServo = false;
             PerforatedBattery = false;
             DisconnectedBatteryPort = false;
@@ -53,7 +54,7 @@ namespace SkyNet
         public void CompromisedMotorSimulate(MechanicalOperator oper)
         {
             oper.OptimalSpeed /= 2;
-            DemagedEngine = true;
+            DamagedEngine = true;
         }
 
         public void StuckServoSimulate(MechanicalOperator oper)
@@ -80,9 +81,13 @@ namespace SkyNet
             PaintScratch = true;
         }
 
+
+
+       
+
         public void Repair(MechanicalOperator oper)
         {
-            DemagedEngine = false;
+            DamagedEngine = false;
             StuckServo = false;
             PerforatedBattery = false;
             DisconnectedBatteryPort = false;

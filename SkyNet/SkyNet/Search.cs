@@ -74,6 +74,7 @@ namespace SkyNet
                     }
                 }
 
+
                 openSet.Remove(currentNode);
                 closedSet.Add(currentNode);
 

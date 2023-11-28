@@ -11,6 +11,8 @@ namespace SkyNet
     {
         private static Random rng = new Random();
 
+        //mejorar descripcion, reducir shitcode
+
         private int terrainType;
         private bool isDangerous;
         private bool isObstacle;
@@ -19,6 +21,7 @@ namespace SkyNet
         private int g;  // Cost from the start node to the current node
         private int h;  // Heuristic estimate from the current node to the goal node
         public Node parent;  // Reference to the previous node in the path
+
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
@@ -61,6 +64,9 @@ namespace SkyNet
              int n = rng.Next(0, 5);  // Updated to include 6 as well
 
             return n;
+
+            //ARREGLAR
+
             while (repeatingFlag)
              {
                 

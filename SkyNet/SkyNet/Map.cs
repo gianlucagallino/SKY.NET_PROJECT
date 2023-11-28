@@ -30,9 +30,10 @@ namespace SkyNet
         public int SizeOffset { get; set; }
 
 
+
         private Map()
         {
-            MapSize = 10; //Cambia el tamaño del mapa. Como lo podemos poner desde afuera?
+            MapSize = 10; //ver grabacion, arreglar. 
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;

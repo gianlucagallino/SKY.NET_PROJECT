@@ -312,7 +312,7 @@ namespace SkyNet
 
         private bool IsDemaged()
         {
-            if (SimulateDemage.DemagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
+            if (SimulateDemage.DamagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
                 ||SimulateDemage.DisconnectedBatteryPort||SimulateDemage.PaintScratch)
             {
                 return true;
@@ -374,8 +374,6 @@ namespace SkyNet
             }
             
         }
-
-        
 
 
         /*Estos eran los metodos anteriores:
