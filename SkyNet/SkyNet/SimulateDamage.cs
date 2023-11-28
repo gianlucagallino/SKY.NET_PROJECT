@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    internal class SimulateDamage
+    internal class DamageSimulator
     {
         private readonly List<Action<MechanicalOperator>> damageActions;
-        private bool demagedEngine;
+        private bool damagedEngine;
         private bool stuckServo;
         private bool perforatedBattery;
         private bool disconectedBatteryPort;
         private bool paintScratch;
 
-        public bool DemagedEngine { get; set; }
+        public bool DamagedEngine { get; set; }
         public bool StuckServo { get; set; }
         public bool PerforatedBattery { get; set; }
         public bool DisconnectedBatteryPort { get; set; }
         public bool PaintScratch { get; set; }
 
-        public SimulateDamage()
+        public DamageSimulator()
         {
-            DemagedEngine = false;
+            DamagedEngine = false;
             StuckServo = false;
             PerforatedBattery = false;
             DisconnectedBatteryPort = false;
@@ -53,7 +53,7 @@ namespace SkyNet
         public void CompromisedMotorSimulate(MechanicalOperator oper)
         {
             oper.OptimalSpeed /= 2;
-            DemagedEngine = true;
+            DamagedEngine = true;
         }
 
         public void StuckServoSimulate(MechanicalOperator oper)
@@ -65,8 +65,7 @@ namespace SkyNet
 
         public void PerforatedBatterySimulate(MechanicalOperator oper)
         {
-            oper.Battery.MaxCharge = 50;
-            PerforatedBattery = true;
+           PerforatedBattery = true;
         }
 
         public void DisconnectedBatteryPortSimulate(MechanicalOperator oper)
@@ -82,7 +81,7 @@ namespace SkyNet
 
         public void Repair(MechanicalOperator oper)
         {
-            DemagedEngine = false;
+            DamagedEngine = false;
             StuckServo = false;
             PerforatedBattery = false;
             DisconnectedBatteryPort = false;
@@ -90,6 +89,15 @@ namespace SkyNet
             oper.Battery.MaxCharge = 100;
             oper.Battery.CompleteBatteryLevel();
             oper.OptimalSpeed = 100;
+            
+        }
+        public void RepairBatteryOnly(MechanicalOperator oper)
+        {
+            PerforatedBattery = false;
+            oper.Battery.MaxCharge = 100;
+            oper.Battery.CompleteBatteryLevel();
+            oper.OptimalSpeed = 100;
+            oper.MaxLoad = oper.MaxLoadOriginal;
         }
 
     }

@@ -6,23 +6,29 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    public class Battery
+    internal class Battery
     {
         private double mAhCapacity;//amperios 
         private int type;//tipo bateria
         private double currentChargePercentage;//porcentaje carga actual
+        private DamageSimulator damageSimulator;
 
 
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
         public double CurrentChargePercentage { get; set; }
         public double MaxCharge { get; set; }
+        public DamageSimulator DamageSimulatorP { get; set; }
+
+        public Battery(DamageSimulator damageSimulator)
+        {
+            this.damageSimulator = damageSimulator;
+        }
 
         public Battery()
         {
-
+            
         }
-
         public void ChargeBattery(double amountBatteryPercentage)
         {
             if (currentChargePercentage + amountBatteryPercentage <= 100)
@@ -39,6 +45,8 @@ namespace SkyNet
 
         public void DecreaseBattery(double amountBatteryPercentage)
         {
+            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage;
+
             if (currentChargePercentage - amountBatteryPercentage >= 0)
             {
                 currentChargePercentage -= amountBatteryPercentage;

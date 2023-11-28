@@ -13,20 +13,22 @@ namespace SkyNet
         protected Battery battery;
         protected string status;
         protected double maxLoad;
+        protected double maxLoadOriginal;
         protected double currentLoad;
         protected float optimalSpeed;
         protected Location location;
-        private SimulateDamage simulateDamage;
+        private DamageSimulator simulateDamage;
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
         public Battery Battery { get; set; }
         public string Status { get; set; }
         public double MaxLoad { get; set; }
+        public double MaxLoadOriginal { get; set; }
         public double CurrentLoad { get; set; }
         public float OptimalSpeed { get; set; }
         public Location LocationP { get; set; }
-        public SimulateDamage SimulateDemage { get; set; }
+        public DamageSimulator SimulateDemage { get; set; }
 
 
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
@@ -38,15 +40,17 @@ namespace SkyNet
             //battery.CurrentCharge = battery.MAHCapacity;
             status = "ACTIVE";
             maxLoad = 1000;
+            maxLoadOriginal = 0;
             currentLoad = 0;
             optimalSpeed = 100;
            //LocationP = new Location();
-            simulateDamage = new SimulateDamage();
+            simulateDamage = new DamageSimulator();
         }
 
-        protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
+        protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
+            this.maxLoadOriginal = minLoad;
             this.battery = battery;
             this.location = location;
             this.status = status;
@@ -60,6 +64,7 @@ namespace SkyNet
             double finalSpeed = OptimalSpeed - ((OptimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
+
         public void MoveTo(Location loc)
         {
             simulateDamage.SimulateRandomDamage(this);
@@ -310,7 +315,7 @@ namespace SkyNet
 
         private bool IsDemaged()
         {
-            if (SimulateDemage.DemagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
+            if (SimulateDemage.DamagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
                 ||SimulateDemage.DisconnectedBatteryPort||SimulateDemage.PaintScratch)
             {
                 return true;
@@ -345,6 +350,16 @@ namespace SkyNet
 
             return nearestHeadquarters;
 
+        }
+
+        public void BatteryChange(Node[,] grid)
+        {
+            if (simulateDamage.PerforatedBattery)
+            {
+                Location nearestHeadquarters = FindHeadquartersLocation(grid);
+                MoveTo(nearestHeadquarters);
+                simulateDamage.RepairBatteryOnly(this);
+            }
         }
         public void GeneralOrder(Node[,] grid)
         {
