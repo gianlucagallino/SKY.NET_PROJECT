@@ -18,6 +18,16 @@ namespace SkyNet
 
         //Ah, y reducir hardcodeo + abstraer patrones repetitivos a funciones. 
 
+        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
+         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
+         * 1- Vertedero
+         * 2-Lago
+         * 3-Vertedero electronico
+         * 4-Sitio de reciclaje (Implementar maximo 5)
+         * 5-Cuartel general(maximo 3)
+         */
+
+
         private Node[,] grid;
         private int mapSize;
         private double headquarterCounter;
@@ -220,52 +230,6 @@ namespace SkyNet
 }
 
 
-        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
-         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
-         * 1- Vertedero
-         * 2-Lago
-         * 3-Vertedero electronico
-         * 4-Sitio de reciclaje (Implementar maximo 5)
-         * 5-Cuartel general(maximo 3)
-         */
 
 
-/* code assorted
- * 
- * 
- * public static void WriteAt(string s, int x, int y, int origCol=0, int origRow=0)
-{
 
-try
-{
-Console.SetCursorPosition(origCol + x, origRow + y);
-Console.Write(s);
-}
-catch (ArgumentOutOfRangeException e)
-{
-Console.Clear();
-Console.WriteLine(e.Message);
-}
-}
-
-
-pero antes de llamarlo le cambio el color a la letra y al fondo de la consola, si pones los dos del mismo color pintas un espacio de ese color, si pones colores diferentes podes ver la letra q pones
-
-
-Console.BackgroundColor = ConsoleColor.Blue;
-Console.ForegroundColor = ConsoleColor.Blue;
-
-
-ConsoleHelper.WriteAt("@", (i - coord[0]) * 2 + 2, j - coord[1] + 2);
-tambien, en el WriteAt, el origCol y origRow no recomiendo usarlos porq es a partir de donde queres dibujar, si lo dejas en 0, dibuja desde el primer espacio hacia abajo y es más facil guiarse
- * 
- * 
- * 
- * 
- * namespace SkyNet.Entidades.Mundiales
-{
-
-}
-
-}
-}*/

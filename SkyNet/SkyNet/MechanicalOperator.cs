@@ -315,17 +315,17 @@ namespace SkyNet
             currentLoad = loadAmount;
         }
 
-        private bool IsDemaged()
+        /* esto hay que cambiarlo.
+        private bool IsDamaged()
         {
-            if (SimulateDemage.DamagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
+            if (DamageSimulator.DamagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
                 ||SimulateDemage.DisconnectedBatteryPort||SimulateDemage.PaintScratch)
             {
                 return true;
             }
-            else 
-            { return false; }
+            else return false;
 
-        }
+        }*/
 
         public Location FindHeadquartersLocation(Node[,] grid)
         {
@@ -349,9 +349,7 @@ namespace SkyNet
                     }
                 }
             }
-
             return nearestHeadquarters;
-
         }
 
         public void BatteryChange(Node[,] grid)
@@ -363,22 +361,12 @@ namespace SkyNet
                 simulateDamage.RepairBatteryOnly(this);
             }
         }
+
         public void GeneralOrder(Node[,] grid)
         {
             if (!busyStatus)
             {
-                //Estos comentarios corresponden previo a la refactorizacion del codigo
-                //Falta agregar el decrease battery
-                // List<Node> closestDumpster = GetLocal(LocationP, 3, grid);
-                //Node mostClosestDumpster= FindClosestNode(closestRecycling);
-                //MoveTo(mostClosestDumpster.NodeLocation);
-
                 HandleOrder(grid, 3, MaxLoad);
-
-                //List<Node> closestRecycling = GetLocal(LocationP, 4, grid);
-                // Node mostClosestRecycling= FindClosestNode(closestRecycling);
-                //MoveTo(mostClosestRecycling.NodeLocation);
-
                 HandleOrder(grid, 4, 0);
             }
             else if(IsDemaged())
@@ -389,38 +377,5 @@ namespace SkyNet
             }
             
         }
-
-
-        /*Estos eran los metodos anteriores:
-        Los transfer me dejan en duda del tipo que deberian ser, considerando que para los k9 se le deberia meter un k9, un m8 debe ingresar un m8 y asi. Lo dejo comentado por ahora. 
-        Este seria un buen uso de genericos?
-        ademas, no haria las verificaciones aca, pero si en el metodo que llama los transfer. 
-        
-        public void TransferBattery(TIPO A ARREGLAR destination, float amount)
-        {
-            currentBattery-=amount;
-            destination.setCurrentBattery = destination.getCurrentBattery + amount;
-        }
-
-        public void TransferLoad(TIPO A ARREGLAR destination, float amount)
-        {
-            currentLoad-=amount;
-            destination.setCurrentLoad = destination.getCurrentLoad + amount;
-        
-        }
-        
-        public void ReturnToHQandRemoveLoad()
-        {
-            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
-            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
-            CurrentLoad = 0;
-        }
-
-        public void ReturnToHQandChargeBattery()
-        {
-            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
-            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
-            battery.CompleteBatteryLevel();
-        }*/
     }
 }
