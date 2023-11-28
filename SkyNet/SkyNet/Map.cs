@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,18 +34,18 @@ namespace SkyNet
 
         private Map()
         {
-            MapSize = 10; //ver grabacion, arreglar. 
+            MapSize = 100; //ver grabacion, arreglar. 
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
             FillGrid();
-        
+
         }
         private void FillGrid()
         {
-            
-            for ( int j=0; j < MapSize; j++)
+
+            for (int j = 0; j < MapSize; j++)
             {
                 for (int k = 0; k < MapSize; k++)
                 {
@@ -53,10 +54,56 @@ namespace SkyNet
                         Grid[j, k] = new Node(j, k);
                     }
                 }
-                
+
             }
+            AddLimitedTerrainTypes();
         }
 
+        private void AddLimitedTerrainTypes()
+        {
+
+            Random rng = new Random();
+            HeadquarterCounter = rng.Next(1, 4);
+            RecyclingCounter = rng.Next(1, 6);
+            List<Node> pickedNodes = new List<Node>();  //Saves the limited terrains in a list, so they dont get overwritten by accident. Low chance of that happening, but makes for a more secure system. 
+            LoopTerrainSelection(pickedNodes, HeadquarterCounter, RecyclingCounter);
+        }
+
+        private void LoopTerrainSelection(List<Node> list, double HQC, double RC)
+        {
+            Random rng = new Random();
+            for (int i = 0; i < HQC; i++)
+            {
+                bool inLoop = true;
+                while (inLoop)
+                {
+                    int RandomX = rng.Next(0, MapSize);
+                    int RandomY = rng.Next(0, MapSize);
+                    if (!list.Contains(Grid[RandomX, RandomY]))
+                    {
+                        Grid[RandomX, RandomY].TerrainType = 5;
+                        list.Add(Grid[RandomX, RandomY]);
+                        inLoop = false;
+                    }
+                }
+            }
+            for (int i = 0; i < RC; i++)
+            {
+
+                bool inLoop = true;
+                while (inLoop)
+                {
+                    int RandomX = rng.Next(0, MapSize);
+                    int RandomY = rng.Next(0, MapSize);
+                    if (!list.Contains(Grid[RandomX, RandomY]))
+                    {
+                        Grid[RandomX, RandomY].TerrainType = 4;
+                        list.Add(Grid[RandomX, RandomY]);
+                        inLoop = false;
+                    }
+                }
+            }
+        }
 
         private static Map _instance;
         public static Map GetInstance()
@@ -68,28 +115,31 @@ namespace SkyNet
             return _instance;
         }
 
-        public void PrintMap ()
+        public void PrintMap()
         {
 
             PrintColumnIndicators();
             PrintLineIndicators();
+            int modifier = 0;
             for (int i = 0; i < MapSize; i++)
             {
                 
+
                 for (int j = 0; j < MapSize; j++)
                 {
                     // Initialize each node in the grid
-                    int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX+3, Console.BufferWidth - 1);
-                    int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY+3, Console.BufferHeight - 1);
+                    int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX + 2, Console.BufferWidth - 1);
+                    int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY + 1, Console.BufferHeight - 1);
+                    
 
-                    Console.SetCursorPosition(consoleX, consoleY);
+                    Console.SetCursorPosition(consoleX+modifier, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
-                    Console.Write(" ");
+                    Console.Write("  ");
+                    
                 }
+                modifier++;
             }
             Console.BackgroundColor = ConsoleColor.Black; // vuelve al negro, para que no se quede "pegado" el ultimo color.
-
-            Console.WriteLine("ignoren el offset del mapa, la falta de menu y el area de 10x10, estaba a medio test cuando empezo la clase. Preferible que vean el codigo!");
         }
 
         private void PrintColumnIndicators()
@@ -110,13 +160,14 @@ namespace SkyNet
                     Console.Write(i + " ");
                 }
                 else Console.Write(i);
+                Console.BackgroundColor= ConsoleColor.Black;//necesario por prolijidad visual
             }
             Console.Write("\n");
         }
         private void PrintLineIndicators()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            
+
             for (int i = 0; i < MapSize; i++)
             {
                 if (i % 2 == 0)
@@ -129,7 +180,7 @@ namespace SkyNet
                     Console.WriteLine(i + " ");
                 }
                 else Console.WriteLine(i);
-
+                Console.BackgroundColor = ConsoleColor.Black;//necesario por prolijidad visual
 
             }
         }
@@ -141,15 +192,15 @@ namespace SkyNet
             int type = input.TerrainType;
             if (type == 0)
             {
-                return ConsoleColor.DarkBlue;
+                return ConsoleColor.White;
             }
             else if (type == 1)
             {
-                return ConsoleColor.DarkGreen;
+                return ConsoleColor.Green;
             }
             else if (type == 2)
             {
-                return ConsoleColor.Cyan;
+                return ConsoleColor.Blue; 
             }
             else if (type == 3)
             {
@@ -157,32 +208,44 @@ namespace SkyNet
             }
             else if (type == 4)
             {
-                return ConsoleColor.Gray;
+                return ConsoleColor.DarkYellow;
             }
             else if (type == 5)
             {
-                return ConsoleColor.Green;
+                return ConsoleColor.Magenta;
             }
-            else return ConsoleColor.Black;
+            else return ConsoleColor.White;
         }
-        
-        
-        /* code assorted
-         * 
-         * 
-         * public static void WriteAt(string s, int x, int y, int origCol=0, int origRow=0)
+    }
+}
+
+
+        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
+         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
+         * 1- Vertedero
+         * 2-Lago
+         * 3-Vertedero electronico
+         * 4-Sitio de reciclaje (Implementar maximo 5)
+         * 5-Cuartel general(maximo 3)
+         */
+
+
+/* code assorted
+ * 
+ * 
+ * public static void WriteAt(string s, int x, int y, int origCol=0, int origRow=0)
 {
 
-    try
-    {
-        Console.SetCursorPosition(origCol + x, origRow + y);
-        Console.Write(s);
-    }
-    catch (ArgumentOutOfRangeException e)
-    {
-        Console.Clear();
-        Console.WriteLine(e.Message);
-    }
+try
+{
+Console.SetCursorPosition(origCol + x, origRow + y);
+Console.Write(s);
+}
+catch (ArgumentOutOfRangeException e)
+{
+Console.Clear();
+Console.WriteLine(e.Message);
+}
 }
 
 
@@ -195,22 +258,14 @@ Console.ForegroundColor = ConsoleColor.Blue;
 
 ConsoleHelper.WriteAt("@", (i - coord[0]) * 2 + 2, j - coord[1] + 2);
 tambien, en el WriteAt, el origCol y origRow no recomiendo usarlos porq es a partir de donde queres dibujar, si lo dejas en 0, dibuja desde el primer espacio hacia abajo y es más facil guiarse
-         * 
-         * 
-         * 
-         * 
-         * namespace SkyNet.Entidades.Mundiales
+ * 
+ * 
+ * 
+ * 
+ * namespace SkyNet.Entidades.Mundiales
 {
 
 }
 
-        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
-         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
-         * 1- Vertedero
-         * 2-Lago
-         * 3-Vertedero electronico
-         * 4-Sitio de reciclaje (Implementar maximo 5)
-         * 5-Cuartel general(maximo 3)
-         */
-    }
 }
+}*/

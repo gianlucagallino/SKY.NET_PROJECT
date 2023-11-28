@@ -48,6 +48,7 @@ namespace SkyNet
 
         private void ShowResolutionWarning()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             GetConsoleSizeCenter();
             Console.CursorVisible = false;
             Console.SetCursorPosition(W, H);
@@ -64,9 +65,10 @@ namespace SkyNet
             Console.SetCursorPosition(W, H);
 
             H++;
-            Console.WriteLine("|           Please, turn fullscreen on before proceeding.        |");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("*         Please, turn fullscreen on, or stuff WILL break.       *");
             Console.SetCursorPosition(W, H);
-
+            Console.ForegroundColor = ConsoleColor.White;
             H++;
             Console.WriteLine("|________________________________________________________________|");
             Console.SetCursorPosition(W, H);
@@ -79,7 +81,7 @@ namespace SkyNet
 
         private void BlinkTitle(double amount, int time)
         {
-
+            Console.ForegroundColor = ConsoleColor.Red;
             for (int i = 0; i < amount; i++)
             {
                 Console.CursorVisible = false;

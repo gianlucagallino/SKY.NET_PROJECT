@@ -13,7 +13,7 @@ namespace SkyNet
         static void Main(string[] args)
 
         {
-
+            
          
             // Habria que agarrar el menu del proyecto anterior, y pasarlo a command. 
             // El codigo anterior deberia estar disponible en el segundo repo que hizo cata. 
@@ -22,6 +22,7 @@ namespace SkyNet
             Introduction.GetInstance().Play();
 
             Map.GetInstance().PrintMap();
+
              
 
             //Menu();
