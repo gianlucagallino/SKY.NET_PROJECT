@@ -43,6 +43,8 @@ namespace SkyNet
             maxLoadOriginal = 0;
             currentLoad = 0;
             optimalSpeed = 100;
+           simulateDamage = new DamageSimulator();
+
            //LocationP = new Location();
             simulateDamage = new DamageSimulator();
         }

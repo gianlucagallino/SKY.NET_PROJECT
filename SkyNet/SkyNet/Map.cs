@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,17 +18,23 @@ namespace SkyNet
         //Ah, y reducir hardcodeo + abstraer patrones repetitivos a funciones. 
 
         private Node[,] grid;
+        private int mapSize;
         private double headquarterCounter;
         private double recyclingCounter;
 
         public Node[,] Grid { get { return grid; } set { grid = value; } }
         public double HeadquarterCounter { get; set; }
         public double RecyclingCounter { get; set; }
+        public int MapSize { get; set; }
+
+        public int SizeOffset { get; set; }
 
 
         private Map()
         {
-            Grid = new Node[100, 100];
+            MapSize = 10; //Cambia el tamaño del mapa. Como lo podemos poner desde afuera?
+            SizeOffset = MapSize.ToString().Length;
+            Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
             FillGrid();
@@ -36,9 +43,9 @@ namespace SkyNet
         private void FillGrid()
         {
             
-            for ( int j=0; j < 100; j++)
+            for ( int j=0; j < MapSize; j++)
             {
-                for (int k = 0; k < 100; k++)
+                for (int k = 0; k < MapSize; k++)
                 {
                     if (Grid[j, k] == null)
                     {
@@ -63,24 +70,71 @@ namespace SkyNet
         public void PrintMap ()
         {
 
-            //PrintColumnIndicators(100);
-            for (int i = 0; i < 100; i++)
+            PrintColumnIndicators();
+            PrintLineIndicators();
+            for (int i = 0; i < MapSize; i++)
             {
-                //PrintLineIndicator();
-                for (int j = 0; j < 100; j++)
+                
+                for (int j = 0; j < MapSize; j++)
                 {
                     // Initialize each node in the grid
-                    int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX, Console.BufferWidth - 1);
-                    int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY, Console.BufferHeight - 1);
+                    int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX+3, Console.BufferWidth - 1);
+                    int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY+3, Console.BufferHeight - 1);
 
                     Console.SetCursorPosition(consoleX, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     Console.Write(" ");
                 }
             }
+            Console.BackgroundColor = ConsoleColor.Black; // vuelve al negro, para que no se quede "pegado" el ultimo color.
+
+            Console.WriteLine("ignoren el offset del mapa, la falta de menu y el area de 10x10, estaba a medio test cuando empezo la clase. Preferible que vean el codigo!");
         }
 
-        //Esta funcion deberia ser optimizada. es un desastre 
+        private void PrintColumnIndicators()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write("  ");
+
+            for (int i = 0; i < MapSize; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                }
+                else { Console.BackgroundColor = ConsoleColor.Red; }
+                if (i < 10)
+                {
+                    Console.Write(i + " ");
+                }
+                else Console.Write(i);
+            }
+            Console.Write("\n");
+        }
+        private void PrintLineIndicators()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            
+            for (int i = 0; i < MapSize; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                }
+                else { Console.BackgroundColor = ConsoleColor.Red; }
+                if (i < 10)
+                {
+                    Console.WriteLine(i + " ");
+                }
+                else Console.WriteLine(i);
+
+
+            }
+        }
+
+
+        //Esta funcion deberia ser optimizada. es un desastre.
         private ConsoleColor ReadPositionColor(Node input)
         {
             int type = input.TerrainType;
