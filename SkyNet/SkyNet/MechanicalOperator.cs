@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    internal abstract class MechanicalOperator
+    public abstract class MechanicalOperator
     {
         protected string id;
         protected bool busyStatus;

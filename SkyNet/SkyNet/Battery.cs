@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    internal class Battery
+    public class Battery
     {
         private double mAhCapacity;//amperios 
         private int type;//tipo bateria

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyNet
 {
-    internal class DamageSimulator
+    public class DamageSimulator
     {
         private readonly List<Action<MechanicalOperator>> damageActions;
         private bool damagedEngine;

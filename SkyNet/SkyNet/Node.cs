@@ -30,6 +30,7 @@ namespace SkyNet
         public int G { get; set; }
         public int H { get; set; }
         public Node Parent { get; set; }
+        public List<MechanicalOperator> OperatorsInNode { get; set; }
 
         public Node(int horizontal, int vertical)
         {

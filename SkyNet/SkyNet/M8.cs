@@ -27,6 +27,12 @@ namespace SkyNet
             battery.Type = 2;
         }
 
+        public  M8(int x, int y)
+        {
+            location.LocationX = x;
+            location.LocationY = y; 
+        }
+
         /* public void Reconnoiter()
          {
 

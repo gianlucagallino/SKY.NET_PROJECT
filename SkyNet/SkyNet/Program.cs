@@ -2,21 +2,24 @@ using System;
 using System.Collections.Generic;
 namespace SkyNet
 {
-   
+
     internal class Program
     {
         private static bool isRunning = true;
         private static List<MechanicalOperator> operators = new List<MechanicalOperator>();
-        private static Menu menu;
+       //private static Menu menu;
 
         static void Main(string[] args)
         {
-            menu = new Menu(operators);
+            Introduction.GetInstance().Play();
+            Map.GetInstance().PrintMap();
+           // menu = new Menu(operators);
 
-            while (isRunning)
+           // while (isRunning)
             {
-                menu.RunMenu();
+           //     menu.RunMenu();
             }
         }
     }
+}
 

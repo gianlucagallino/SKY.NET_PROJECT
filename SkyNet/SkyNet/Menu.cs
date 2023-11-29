@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SkyNet
 {
+    /*
     internal class Menu
     {
         private List<MechanicalOperator> operators;
@@ -95,7 +96,7 @@ namespace SkyNet
             }
             Console.ReadLine();
         }
-
+        /*
         private void TotalRecall()
         {
             Console.Clear();
@@ -137,7 +138,7 @@ namespace SkyNet
             {
                 Id = operatorDetails,
                 Status = "Reserve",
-                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran */
+                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran *//*
             };
 
             operators.Add(newOperator);
@@ -165,5 +166,6 @@ namespace SkyNet
             }
             Console.ReadLine();
         }
-    }
+    }*/
 }
+

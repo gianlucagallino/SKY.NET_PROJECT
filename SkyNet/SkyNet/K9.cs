@@ -27,8 +27,14 @@ namespace SkyNet
             battery.CurrentChargePercentage = 100;
             battery.Type = 1;
         }
-        /*public void Patrol()
+
+        public K9(int xposition, int yposition)
         {
-        }*/
+            location.LocationX = xposition;
+            location.LocationY = yposition;
+        }
+        /*public void Patrol()
+{
+}*/
     }
 }
