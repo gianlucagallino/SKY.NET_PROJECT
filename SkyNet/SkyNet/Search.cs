@@ -32,6 +32,11 @@ namespace SkyNet
         }
 
         // Explore neighboring nodes and update their costs
+        //REFERENCIAS DE NOTACION
+        //F = Total estimated cost (G + H)
+        //G = Cost from the start node to the current node
+        //H = Heuristic estimate from the current node to the goal node
+        //Parent = Reference to the previous node in the path
         static void ExploreNeighbourNodes(Node currentNode, Node goal, List<Node> openSet, HashSet<Node> closedSet, Node[,] grid)
         {
             for (int i = -1; i <= 1; i++)
@@ -72,19 +77,20 @@ namespace SkyNet
             HashSet<Node> closedSet = new HashSet<Node>();
             openSet.Add(start);
 
-            while (openSet.Count > 0)
+            while (openSet.Count > 0) //While there are nodes to be evaluated,
             {
-                Node currentNode = openSet[0];
+                Node currentNode = openSet[0]; //The current node will be equal to the first node from the open set. 
 
                 for (int i = 1; i < openSet.Count; i++)
                 {
-                    if (openSet[i].F < currentNode.F) currentNode = openSet[i];
+                    if (openSet[i].F < currentNode.F) currentNode = openSet[i]; //Evaluates the lowest F cost from the set, and sets it as the current node. This is a movement.
                 }
 
                 openSet.Remove(currentNode);
-                closedSet.Add(currentNode);
+                closedSet.Add(currentNode); 
 
-                if (currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX && currentNode.NodeLocation.LocationY == goal.NodeLocation.LocationY)
+                if (currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX && //Evaluates if the path was found. 
+                    currentNode.NodeLocation.LocationY == goal.NodeLocation.LocationY)
                 {
                     // If the goal is reached, construct the path
                     return ConstructPath(currentNode);

@@ -19,7 +19,7 @@ namespace SkyNet
         protected Location location;
         private DamageSimulator damageSimulator;
         private Node[,] grid;
-        private Dictionary<int, Action<MechanicalOperator>> terrainActions;
+        private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
         protected int timeSpent;
 
         public string Id { get; set; }
@@ -36,6 +36,31 @@ namespace SkyNet
         public int TimeSpent { get; private set; }
 
 
+        // Example usage- >Para calcular distancia. 
+        /*
+        > Node start = posicion actual del operador a mover
+         Node goal = new Node { NodeLocation = new Location { LocationX = 4, LocationY = 4 } }; pos a llegar
+
+         AStarAlgorithm astar = new AStarAlgorithm();
+         List<Node> path = astar.FindPath(start, goal, grid);
+
+        > int longitudDeCaminito = path.Length();
+
+         if (path != null)
+         {
+             
+         //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
+        //ANIMAR LA COSA
+         }
+         else
+             {
+              Console.WriteLine("No path found.");
+                }
+
+       
+             */
+
+        
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
         public MechanicalOperator()
         {
@@ -49,10 +74,10 @@ namespace SkyNet
             currentLoad = 0;
             optimalSpeed = 100;
             damageSimulator = new DamageSimulator();
-            terrainActions= new Dictionary<int, Action<MechanicalOperator>>()
+            terrainDamages = new Dictionary<int, Action<MechanicalOperator>>()
                         {
                              { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
-                             { 2, (oper) => { if (oper is M8 || oper is K9) 
+                             { 2, (oper) => { if (oper is M8 || oper is K9)
                                  { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
                              { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
                         };
@@ -119,21 +144,21 @@ namespace SkyNet
             LocationP.LocationY = Convert.ToInt32(y);
 
             double distance = CalculateDistance(loc);
-            double batteryConsumption = CalculateBatteryConsumption(distance);
+            double batteryConsumption = CalculateBatteryConsumption(/*listitadenodos.Length()*/distance);
             Battery.DecreaseBattery(batteryConsumption);
 
             // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
-            if (terrainActions.TryGetValue(terrainType, out var action))
+            if (terrainDamages.TryGetValue(terrainType, out var action))
             {
                 action.Invoke(this);
             }
 
-            //SimulateTime((TimeSimulator.MoveToPerNode)*grid);
+            //SimulateTime((TimeSimulator.MoveToPerNode)*Node);
         }
 
         private double CalculateBatteryConsumption(double distance)
         {
-            return 0.05 * (distance / 10); 
+            return 0.05 * (distance / 10);
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
@@ -155,8 +180,9 @@ namespace SkyNet
                     busyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
                 }
-                else 
-                { Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+                else
+                {
+                    Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
                     busyStatus = false;
                 }
             }
@@ -240,6 +266,7 @@ namespace SkyNet
             }
         }
 
+        //AJUSTAR A SEARCH Y ASTAR
         private double CalculateDistance(Location destinationLocation)
         {
 
@@ -255,12 +282,12 @@ namespace SkyNet
         {
             return location == destination.location;
         }
-        
+
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
-            double increaseAmperes = (destination.battery.MAHCapacity*amountPercentage)/100;
+            double increaseAmperes = (destination.battery.MAHCapacity * amountPercentage) / 100;
             double decreasePercentage = (100 * increaseAmperes) / battery.MAHCapacity;
-            
+
             return decreasePercentage;
         }
         public bool ValidateBatteryTransfer(double amountPercentage)
@@ -269,12 +296,12 @@ namespace SkyNet
 
             if (battery.CurrentChargePercentage >= decreasePercentage && !damageSimulator.DisconnectedBatteryPort)
             {
-                return true; 
+                return true;
             }
             else
             {
                 Console.WriteLine("Battery validation failed. Not enough battery capacity for the transfer.");
-                return false; 
+                return false;
             }
         }
         //Metodos de nuevas funcionalidades TP Parte 2
@@ -329,14 +356,14 @@ namespace SkyNet
             currentLoad = loadAmount;
         }
 
-        private bool IsDemaged()
+        private bool IsDamaged()
         {
-            if (DamageSimulatorP.DamagedEngine||DamageSimulatorP.StuckServo||DamageSimulatorP.PerforatedBattery
-                ||DamageSimulatorP.DisconnectedBatteryPort||DamageSimulatorP.PaintScratch)
+            if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
+                || DamageSimulatorP.DisconnectedBatteryPort || DamageSimulatorP.PaintScratch)
             {
                 return true;
             }
-            else 
+            else
             { return false; }
 
         }
@@ -387,18 +414,18 @@ namespace SkyNet
 
                 HandleOrder(grid, 4, 0);
             }
-            else if(IsDamaged())
+            else if (IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-    
+                MoveTo(nearestHeadquarters);
+
                 damageSimulator.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
             }
 
-                simulateDamage.Repair(this);
-            }
-            
+            damageSimulator.Repair(this);
         }
 
     }
+
 }

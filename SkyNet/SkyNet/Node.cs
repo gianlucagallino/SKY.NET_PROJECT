@@ -75,7 +75,8 @@ namespace SkyNet
             return n;
         }
 
-        //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
+        //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. 
+        //Posible uso de sobrecarga de metodo. 
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
          * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
