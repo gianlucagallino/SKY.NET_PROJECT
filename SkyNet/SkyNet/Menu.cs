@@ -102,7 +102,7 @@ namespace SkyNet
             Console.WriteLine("Performing total recall...");
             foreach (var oper in operators)
             {
-                oper.LocationP = new Location { LocationId = "" };  // aca me falta
+                oper.LocationP = new Location { LocationId = 1 };  // aca me falta
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             Console.ReadLine();
@@ -137,7 +137,7 @@ namespace SkyNet
             {
                 Id = operatorDetails,
                 Status = "Reserve",
-                LocationP = new Location { /* Inicializa las propiedades de Location si es necesario o ver cuales eran */ }
+                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran */
             };
 
             operators.Add(newOperator);
