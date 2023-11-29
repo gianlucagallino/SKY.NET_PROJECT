@@ -7,20 +7,19 @@ using System.Xml.Linq;
 
 namespace SkyNet
 {
-    internal class Node
+    public class Node
     {
         
 
         //mejorar descripcion, reducir shitcode
         private static Random rng = new Random();
-        private int terrainType;
-        private bool isDangerous;
-        private bool isObstacle;
-        private Location nodeLocation;
-        private int f;  // Total estimated cost (G + H)
-        private int g;  // Cost from the start node to the current node
-        private int h;  // Heuristic estimate from the current node to the goal node
-        public Node parent;  // Reference to the previous node in the path
+
+
+        //REFERENCIAS DE NOTACION
+        //F = Total estimated cost (G + H)
+        //G = Cost from the start node to the current node
+        //H = Heuristic estimate from the current node to the goal node
+        //Parent = Reference to the previous node in the path
 
 
         public int TerrainType { get; set; }

@@ -43,7 +43,10 @@ namespace SkyNet
         {
             ShowResolutionWarning();
             BlinkTitle(6, 90);
-
+            TerrainTutorial();
+            OperatorTutorial();
+            SelectSaveFile();
+           
         }
 
         private void ShowResolutionWarning()
@@ -122,8 +125,152 @@ namespace SkyNet
 
             H += 2;
             Console.SetCursorPosition(W, H);
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\t                                    PRESS ANY KEY TO CONTINUE                                              ");
             Console.ReadKey();
+            Console.Clear();
+        }
+
+        private void TerrainTutorial()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            GetConsoleSizeCenter();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t ________________________________________________________________ ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|                      Terrain Tutorial:                         |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| Map and Grid:                                                  |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| The map has a square resolution chosen by the player.          |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| It also has six terrain types:                                 |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\t|                  White squares are neutral.                    |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\t|     Green squares are Dumpsters which can damage operators.    |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\t|     Blue squares are Lakes only traversable by flying units.   |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\t|  Yellow squares are E-Dumpsters which reduce battery capacity. |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("\t|   Pink squares are HeadQuarters, home base of some operators.  |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("\t|    Brown Squares are Recyclers, where operators can recharge.  |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\t|________________________________________________________________|");
+            Console.SetCursorPosition(W, H);
+            Console.ForegroundColor = ConsoleColor.White;
+            H += 2;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("\t                    Press any key to continue.                   ");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        private void OperatorTutorial()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            GetConsoleSizeCenter();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t ________________________________________________________________ ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|                      Operator Tutorial:                        |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|                                                                |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| Operators will show up in their corresponding tiles.           |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| There are 3 types of operator:                                 |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\t|    K: K9 units. Ground based, faster than M8s, but weaker.     |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|        M: M8 units. Ground based, slower, but stronger.        |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|     U: UAV units. Flying drones, can travel over water.        |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|           @: Multiple units on the same coordinate.            |");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|________________________________________________________________|");
+            Console.SetCursorPosition(W, H);
+            
+            H += 2;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("\t               Have fun! Press any key to continue.                ");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        private void SelectSaveFile()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            GetConsoleSizeCenter();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t                              Select an option:                    ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t---------------------------------------------------------------------------");
+            Console.SetCursorPosition(W, H);
+            
+            H++;
+            Console.WriteLine("\t 1 - Start new game. (WARNING: DELETES ALL SAVED DATA, IF ANY IS PRESENT)");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t 2 - Try Continue saved game.");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t---------------------------------------------------------------------------");
+            Console.SetCursorPosition(W, H);
+
+            H += 2;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("\t               Enter option:");
+            string pick = Console.ReadLine();
+            Console.Clear();
+            string mensaje = pick.ToLower() switch
+            {
+                "1" => "Enjoy your new game!",
+                "2" => "Attempting to load game...",
+                _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
+            };
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine(mensaje);
+            Thread.Sleep(5000);
             Console.Clear();
         }
     }
