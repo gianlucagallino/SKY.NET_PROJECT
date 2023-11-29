@@ -11,112 +11,111 @@ namespace SkyNet
     //Preferiblemente tambien, refuncionar la misma funcion para que se adapte a los 4 patrones de busqueda A*
     //(terrestre con optimizacion de peligro, terrestre sin importar peligro, aereo con optimizacion de peligro, aereo sin importar peligro)
     //Diria de incluir el patron manhattan, pero seria solo util en caso de unidades aereas, por lo que lo veo innecesario. 
-    //En otras palabras, hay que refaccionar el moveTo, otra vez (para variar)
-    internal class Search
-    {
 
-        // Heuristic function to calculate Manhattan distance between two nodes
-        static int heuristic(Node a, Node b)
+
+    //En otras palabras, hay que refaccionar el moveTo, otra vez (para variar)
+
+    public class AStarAlgorithm
+    {
+        // Heuristic function to estimate the cost from node 'a' to node 'b'
+        static int Heuristic(Node a, Node b)
         {
-            //HEURISTICA DE MANHATTAN: Distancia entre posiciones de X y de Y entre el nodo actual y fin
             return Math.Abs(a.NodeLocation.LocationX - b.NodeLocation.LocationX) + Math.Abs(a.NodeLocation.LocationY - b.NodeLocation.LocationY);
         }
 
-        // Function to check if a node is valid for traversal
-
-        //esta la usan las walking units, para optimo tomando en cuenta riesgos
-        static bool isValidandDangerless(Node n, Node[,] grid)
+        // Check if a node is valid and walkable (without considering dangers)
+        static bool IsValidAndWalkable(Node n, Node[,] grid)
         {
-            // Check if the node is within the boundaries and not dangerous
-            if (n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) && n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1))
-            {
-                if (grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsDangerous == false)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
+                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
         }
 
-        static bool isValidandWalkable(Node n, Node[,] grid)
-        {
-            // Check if the node is within the boundaries and not an obstacle
-            if (n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) && n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1))
-            {
-                if (grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle == false)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void ExploreNeighbourNodes(Node currentNode, Node goal, List<Node> openSet, HashSet<Node> closedSet, Node[,] grid)
+        // Explore neighboring nodes and update their costs
+        //REFERENCIAS DE NOTACION
+        //F = Total estimated cost (G + H)
+        //G = Cost from the start node to the current node
+        //H = Heuristic estimate from the current node to the goal node
+        //Parent = Reference to the previous node in the path
+        static void ExploreNeighbourNodes(Node currentNode, Node goal, List<Node> openSet, HashSet<Node> closedSet, Node[,] grid)
         {
             for (int i = -1; i <= 1; i++)
             {
                 for (int j = -1; j <= 1; j++)
                 {
-                    if (i == 0 && j == 0) continue; // Skip the current node
+                    if (i == 0 && j == 0) continue;
 
-                    if (currentNode.NodeLocation.LocationX + i >= 0 && currentNode.NodeLocation.LocationX + i < grid.GetLength(0) && currentNode.NodeLocation.LocationY + j >= 0 && currentNode.NodeLocation.LocationY + j < grid.GetLength(1))
+                    int neighborX = currentNode.NodeLocation.LocationX + i;
+                    int neighborY = currentNode.NodeLocation.LocationY + j;
+
+                    if (neighborX >= 0 && neighborX < grid.GetLength(0) && neighborY >= 0 && neighborY < grid.GetLength(1))
                     {
-                        Node neighbour = grid[currentNode.NodeLocation.LocationX + i, currentNode.NodeLocation.LocationY + j];
-                        if (isValidandWalkable(neighbour, grid) && !closedSet.Contains(neighbour))
+                        Node neighbour = grid[neighborX, neighborY];
+
+                        if (IsValidAndWalkable(neighbour, grid) && !closedSet.Contains(neighbour))
                         {
+                            int newG = currentNode.G + 1;
+                            if (!openSet.Contains(neighbour) || newG < neighbour.G)
+                            {
+                                neighbour.G = newG;
+                                neighbour.H = Heuristic(neighbour, goal);
+                                neighbour.F = neighbour.G + neighbour.H;
+                                neighbour.Parent = currentNode;
 
-                            // Update the costs and parent if the neighbor is not in the closed set
-
-                            neighbour.G = currentNode.G + 1;
-                            neighbour.H = heuristic(neighbour, goal);
-                            neighbour.F = neighbour.G + neighbour.H;
-                            neighbour.Parent = currentNode;
-
-                            // Add the neighbor to the open set if it's not already there
-
-                            if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                                if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                            }
                         }
                     }
-                    else continue; //skips the neighbour node if its out of bounds
                 }
             }
         }
 
-
-        // A* algorithm implementation
-
-        //ESTA VA A SER PARA LAS UNIDADES QUE CAMINEN. Toma en cuenta riesgos. hay que hacer uno que no tome en cuenta riesgos, lo mismo para las flying units. 
-        private void AStar(Node start, Node goal, Node[,] grid)
+        // Find the path using the A* algorithm
+        public List<Node> FindPath(Node start, Node goal, Node[,] grid)
         {
-            List<Node> openSet = new List<Node>();  // Nodes to be evaluated
-            HashSet<Node> closedSet = new HashSet<Node>();  // Nodes already evaluated
-            openSet.Add(start);  // Start with the initial node
+            List<Node> openSet = new List<Node>();
+            HashSet<Node> closedSet = new HashSet<Node>();
+            openSet.Add(start);
 
-            while (openSet.Count > 0)
+            while (openSet.Count > 0) //While there are nodes to be evaluated,
             {
-                Node currentNode = openSet[0];
+                Node currentNode = openSet[0]; //The current node will be equal to the first node from the open set. 
 
-                // Find the node in openSet with the lowest F cost
                 for (int i = 1; i < openSet.Count; i++)
                 {
-                    if (openSet[i].F < currentNode.F) currentNode = openSet[i];
-
-                    openSet.Remove(currentNode);
-                    closedSet.Add(currentNode);
-
-                    // Check if the goal is reached
-                    if (currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX && currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX)
-                    {
-                        // If we reach the goal, we can use the Parent property to get the shortest path.
-                        // Alternatively, we can also use a different approach to get the path.
-                        Console.WriteLine("Path found.");
-                        return;
-                    }
-
-                    ExploreNeighbourNodes(currentNode, goal, openSet, closedSet, grid);
+                    if (openSet[i].F < currentNode.F) currentNode = openSet[i]; //Evaluates the lowest F cost from the set, and sets it as the current node. This is a movement.
                 }
+
+                openSet.Remove(currentNode);
+                closedSet.Add(currentNode); 
+
+                if (currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX && //Evaluates if the path was found. 
+                    currentNode.NodeLocation.LocationY == goal.NodeLocation.LocationY)
+                {
+                    // If the goal is reached, construct the path
+                    return ConstructPath(currentNode);
+                }
+
+                ExploreNeighbourNodes(currentNode, goal, openSet, closedSet, grid);
             }
+
+            // If no path is found
+            return null;
         }
 
+        // Construct the path from the goal node to the start node
+        static List<Node> ConstructPath(Node goalNode)
+        {
+            List<Node> path = new List<Node>();
+            Node current = goalNode;
+
+            while (current != null)
+            {
+                path.Insert(0, current); // Insert at the beginning to maintain the correct order
+                current = current.Parent;
+            }
+
+            return path;
+        }
     }
 }
