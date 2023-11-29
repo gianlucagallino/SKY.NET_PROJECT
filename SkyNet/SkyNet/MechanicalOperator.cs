@@ -115,36 +115,34 @@ namespace SkyNet
 
             int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
-            double x = loc.LocationX;
-            double y = loc.LocationY;
-            int movX = 0;
-            int movY = 0;
-            busyStatus = true;
-            //Se asigna que tipo de movimiento debe ser realizado para llegar a la cuadrilla que corresponde. 
-            if (LocationP.LocationX < x)
+            Node start = new Node (LocationP.LocationX, LocationP.LocationY);
+            Node goal = new Node (loc.LocationX, loc.LocationY); 
+
+            AStarAlgorithm astar = new AStarAlgorithm();
+            List<Node> path = astar.FindPath(start, goal, grid);
+
+
+            int roadLenght = path.Count;
+
+            if (path != null)
             {
-                movX = 1;
+                foreach(Node node in path)
+                {
+                    LocationP = node.NodeLocation;
+                }
+                    //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
+                    //ANIMAR LA COSA
             }
-            else if (LocationP.LocationX > x)
+            else
             {
-                movX = -1;
+              Console.WriteLine("No path found.");
             }
 
-            if (LocationP.LocationY < y)
-            {
-                movY = 1;
-            }
-            else if (LocationP.LocationY > y)
-            {
-                movY = -1;
-            }
+       
+          
 
-            //se desplaza la posicion actual a la posicion buscada 
-            LocationP.LocationX = Convert.ToInt32(x);
-            LocationP.LocationY = Convert.ToInt32(y);
-
-            double distance = CalculateDistance(loc);
-            double batteryConsumption = CalculateBatteryConsumption(/*listitadenodos.Length()*/distance);
+            double distance = CalculateDistance(path);
+            double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
 
             // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
@@ -153,12 +151,21 @@ namespace SkyNet
                 action.Invoke(this);
             }
 
-            //SimulateTime((TimeSimulator.MoveToPerNode)*Node);
+            SimulateTime(TimeSimulator.MoveToPerNode);
         }
 
         private double CalculateBatteryConsumption(double distance)
         {
             return 0.05 * (distance / 10);
+        }
+
+        public void LoadingLoad(double amountKG)
+        {
+            if (amountKG > 0 && DamageSimulatorP.StuckServo == false) 
+            {
+                CurrentLoad = amountKG;
+            }
+            
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
@@ -191,7 +198,8 @@ namespace SkyNet
                 MoveTo(destination.LocationP);
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                double distance = CalculateDistance(destination.LocationP);
+                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                    new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
                 // TODO valores a revisar creo q vuelve a ser el optimal speed
 
                 if (ValidateBatteryTransfer(amountPercentage))
@@ -242,7 +250,8 @@ namespace SkyNet
                 MoveTo(destination.LocationP);
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                double distance = CalculateDistance(destination.LocationP);
+                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                    new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
                 //TODO valores a revisar esto no esta calculado en la velocidad optima?
 
 
@@ -267,14 +276,23 @@ namespace SkyNet
         }
 
         //AJUSTAR A SEARCH Y ASTAR
-        private double CalculateDistance(Location destinationLocation)
+        private double CalculateDistance(List<Node> nodes)
         {
+            double totalDistance = 0;
 
-            double difCoordX = Math.Abs(LocationP.LocationX - destinationLocation.LocationX);
-            double difCoordY = Math.Abs(LocationP.LocationY - destinationLocation.LocationY);
-            double distance = difCoordX + difCoordY;
+            for (int i = 0; i < nodes.Count - 1; i++)
+            {
+                Node currentNode = nodes[i];
+                Node nextNode = nodes[i + 1];
 
-            return distance;
+                double difCoordX = Math.Abs(currentNode.NodeLocation.LocationX - nextNode.NodeLocation.LocationX);
+                double difCoordY = Math.Abs(currentNode.NodeLocation.LocationY - nextNode.NodeLocation.LocationY);
+                double distance = (difCoordX + difCoordY) * 10; // Multiplicamos por 10 para tener en cuenta la escala de 10 km por nodo
+
+                totalDistance += distance;
+            }
+
+            return totalDistance;
         }
 
 
@@ -333,7 +351,7 @@ namespace SkyNet
 
             foreach (var node in nodes)
             {
-                double distance = CalculateDistance(node.NodeLocation);
+                double distance = CalculateDistance(nodes);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -380,7 +398,8 @@ namespace SkyNet
                     if (grid[i, j] != null && grid[i, j].TerrainType == 5)
                     {
                         Location headquartersLocation = grid[i, j].NodeLocation;
-                        double distance = CalculateDistance(headquartersLocation);
+                        double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                          new Node(headquartersLocation.LocationX, headquartersLocation.LocationY) });
 
                         if (distance < minDistance)
                         {
