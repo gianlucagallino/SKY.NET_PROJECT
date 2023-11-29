@@ -228,7 +228,7 @@ namespace SkyNet
                     battery.CompleteBatteryLevel();
                 }*/
 
-        //Estos comentarios corresponden previo a la refactorizacion del codigo
+        //Estos comentarios corresponden previo a la refactorizacion del codigo de GeneralOrder
         //Falta agregar el decrease battery
         // List<Node> closestDumpster = GetLocal(LocationP, 3, grid);
         //Node mostClosestDumpster= FindClosestNode(closestRecycling);
@@ -239,7 +239,107 @@ namespace SkyNet
         // Node mostClosestRecycling= FindClosestNode(closestRecycling);
         //MoveTo(mostClosestRecycling.NodeLocation);
 
+        //Este era el metodo MoveTo
+        /*  public void MoveTo(Location loc)
+        {
+            damageSimulator.SimulateRandomDamage(this);
 
+            double x = loc.LocationX;
+            double y = loc.LocationY;
+            int movX = 0;
+            int movY = 0;
+            busyStatus = true;
+            //Se asigna que tipo de movimiento debe ser realizado para llegar a la cuadrilla que corresponde. 
+            if (LocationP.LocationX < x)
+            {
+                movX = 1;
+            }
+            else if (LocationP.LocationX > x)
+            {
+                movX = -1;
+            }
+
+            if (LocationP.LocationY < y)
+            {
+                movY = 1;
+            }
+            else if (LocationP.LocationY > y)
+            {
+                movY = -1;
+            }
+
+            //se desplaza la posicion actual a la posicion buscada 
+
+            while (LocationP.LocationY != y)
+            {
+                LocationP.LocationY += movY;
+                /*
+                InteractuarConPosicion() 
+
+                Este debe ser un metodo que interactue con la casilla actual en el tp2, 
+                 que dependiendo del tipo de terreno tiene diferentes efectos
+                */
+            /*}
+                    while (LocationP.LocationX != x)
+                    {
+                        LocationP.LocationX += movX;
+                        /*
+                        InteractuarConPosicion() 
+
+                        Este debe ser un metodo que interactue con la casilla actual en el tp2, 
+                         que dependiendo del tipo de terreno tiene diferentes efectos
+                        */
+                  /*  }
+                }
+
+                private double CalculateBatteryConsumption(double distance)
+        {
+            return 0.05 * (distance / 10); // Ajusta según tus necesidades
+        }
+        public void TransferBattery(MechanicalOperator destination, double amountPercentage)
+        {
+            damageSimulator.SimulateRandomDamage(this);
+            destination.busyStatus = true;
+            busyStatus = true;
+            //calcula que la carga no sea negativa
+            if (amountPercentage < 0)
+            {
+                Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+                return;
+            }
+            if (AreOperatorsInSameLocation(destination))
+            {
+                if (ValidateBatteryTransfer(amountPercentage))
+                {
+                    destination.battery.ChargeBattery(amountPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                }
+                else
+                {
+                    Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+                    busyStatus = false;
+                }
+            }
+            else
+            { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+                MoveTo(destination.LocationP);
+
+                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                double distance = CalculateDistance(destination.LocationP);
+                // TODO valores a revisar creo q vuelve a ser el optimal speed
+
+                if (ValidateBatteryTransfer(amountPercentage))
+                {
+                    destination.battery.ChargeBattery(amountPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                }
+            }
+        }*/
 
         //map
 

@@ -14,6 +14,7 @@ namespace SkyNet
         private bool perforatedBattery;
         private bool disconectedBatteryPort;
         private bool paintScratch;
+        private bool electronicLandfill;
 
         public bool DamagedEngine { get; set; }
         public bool StuckServo { get; set; }
@@ -21,6 +22,7 @@ namespace SkyNet
         public bool DisconnectedBatteryPort { get; set; }
         public bool PaintScratch { get; set; }
 
+        public bool ElectronicLandfill { get; set; }
         public DamageSimulator()
         {
             DamagedEngine = false;
@@ -28,6 +30,8 @@ namespace SkyNet
             PerforatedBattery = false;
             DisconnectedBatteryPort = false;
             PaintScratch = false;
+            ElectronicLandfill = false;
+
 
             damageActions = new List<Action<MechanicalOperator>>
             {
@@ -79,6 +83,11 @@ namespace SkyNet
             PaintScratch = true;
         }
 
+        public void ElectronicLandfillSimulate(MechanicalOperator oper)
+        {
+            oper.Battery.MaxCharge = 80;
+        }
+
         public void Repair(MechanicalOperator oper)
         {
             DamagedEngine = false;
@@ -91,6 +100,8 @@ namespace SkyNet
             oper.OptimalSpeed = 100;
             
         }
+
+       
         public void RepairBatteryOnly(MechanicalOperator oper)
         {
             PerforatedBattery = false;
