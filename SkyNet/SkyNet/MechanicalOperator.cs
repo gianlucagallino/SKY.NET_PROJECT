@@ -369,12 +369,12 @@ namespace SkyNet
                 HandleOrder(grid, 3, MaxLoad);
                 HandleOrder(grid, 4, 0);
             }
-            else if(IsDemaged())
+            /*else if(IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
                 MoveTo(nearestHeadquarters);
                 simulateDamage.Repair(this);
-            }
+            }*/
             
         }
     }
