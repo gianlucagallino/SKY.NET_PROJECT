@@ -17,7 +17,10 @@ namespace SkyNet
         protected double currentLoad;
         protected float optimalSpeed;
         protected Location location;
-        private DamageSimulator simulateDamage;
+        private DamageSimulator damageSimulator;
+        private Node[,] grid;
+        private Dictionary<int, Action<MechanicalOperator>> terrainActions;
+        protected int timeSpent;
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
@@ -26,9 +29,11 @@ namespace SkyNet
         public double MaxLoad { get; set; }
         public double MaxLoadOriginal { get; set; }
         public double CurrentLoad { get; set; }
-        public float OptimalSpeed { get; set; }
+        public double OptimalSpeed { get; set; }
         public Location LocationP { get; set; }
-        public DamageSimulator SimulateDemage { get; set; }
+        public DamageSimulator DamageSimulatorP { get; set; }
+        public Node[,] Grid { get; set; }
+        public int TimeSpent { get; private set; }
 
 
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
@@ -43,10 +48,16 @@ namespace SkyNet
             maxLoadOriginal = 0;
             currentLoad = 0;
             optimalSpeed = 100;
-           simulateDamage = new DamageSimulator();
+            damageSimulator = new DamageSimulator();
+            terrainActions= new Dictionary<int, Action<MechanicalOperator>>()
+                        {
+                             { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
+                             { 2, (oper) => { if (oper is M8 || oper is K9) 
+                                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+                             { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
+                        };
+            //LocationP = new Location();
 
-           //LocationP = new Location();
-            simulateDamage = new DamageSimulator();
         }
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
@@ -59,6 +70,11 @@ namespace SkyNet
             this.id = id;
         }
 
+        public void SimulateTime(TimeSimulator taskType)
+        {
+            int time = (int)taskType;
+            this.timeSpent += time;
+        }
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MAHCapacity) * 100);
@@ -69,7 +85,10 @@ namespace SkyNet
 
         public void MoveTo(Location loc)
         {
-            simulateDamage.SimulateRandomDamage(this);
+            double finalSpeed = CalculateMovementSpeed();
+            OptimalSpeed = finalSpeed;
+
+            int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
             double x = loc.LocationX;
             double y = loc.LocationY;
@@ -96,36 +115,28 @@ namespace SkyNet
             }
 
             //se desplaza la posicion actual a la posicion buscada 
+            LocationP.LocationX = Convert.ToInt32(x);
+            LocationP.LocationY = Convert.ToInt32(y);
 
-            while (LocationP.LocationY != y)
+            double distance = CalculateDistance(loc);
+            double batteryConsumption = CalculateBatteryConsumption(distance);
+            Battery.DecreaseBattery(batteryConsumption);
+
+            // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
+            if (terrainActions.TryGetValue(terrainType, out var action))
             {
-                LocationP.LocationY += movY;
-                /*
-                InteractuarConPosicion() 
-
-                Este debe ser un metodo que interactue con la casilla actual en el tp2, 
-                 que dependiendo del tipo de terreno tiene diferentes efectos
-                */
+                action.Invoke(this);
             }
-            while (LocationP.LocationX != x)
-            {
-                LocationP.LocationX += movX;
-                /*
-                InteractuarConPosicion() 
 
-                Este debe ser un metodo que interactue con la casilla actual en el tp2, 
-                 que dependiendo del tipo de terreno tiene diferentes efectos
-                */
-            }
+            //SimulateTime((TimeSimulator.MoveToPerNode)*grid);
         }
 
         private double CalculateBatteryConsumption(double distance)
         {
-            return 0.05 * (distance / 10); // Ajusta según tus necesidades
+            return 0.05 * (distance / 10); 
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
-            simulateDamage.SimulateRandomDamage(this);
             destination.busyStatus = true;
             busyStatus = true;
             //calcula que la carga no sea negativa
@@ -142,6 +153,7 @@ namespace SkyNet
                     battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
                     destination.busyStatus = false;
                     busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferBattery);
                 }
                 else 
                 { Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
@@ -163,13 +175,13 @@ namespace SkyNet
                     battery.DecreaseBattery(CalculateBatteryConsumption(distance));
                     destination.busyStatus = false;
                     busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferBattery);
                 }
             }
         }
 
         public void TransferLoad(MechanicalOperator destination, double amountKG)
         {
-            simulateDamage.SimulateRandomDamage(this);
             destination.busyStatus = true;
             busyStatus = true;
             if (amountKG < 0)
@@ -189,6 +201,7 @@ namespace SkyNet
                     currentLoad -= amountKG;
                     destination.busyStatus = false;
                     busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
@@ -216,6 +229,7 @@ namespace SkyNet
                     battery.DecreaseBattery(CalculateBatteryConsumption(distance));
                     destination.busyStatus = false;
                     busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
@@ -253,7 +267,7 @@ namespace SkyNet
         {
             double decreasePercentage = CalculatePercentage(this, amountPercentage);
 
-            if (battery.CurrentChargePercentage >= decreasePercentage && !simulateDamage.DisconnectedBatteryPort)
+            if (battery.CurrentChargePercentage >= decreasePercentage && !damageSimulator.DisconnectedBatteryPort)
             {
                 return true; 
             }
@@ -315,17 +329,17 @@ namespace SkyNet
             currentLoad = loadAmount;
         }
 
-        /* esto hay que cambiarlo.
-        private bool IsDamaged()
+        private bool IsDemaged()
         {
-            if (DamageSimulator.DamagedEngine||SimulateDemage.StuckServo||SimulateDemage.PerforatedBattery
-                ||SimulateDemage.DisconnectedBatteryPort||SimulateDemage.PaintScratch)
+            if (DamageSimulatorP.DamagedEngine||DamageSimulatorP.StuckServo||DamageSimulatorP.PerforatedBattery
+                ||DamageSimulatorP.DisconnectedBatteryPort||DamageSimulatorP.PaintScratch)
             {
                 return true;
             }
-            else return false;
+            else 
+            { return false; }
 
-        }*/
+        }
 
         public Location FindHeadquartersLocation(Node[,] grid)
         {
@@ -349,33 +363,42 @@ namespace SkyNet
                     }
                 }
             }
+
             return nearestHeadquarters;
+
         }
 
         public void BatteryChange(Node[,] grid)
         {
-            if (simulateDamage.PerforatedBattery)
+            if (damageSimulator.PerforatedBattery)
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
                 MoveTo(nearestHeadquarters);
-                simulateDamage.RepairBatteryOnly(this);
+                damageSimulator.RepairBatteryOnly(this);
+                SimulateTime(TimeSimulator.BatteryChange);
             }
         }
-
         public void GeneralOrder(Node[,] grid)
         {
             if (!busyStatus)
             {
+
                 HandleOrder(grid, 3, MaxLoad);
+
                 HandleOrder(grid, 4, 0);
             }
-            /*else if(IsDamaged())
+            else if(IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters);
+    
+                damageSimulator.Repair(this);
+                SimulateTime(TimeSimulator.DamageRepair);
+            }
+
                 simulateDamage.Repair(this);
-            }*/
+            }
             
         }
+
     }
 }
