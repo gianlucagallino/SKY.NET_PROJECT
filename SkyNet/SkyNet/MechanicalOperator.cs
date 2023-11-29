@@ -9,44 +9,72 @@ namespace SkyNet
     internal abstract class MechanicalOperator
     {
         protected string id;
+        protected bool busyStatus;
         protected Battery battery;
         protected string status;
         protected double maxLoad;
+        protected double maxLoadOriginal;
         protected double currentLoad;
         protected float optimalSpeed;
         protected Location location;
+        private DamageSimulator damageSimulator;
+        private Node[,] grid;
+        private Dictionary<int, Action<MechanicalOperator>> terrainActions;
+        protected int timeSpent;
 
         public string Id { get; set; }
+        public bool BusyStatus { get; set; }
         public Battery Battery { get; set; }
         public string Status { get; set; }
         public double MaxLoad { get; set; }
+        public double MaxLoadOriginal { get; set; }
         public double CurrentLoad { get; set; }
-        public float OptimalSpeed { get; set; }
+        public double OptimalSpeed { get; set; }
         public Location LocationP { get; set; }
+        public DamageSimulator DamageSimulatorP { get; set; }
+        public Node[,] Grid { get; set; }
+        public int TimeSpent { get; private set; }
 
 
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
         public MechanicalOperator()
         {
             id = string.Empty;
+            busyStatus = false;
             battery = new Battery();
             //battery.CurrentCharge = battery.MAHCapacity;
             status = "ACTIVE";
             maxLoad = 1000;
+            maxLoadOriginal = 0;
             currentLoad = 0;
             optimalSpeed = 100;
-            LocationP = new Location();
+            damageSimulator = new DamageSimulator();
+            terrainActions= new Dictionary<int, Action<MechanicalOperator>>()
+                        {
+                             { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
+                             { 2, (oper) => { if (oper is M8 || oper is K9) 
+                                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+                             { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
+                        };
+            //LocationP = new Location();
+
         }
 
-        protected MechanicalOperator(double maxLoad, Battery battery, Location location, string status, string id)
+        protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
+            this.maxLoadOriginal = minLoad;
             this.battery = battery;
             this.location = location;
             this.status = status;
             this.id = id;
         }
 
+        public void SimulateTime(TimeSimulator taskType)
+        {
+            int time = (int)taskType;
+            this.timeSpent += time;
+        }
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MAHCapacity) * 100);
@@ -54,12 +82,19 @@ namespace SkyNet
             double finalSpeed = OptimalSpeed - ((OptimalSpeed / 10) * slownessMultiplier);
             return finalSpeed;
         }
+
         public void MoveTo(Location loc)
         {
+            double finalSpeed = CalculateMovementSpeed();
+            OptimalSpeed = finalSpeed;
+
+            int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
+
             double x = loc.LocationX;
             double y = loc.LocationY;
             int movX = 0;
             int movY = 0;
+            busyStatus = true;
             //Se asigna que tipo de movimiento debe ser realizado para llegar a la cuadrilla que corresponde. 
             if (LocationP.LocationX < x)
             {
@@ -80,31 +115,30 @@ namespace SkyNet
             }
 
             //se desplaza la posicion actual a la posicion buscada 
+            LocationP.LocationX = Convert.ToInt32(x);
+            LocationP.LocationY = Convert.ToInt32(y);
 
-            while (LocationP.LocationY != y)
+            double distance = CalculateDistance(loc);
+            double batteryConsumption = CalculateBatteryConsumption(distance);
+            Battery.DecreaseBattery(batteryConsumption);
+
+            // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
+            if (terrainActions.TryGetValue(terrainType, out var action))
             {
-                LocationP.LocationY += movY;
-                /*
-                InteractuarConPosicion() 
-
-                Este debe ser un metodo que interactue con la casilla actual en el tp2, 
-                 que dependiendo del tipo de terreno tiene diferentes efectos
-                */
+                action.Invoke(this);
             }
-            while (LocationP.LocationX != x)
-            {
-                LocationP.LocationX += movX;
-                /*
-                InteractuarConPosicion() 
 
-                Este debe ser un metodo que interactue con la casilla actual en el tp2, 
-                 que dependiendo del tipo de terreno tiene diferentes efectos
-                */
-            }
+            //SimulateTime((TimeSimulator.MoveToPerNode)*grid);
         }
 
+        private double CalculateBatteryConsumption(double distance)
+        {
+            return 0.05 * (distance / 10); 
+        }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
+            destination.busyStatus = true;
+            busyStatus = true;
             //calcula que la carga no sea negativa
             if (amountPercentage < 0)
             {
@@ -113,11 +147,17 @@ namespace SkyNet
             }
             if (AreOperatorsInSameLocation(destination))
             {
-                //compara tipos de bateria PREGUNTAR SI ES LA MEJOR MANERA HACIENDOLO DESDE TIPO O CON DATO CRUDO
-                if (destination.battery.Type == battery.Type)
+                if (ValidateBatteryTransfer(amountPercentage))
                 {
                     destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(amountPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferBattery);
+                }
+                else 
+                { Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+                    busyStatus = false;
                 }
             }
             else
@@ -126,22 +166,30 @@ namespace SkyNet
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
-                double batteryConsumptionPercentage = 0.05 * (distance / 10);// TODO valores a revisar
+                // TODO valores a revisar creo q vuelve a ser el optimal speed
 
-                if (destination.battery.Type == battery.Type)
+                if (ValidateBatteryTransfer(amountPercentage))
                 {
                     destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
+                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferBattery);
                 }
             }
         }
 
         public void TransferLoad(MechanicalOperator destination, double amountKG)
         {
+            destination.busyStatus = true;
+            busyStatus = true;
             if (amountKG < 0)
             {
                 Console.WriteLine("Amount must be non-negative for TransferLoad.");
                 return;
+                destination.busyStatus = false;
+                busyStatus = false;
             }
             //compara si estan en la misma ubicacion
             if (AreOperatorsInSameLocation(destination))
@@ -151,10 +199,15 @@ namespace SkyNet
                 {
                     destination.currentLoad += amountKG;
                     currentLoad -= amountKG;
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
                     Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                    destination.busyStatus = false;
+                    busyStatus = false;
                 }
             }
             else
@@ -164,19 +217,25 @@ namespace SkyNet
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
                 double distance = CalculateDistance(destination.LocationP);
-                double batteryConsumptionPercentage = 0.05 * (distance / 10);//TODO valores a revisar
+                //TODO valores a revisar esto no esta calculado en la velocidad optima?
 
 
                 // Luego, realiza la transferencia de carga.
-                if (destination.currentLoad + amountKG <= destination.MaxLoad)
+                if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
                 {
                     destination.currentLoad += amountKG;
                     currentLoad -= amountKG;
-                    battery.DecreaseBattery(battery.CurrentChargePercentage * batteryConsumptionPercentage);
+
+                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+                    destination.busyStatus = false;
+                    busyStatus = false;
+                    SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
                     Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                    destination.busyStatus = false;
+                    busyStatus = false;
                 }
             }
         }
@@ -191,40 +250,155 @@ namespace SkyNet
             return distance;
         }
 
+
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
             return location == destination.location;
         }
-        /*Estos eran los metodos anteriores:
-        Los transfer me dejan en duda del tipo que deberian ser, considerando que para los k9 se le deberia meter un k9, un m8 debe ingresar un m8 y asi. Lo dejo comentado por ahora. 
-        Este seria un buen uso de genericos?
-        ademas, no haria las verificaciones aca, pero si en el metodo que llama los transfer. 
         
-        public void TransferBattery(TIPO A ARREGLAR destination, float amount)
+        public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
-            currentBattery-=amount;
-            destination.setCurrentBattery = destination.getCurrentBattery + amount;
+            double increaseAmperes = (destination.battery.MAHCapacity*amountPercentage)/100;
+            double decreasePercentage = (100 * increaseAmperes) / battery.MAHCapacity;
+            
+            return decreasePercentage;
+        }
+        public bool ValidateBatteryTransfer(double amountPercentage)
+        {
+            double decreasePercentage = CalculatePercentage(this, amountPercentage);
+
+            if (battery.CurrentChargePercentage >= decreasePercentage && !damageSimulator.DisconnectedBatteryPort)
+            {
+                return true; 
+            }
+            else
+            {
+                Console.WriteLine("Battery validation failed. Not enough battery capacity for the transfer.");
+                return false; 
+            }
+        }
+        //Metodos de nuevas funcionalidades TP Parte 2
+
+        public List<Node> GetLocal(Location A, int terrainType, Node[,] grilla)
+        {
+            List<Node> nodeList = new List<Node>();
+
+            foreach (var square in grilla)
+            {
+                if (square != null && square.NodeLocation.Equals(A) && square.TerrainType == terrainType)
+                {
+                    nodeList.Add(square);
+                }
+            }
+
+            return nodeList;
         }
 
-        public void TransferLoad(TIPO A ARREGLAR destination, float amount)
+        private Node FindClosestNode(List<Node> nodes)
         {
-            currentLoad-=amount;
-            destination.setCurrentLoad = destination.getCurrentLoad + amount;
-        
-        }
-        */
-        public void ReturnToHQandRemoveLoad()
-        {
-            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
-            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
-            CurrentLoad = 0;
+            if (nodes.Count == 0)
+            {
+                return null;
+            }
+
+            Node closestNode = nodes[0];
+            double minDistance = double.MaxValue;
+
+            foreach (var node in nodes)
+            {
+                double distance = CalculateDistance(node.NodeLocation);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestNode = node;
+                }
+            }
+
+            return closestNode;
         }
 
-        public void ReturnToHQandChargeBattery()
+        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount)
         {
-            LocationP.LocationX = HeadQuarters.GetInstance().LocationHeadQuarters.LocationX;
-            LocationP.LocationY = HeadQuarters.GetInstance().LocationHeadQuarters.LocationY;
-            battery.CompleteBatteryLevel();
+            List<Node> closestNodes = GetLocal(LocationP, terrainType, grid);
+            Node mostClosestNode = FindClosestNode(closestNodes);
+            MoveToAndProcess(mostClosestNode, loadAmount);
         }
+        private void MoveToAndProcess(Node destination, double loadAmount)
+        {
+            MoveTo(destination.NodeLocation);
+            currentLoad = loadAmount;
+        }
+
+        private bool IsDemaged()
+        {
+            if (DamageSimulatorP.DamagedEngine||DamageSimulatorP.StuckServo||DamageSimulatorP.PerforatedBattery
+                ||DamageSimulatorP.DisconnectedBatteryPort||DamageSimulatorP.PaintScratch)
+            {
+                return true;
+            }
+            else 
+            { return false; }
+
+        }
+
+        public Location FindHeadquartersLocation(Node[,] grid)
+        {
+            Location nearestHeadquarters = null;
+            double minDistance = double.MaxValue;
+
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] != null && grid[i, j].TerrainType == 5)
+                    {
+                        Location headquartersLocation = grid[i, j].NodeLocation;
+                        double distance = CalculateDistance(headquartersLocation);
+
+                        if (distance < minDistance)
+                        {
+                            minDistance = distance;
+                            nearestHeadquarters = headquartersLocation;
+                        }
+                    }
+                }
+            }
+
+            return nearestHeadquarters;
+
+        }
+
+        public void BatteryChange(Node[,] grid)
+        {
+            if (damageSimulator.PerforatedBattery)
+            {
+                Location nearestHeadquarters = FindHeadquartersLocation(grid);
+                MoveTo(nearestHeadquarters);
+                damageSimulator.RepairBatteryOnly(this);
+                SimulateTime(TimeSimulator.BatteryChange);
+            }
+        }
+        public void GeneralOrder(Node[,] grid)
+        {
+            if (!busyStatus)
+            {
+
+                HandleOrder(grid, 3, MaxLoad);
+
+                HandleOrder(grid, 4, 0);
+            }
+            else if(IsDamaged())
+            {
+                Location nearestHeadquarters = FindHeadquartersLocation(grid);
+    
+                damageSimulator.Repair(this);
+                SimulateTime(TimeSimulator.DamageRepair);
+            }
+
+                simulateDamage.Repair(this);
+            }
+            
+        }
+
     }
 }

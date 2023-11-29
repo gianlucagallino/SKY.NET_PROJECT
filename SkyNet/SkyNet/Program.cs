@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-
 namespace SkyNet
 {
    
@@ -20,4 +19,4 @@ namespace SkyNet
             }
         }
     }
-}
+

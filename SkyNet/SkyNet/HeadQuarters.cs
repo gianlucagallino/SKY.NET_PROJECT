@@ -8,7 +8,6 @@ namespace SkyNet
 {
     internal class HeadQuarters
     {
-        //HeadQuarters utiliza el patron singleton. 
 
         private List<MechanicalOperator> operators;
         private Location locationHeadQuarters;
@@ -18,20 +17,12 @@ namespace SkyNet
 
 
         //este constructor es temporal, debemos mejorarlo al implementar el mapa. 
-        private HeadQuarters()
+        private HeadQuarters(int x, int y)
         {
             Operators = new List<MechanicalOperator>();
-            LocationHeadQuarters = new Location();
+            LocationHeadQuarters = new Location(x,y);
         }
 
-        private static HeadQuarters _instance;
-
-        public static HeadQuarters GetInstance()
-        {
-            if (_instance == null) { _instance = new HeadQuarters(); }
-            return _instance;
-
-        }
         public void ShowOperatorStatus()
         {
             foreach (MechanicalOperator op in operators)

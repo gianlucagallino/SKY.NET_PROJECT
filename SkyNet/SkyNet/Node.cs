@@ -7,42 +7,45 @@ using System.Xml.Linq;
 
 namespace SkyNet
 {
-    internal class Node
+    public class Node
     {
-
-        //los ints son necesarios, ya que ciertas funciones en A* toman solamente ints, y no se puede transformar double a int. 
-        private int terrainType;
-        private bool isDangerous;
-        private bool isObstacle;
-        private Location nodeLocation;
-        private int f;  // Total estimated cost (G + H)
-        private int g;  // Cost from the start node to the current node
-        private int h;  // Heuristic estimate from the current node to the goal node
-        public Node parent;  // Reference to the previous node in the path
-
-        public int TerrainType { set; get; }
-        public bool IsDangerous { set; get; }
-        public bool IsObstacle { set; get; }
-        public Location NodeLocation { set; get; }
-        public int F { set; get; }
-        public int G { set; get; }
-        public int H { set; get; }
-        public Node Parent { set; get; }
-
         
 
+        //mejorar descripcion, reducir shitcode
+        private static Random rng = new Random();
 
-        public Node(int horizontal, int vertical, int type)
+
+        //REFERENCIAS DE NOTACION
+        //F = Total estimated cost (G + H)
+        //G = Cost from the start node to the current node
+        //H = Heuristic estimate from the current node to the goal node
+        //Parent = Reference to the previous node in the path
+
+
+        public int TerrainType { get; set; }
+        public bool IsDangerous { get; set; }
+        public bool IsObstacle { get; set; }
+        public Location NodeLocation { get; set; }
+        public int F { get; set; }
+        public int G { get; set; }
+        public int H { get; set; }
+        public Node Parent { get; set; }
+
+        public Node(int horizontal, int vertical)
         {
-            NodeLocation.LocationX = horizontal;
-            NodeLocation.LocationY = vertical;
-            terrainType = type;
-            if (type == 1 || type == 3 )
+            NodeLocation = new Location(horizontal, vertical);
+            TerrainType = SetNonLimitedTerrainType();
+            TerrainTypeMethod();
+        }
+
+        public void TerrainTypeMethod()
+        {
+            if (TerrainType == 1 || TerrainType == 3)
             {
                 IsDangerous = true;
                 IsObstacle = true;
             }
-            else if (type == 2)
+            else if (TerrainType == 2)
             {
                 IsDangerous = false;
                 IsObstacle = false;
@@ -52,6 +55,24 @@ namespace SkyNet
                 IsDangerous = false;
                 IsObstacle = true;
             }
+        }
+
+        public int SetNonLimitedTerrainType()
+        {
+            int n = rng.Next(0, 4);
+            return n;
+        }
+
+        public int SetHeadquarterTerrainType()
+        {
+            int n = 5;
+            return n;
+        }
+
+        public int SetRecyclingTerrainType()
+        {
+            int n = 4;
+            return n;
         }
 
         //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. Posible uso de sobrecarga de metodo. 
@@ -66,3 +87,5 @@ namespace SkyNet
          */
     }
 }
+
+

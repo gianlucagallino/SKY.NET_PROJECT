@@ -21,18 +21,13 @@ namespace SkyNet
         public int LocationX { get; set; }
         public int LocationY { get; set; }
 
-        public Location()
+        public Location(int hor, int vert)
         {
             LocationId = 0;
             LocationName = string.Empty;
             //LocationMatrix = new int[10, 10];
-            LocationX = 0;
-            LocationY = 0;
-        }
-
-        public static implicit operator Location(Location v)
-        {
-            throw new NotImplementedException();
+            LocationX = hor;
+            LocationY = vert;
         }
     }
 }
