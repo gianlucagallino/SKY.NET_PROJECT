@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     class M8 : MechanicalOperator
     {
@@ -27,10 +21,10 @@ namespace SkyNet
             battery.Type = 2;
         }
 
-        public  M8(int xposition, int yposition) : base(xposition, yposition)
+        public M8(int xposition, int yposition) : base(xposition, yposition)
         {
             LocationP.LocationX = xposition;
-            LocationP.LocationY = yposition; 
+            LocationP.LocationY = yposition;
         }
 
         /* public void Reconnoiter()

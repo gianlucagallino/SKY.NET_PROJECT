@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
 
     //TODO: Testear que todo ande, primero que nada.  Abstraer patrones repetitivos a funciones y reducir valores hardcodeados. 
@@ -87,7 +81,7 @@ namespace SkyNet
                 }
 
                 openSet.Remove(currentNode);
-                closedSet.Add(currentNode); 
+                closedSet.Add(currentNode);
 
                 if (currentNode.NodeLocation.LocationX == goal.NodeLocation.LocationX && //Evaluates if the path was found. 
                     currentNode.NodeLocation.LocationY == goal.NodeLocation.LocationY)

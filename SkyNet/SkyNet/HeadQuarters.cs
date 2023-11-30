@@ -1,12 +1,4 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     internal class HeadQuarters
     {
@@ -17,7 +9,7 @@ namespace SkyNet
         public HeadQuarters(int x, int y)
         {
             Operators = new List<MechanicalOperator>();
-            LocationHeadQuarters = new Location(x,y);
+            LocationHeadQuarters = new Location(x, y);
             rng = new Random();
             GenerateRandomAmountOfOperators();
         }
@@ -30,7 +22,7 @@ namespace SkyNet
             for (int i = 0; i < OpAmount; i++)
             {
                 int generatedType = rng.Next(1, 4);
-                int Xposition =rng.Next(0,  100);//esto es para testear
+                int Xposition = rng.Next(0, 100);//esto es para testear
                 int Yposition = rng.Next(0, 100);
                 if (generatedType == 1)
                 {

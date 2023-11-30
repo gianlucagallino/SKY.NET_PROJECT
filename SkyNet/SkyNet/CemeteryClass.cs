@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     internal class CemeteryClass
     {
@@ -393,67 +387,67 @@ namespace SkyNet
                 Este debe ser un metodo que interactue con la casilla actual en el tp2, 
                  que dependiendo del tipo de terreno tiene diferentes efectos
                 */
-            /*}
-                    while (LocationP.LocationX != x)
-                    {
-                        LocationP.LocationX += movX;
-                        /*
-                        InteractuarConPosicion() 
-
-                        Este debe ser un metodo que interactue con la casilla actual en el tp2, 
-                         que dependiendo del tipo de terreno tiene diferentes efectos
-                        */
-                  /*  }
-                }
-
-                private double CalculateBatteryConsumption(double distance)
-        {
-            return 0.05 * (distance / 10); // Ajusta según tus necesidades
-        }
-        public void TransferBattery(MechanicalOperator destination, double amountPercentage)
-        {
-            damageSimulator.SimulateRandomDamage(this);
-            destination.busyStatus = true;
-            busyStatus = true;
-            //calcula que la carga no sea negativa
-            if (amountPercentage < 0)
-            {
-                Console.WriteLine("Amount must be non-negative for Transfer Battery.");
-                return;
-            }
-            if (AreOperatorsInSameLocation(destination))
-            {
-                if (ValidateBatteryTransfer(amountPercentage))
+        /*}
+                while (LocationP.LocationX != x)
                 {
-                    destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    destination.busyStatus = false;
-                    busyStatus = false;
-                }
-                else
-                {
-                    Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
-                    busyStatus = false;
-                }
-            }
-            else
-            { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP);
+                    LocationP.LocationX += movX;
+                    /*
+                    InteractuarConPosicion() 
 
-                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                double distance = CalculateDistance(destination.LocationP);
-                // TODO valores a revisar creo q vuelve a ser el optimal speed
+                    Este debe ser un metodo que interactue con la casilla actual en el tp2, 
+                     que dependiendo del tipo de terreno tiene diferentes efectos
+                    */
+        /*  }
+      }
 
-                if (ValidateBatteryTransfer(amountPercentage))
-                {
-                    destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
-                    destination.busyStatus = false;
-                    busyStatus = false;
-                }
-            }
-        }*/
+      private double CalculateBatteryConsumption(double distance)
+{
+  return 0.05 * (distance / 10); // Ajusta según tus necesidades
+}
+public void TransferBattery(MechanicalOperator destination, double amountPercentage)
+{
+  damageSimulator.SimulateRandomDamage(this);
+  destination.busyStatus = true;
+  busyStatus = true;
+  //calcula que la carga no sea negativa
+  if (amountPercentage < 0)
+  {
+      Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+      return;
+  }
+  if (AreOperatorsInSameLocation(destination))
+  {
+      if (ValidateBatteryTransfer(amountPercentage))
+      {
+          destination.battery.ChargeBattery(amountPercentage);
+          battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+          destination.busyStatus = false;
+          busyStatus = false;
+      }
+      else
+      {
+          Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+          busyStatus = false;
+      }
+  }
+  else
+  { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+      MoveTo(destination.LocationP);
+
+      // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+      double distance = CalculateDistance(destination.LocationP);
+      // TODO valores a revisar creo q vuelve a ser el optimal speed
+
+      if (ValidateBatteryTransfer(amountPercentage))
+      {
+          destination.battery.ChargeBattery(amountPercentage);
+          battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+          battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+          destination.busyStatus = false;
+          busyStatus = false;
+      }
+  }
+}*/
 
         //map
 

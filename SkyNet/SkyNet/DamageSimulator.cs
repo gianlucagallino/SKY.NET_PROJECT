@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     public class DamageSimulator
     {
@@ -69,7 +63,7 @@ namespace SkyNet
 
         public void PerforatedBatterySimulate(MechanicalOperator oper)
         {
-           PerforatedBattery = true;
+            PerforatedBattery = true;
         }
 
         public void DisconnectedBatteryPortSimulate(MechanicalOperator oper)
@@ -98,10 +92,10 @@ namespace SkyNet
             oper.Battery.MaxCharge = 100;
             oper.Battery.CompleteBatteryLevel();
             oper.OptimalSpeed = 100;
-            
+
         }
 
-       
+
         public void RepairBatteryOnly(MechanicalOperator oper)
         {
             PerforatedBattery = false;

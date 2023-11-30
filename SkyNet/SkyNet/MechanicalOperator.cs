@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     public abstract class MechanicalOperator
     {
@@ -59,7 +53,7 @@ namespace SkyNet
        
              */
 
-        
+
         //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
         public MechanicalOperator()
         {
@@ -80,7 +74,7 @@ namespace SkyNet
                                  { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
                              { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
                         };
-            
+
 
         }
 
@@ -123,8 +117,8 @@ namespace SkyNet
 
             int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
-            Node start = new Node (LocationP.LocationX, LocationP.LocationY);
-            Node goal = new Node (loc.LocationX, loc.LocationY); 
+            Node start = new Node(LocationP.LocationX, LocationP.LocationY);
+            Node goal = new Node(loc.LocationX, loc.LocationY);
 
             AStarAlgorithm astar = new AStarAlgorithm();
             List<Node> path = astar.FindPath(start, goal, grid);
@@ -134,16 +128,16 @@ namespace SkyNet
 
             if (path != null)
             {
-                foreach(Node node in path)
+                foreach (Node node in path)
                 {
                     LocationP = node.NodeLocation;
                 }
-                    //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
-                    //ANIMAR LA COSA
+                //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
+                //ANIMAR LA COSA
             }
             else
             {
-              Console.WriteLine("No path found.");
+                Console.WriteLine("No path found.");
             }
 
 
@@ -157,7 +151,7 @@ namespace SkyNet
                 action.Invoke(this);
             }
 
-            int timeSpentMoveToPerNode=SimulateTime(TimeSimulator.MoveToPerNode)*10;
+            int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10;
             timeSpent += timeSpentMoveToPerNode;
 
         }
@@ -169,11 +163,11 @@ namespace SkyNet
 
         public void LoadingLoad(double amountKG)
         {
-            if (amountKG > 0 && DamageSimulatorP.StuckServo == false) 
+            if (amountKG > 0 && DamageSimulatorP.StuckServo == false)
             {
                 CurrentLoad = amountKG;
             }
-            
+
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
@@ -206,7 +200,7 @@ namespace SkyNet
                 MoveTo(destination.LocationP);
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                     new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
                 // TODO valores a revisar creo q vuelve a ser el optimal speed
 
@@ -258,7 +252,7 @@ namespace SkyNet
                 MoveTo(destination.LocationP);
 
                 // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
-                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                     new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
                 //TODO valores a revisar esto no esta calculado en la velocidad optima?
 
@@ -406,7 +400,7 @@ namespace SkyNet
                     if (grid[i, j] != null && grid[i, j].TerrainType == 5)
                     {
                         Location headquartersLocation = grid[i, j].NodeLocation;
-                        double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY), 
+                        double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                           new Node(headquartersLocation.LocationX, headquartersLocation.LocationY) });
 
                         if (distance < minDistance)

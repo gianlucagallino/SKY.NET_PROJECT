@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 namespace SkyNet
 {
 
@@ -7,17 +5,17 @@ namespace SkyNet
     {
         private static bool isRunning = true;
         private static List<MechanicalOperator> operators = new List<MechanicalOperator>();
-       //private static Menu menu;
+        //private static Menu menu;
 
         static void Main(string[] args)
         {
             //Introduction.GetInstance().Play();
             Map.GetInstance().PrintMap();
-           // menu = new Menu(operators);
+            // menu = new Menu(operators);
 
-           // while (isRunning)
+            // while (isRunning)
             {
-           //     menu.RunMenu();
+                //     menu.RunMenu();
             }
         }
     }

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     class UAV : MechanicalOperator
     {
-       
+
 
         private float flightHeight;
         private int bladeAmount;
@@ -22,7 +16,7 @@ namespace SkyNet
          {
 
          }*/
-        public UAV(/*float flightHeight, int bladeAmount, bool integratedCamera,*/ string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status) 
+        public UAV(/*float flightHeight, int bladeAmount, bool integratedCamera,*/ string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status)
             : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {
             //flightHeight = 0;
@@ -38,7 +32,7 @@ namespace SkyNet
 
         public UAV(int xposition, int yposition) : base(xposition, yposition)
         {
-           LocationP.LocationX = xposition;
+            LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
         }
     }

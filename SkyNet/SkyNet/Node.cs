@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     public class Node
     {
-        
+
 
         //mejorar descripcion, reducir shitcode
         private static Random rng = new Random();

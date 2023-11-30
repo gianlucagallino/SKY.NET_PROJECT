@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     public class Battery
     {
@@ -27,7 +21,7 @@ namespace SkyNet
 
         public Battery()
         {
-            
+
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {
