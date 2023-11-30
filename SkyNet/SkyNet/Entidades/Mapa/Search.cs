@@ -6,8 +6,11 @@
     //(terrestre con optimizacion de peligro, terrestre sin importar peligro, aereo con optimizacion de peligro, aereo sin importar peligro)
     //Diria de incluir el patron manhattan, pero seria solo util en caso de unidades aereas, por lo que lo veo innecesario. 
 
-
-    //En otras palabras, hay que refaccionar el moveTo, otra vez (para variar)
+    //REFERENCIAS DE NOTACION
+    //F = Total estimated cost (G + H)
+    //G = Cost from the start node to the current node
+    //H = Heuristic estimate from the current node to the goal node
+    //Parent = Reference to the previous node in the path
 
     public class AStarAlgorithm
     {
@@ -26,7 +29,7 @@
         }
 
         // Check if a node is safe, and not water, for walking units (danger-free) (Code: 2)
-        static bool IsValidAndSafelW(Node n, Node[,] grid)
+        static bool IsValidAndSafeW(Node n, Node[,] grid)
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
@@ -48,13 +51,79 @@
                    !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
         }
 
-        // Explore neighboring nodes and update their costs+
-        //REFERENCIAS DE NOTACION
-        //F = Total estimated cost (G + H)
-        //G = Cost from the start node to the current node
-        //H = Heuristic estimate from the current node to the goal node
-        //Parent = Reference to the previous node in the path
-        static void ExploreNeighbourNodes(Node currentNode, Node goal, List<Node> openSet, HashSet<Node> closedSet, Node[,] grid)
+
+        //Calls the pathfinding selector, depending on the search type. 
+        private void UseSelectedPathfindingType(Node currentNode, Node goal, int SearchCode, List<Node> openSet, HashSet<Node> closedSet, Node neighbour, Node[,] grid)
+        {
+            if (SearchCode == 1)
+            {
+                if (IsValidAndOptimalW(neighbour, grid) && !closedSet.Contains(neighbour))
+                {
+                    int newG = currentNode.G + 1;
+                    if (!openSet.Contains(neighbour) || newG < neighbour.G)
+                    {
+                        neighbour.G = newG;
+                        neighbour.H = Heuristic(neighbour, goal);
+                        neighbour.F = neighbour.G + neighbour.H;
+                        neighbour.Parent = currentNode;
+
+                        if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                    }
+                }
+            }
+            else if (SearchCode == 2)
+            {
+                if (IsValidAndSafeW(neighbour, grid) && !closedSet.Contains(neighbour))
+                {
+                    int newG = currentNode.G + 1;
+                    if (!openSet.Contains(neighbour) || newG < neighbour.G)
+                    {
+                        neighbour.G = newG;
+                        neighbour.H = Heuristic(neighbour, goal);
+                        neighbour.F = neighbour.G + neighbour.H;
+                        neighbour.Parent = currentNode;
+
+                        if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                    }
+                }
+            }
+            else if (SearchCode == 3)
+            {
+                if (IsValidAndOptimalF(neighbour, grid) && !closedSet.Contains(neighbour))
+                {
+                    int newG = currentNode.G + 1;
+                    if (!openSet.Contains(neighbour) || newG < neighbour.G)
+                    {
+                        neighbour.G = newG;
+                        neighbour.H = Heuristic(neighbour, goal);
+                        neighbour.F = neighbour.G + neighbour.H;
+                        neighbour.Parent = currentNode;
+
+                        if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                    }
+                }
+            }
+            else if (SearchCode == 4)
+            {
+                if (IsValidAndSafeF(neighbour, grid) && !closedSet.Contains(neighbour))
+                {
+                    int newG = currentNode.G + 1;
+                    if (!openSet.Contains(neighbour) || newG < neighbour.G)
+                    {
+                        neighbour.G = newG;
+                        neighbour.H = Heuristic(neighbour, goal);
+                        neighbour.F = neighbour.G + neighbour.H;
+                        neighbour.Parent = currentNode;
+
+                        if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                    }
+                }
+            }
+
+        }
+
+        // Explore neighboring nodes and update their costs
+        private void ExploreNeighbourNodes(Node currentNode, Node goal, List<Node> openSet, HashSet<Node> closedSet, Node[,] grid, int SearchCode)
         {
             for (int i = -1; i <= 1; i++)
             {
@@ -68,30 +137,32 @@
                     if (neighborX >= 0 && neighborX < grid.GetLength(0) && neighborY >= 0 && neighborY < grid.GetLength(1))
                     {
                         Node neighbour = grid[neighborX, neighborY];
-
-
-
-                        if (IsValidAndOptimalW(neighbour, grid) && !closedSet.Contains(neighbour))
-                        {
-                            int newG = currentNode.G + 1;
-                            if (!openSet.Contains(neighbour) || newG < neighbour.G)
-                            {
-                                neighbour.G = newG;
-                                neighbour.H = Heuristic(neighbour, goal);
-                                neighbour.F = neighbour.G + neighbour.H;
-                                neighbour.Parent = currentNode;
-
-                                if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
-                            }
-                        }
+                        UseSelectedPathfindingType(currentNode, goal, SearchCode, openSet, closedSet, neighbour, grid);
                     }
                 }
             }
         }
 
+
         // Find the path using the A* algorithm
-        public List<Node> FindPath(Node start, Node goal, Node[,] grid)
+        public List<Node> FindPath(Node start, Node goal, Node[,] grid, bool safety, bool isWalkingUnit)
         {
+
+            int SearchCode;
+            //Gets the type of pathfinding to utilise
+            if (safety)
+            {
+                if (isWalkingUnit) SearchCode = 2;
+                else SearchCode = 4;
+            }
+            else
+            {
+                if (isWalkingUnit) SearchCode = 1;
+                else SearchCode = 3;
+            }
+
+            //Starts pathfinding
+
             List<Node> openSet = new List<Node>();
             HashSet<Node> closedSet = new HashSet<Node>();
             openSet.Add(start);
@@ -115,7 +186,7 @@
                     return ConstructPath(currentNode);
                 }
 
-                ExploreNeighbourNodes(currentNode, goal, openSet, closedSet, grid);
+                ExploreNeighbourNodes(currentNode, goal, openSet, closedSet, grid, SearchCode);
             }
 
             // If no path is found
