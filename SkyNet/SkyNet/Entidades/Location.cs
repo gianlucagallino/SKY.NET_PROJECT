@@ -1,4 +1,4 @@
-﻿namespace SkyNet
+﻿namespace SkyNet.Entidades
 {
     public class Location
     {

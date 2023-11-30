@@ -1,4 +1,4 @@
-﻿namespace SkyNet
+﻿namespace SkyNet.Entidades.Operadores
 {
     public abstract class MechanicalOperator
     {
@@ -83,9 +83,9 @@
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
-            this.maxLoadOriginal = minLoad;
+            maxLoadOriginal = minLoad;
             this.battery = battery;
-            this.LocationP = location;
+            LocationP = location;
             this.status = status;
             this.id = id;
         }
@@ -104,9 +104,9 @@
         }
         public double CalculateMovementSpeed()
         {
-            double batteryPercentageSpent = 100 - ((Battery.CurrentChargePercentage / Battery.MAHCapacity) * 100);
+            double batteryPercentageSpent = 100 - Battery.CurrentChargePercentage / Battery.MAHCapacity * 100;
             double slownessMultiplier = batteryPercentageSpent % 10; //this line calculates how many times to apply the speed debuff
-            double finalSpeed = OptimalSpeed - ((OptimalSpeed / 10) * slownessMultiplier);
+            double finalSpeed = OptimalSpeed - OptimalSpeed / 10 * slownessMultiplier;
             return finalSpeed;
         }
 
@@ -305,8 +305,8 @@
 
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
-            double increaseAmperes = (destination.battery.MAHCapacity * amountPercentage) / 100;
-            double decreasePercentage = (100 * increaseAmperes) / battery.MAHCapacity;
+            double increaseAmperes = destination.battery.MAHCapacity * amountPercentage / 100;
+            double decreasePercentage = 100 * increaseAmperes / battery.MAHCapacity;
 
             return decreasePercentage;
         }

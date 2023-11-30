@@ -1,4 +1,4 @@
-﻿namespace SkyNet
+﻿namespace SkyNet.Entidades.Operadores
 {
     class K9 : MechanicalOperator
     {

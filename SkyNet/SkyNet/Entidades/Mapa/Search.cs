@@ -1,4 +1,4 @@
-﻿namespace SkyNet
+﻿namespace SkyNet.Entidades.Mapa
 {
 
     //TODO: Testear que todo ande, primero que nada.  Abstraer patrones repetitivos a funciones y reducir valores hardcodeados. 
