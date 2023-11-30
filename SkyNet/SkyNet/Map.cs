@@ -1,4 +1,7 @@
+
 ﻿using System.Text.Json;
+﻿using System.Transactions;
+
 
 namespace SkyNet
 {
@@ -24,7 +27,7 @@ namespace SkyNet
         public double HeadquarterCounter { get; set; }
         public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
-        public int MapSize { get; set; }
+        public static int MapSize { get; set; }
 
         public int SizeOffset { get; set; }
 
@@ -32,7 +35,7 @@ namespace SkyNet
 
         private Map()
         {
-            MapSize = 100; //ver grabacion, arreglar. 
+            MapSize = AskForMapSize();
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
@@ -40,6 +43,46 @@ namespace SkyNet
             HQList = new List<HeadQuarters>();
             FillGrid();
 
+        }
+
+        private int AskForMapSize()
+        {
+            int XCenter = Console.WindowWidth / 4;
+            int YCenter = Console.WindowHeight / 3;
+            int tempNum = 0;
+            bool isValidInput = false;
+
+            while (!isValidInput)
+            {
+                Console.SetCursorPosition(XCenter, YCenter);
+                Console.Write("Please, enter your desired map size between 30-100 (inclusive): ");
+
+
+                if (int.TryParse(Console.ReadLine(), out tempNum))
+                {
+                    if (tempNum >= 30 && tempNum <= 100)
+                    {
+                        // Valid input, set the flag to true to exit the loop
+                        isValidInput = true;
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(XCenter, YCenter);
+                        Console.WriteLine("Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
+                        Thread.Sleep(1500);
+                        Console.Clear();
+                    }
+                }
+                else
+                {
+                    Console.SetCursorPosition(XCenter, YCenter);
+                    Console.WriteLine("Invalid input. Please enter a valid integer. Try again.");
+                    Thread.Sleep(1500);
+                    Console.Clear();
+                }
+            }
+            Console.Clear();
+            return tempNum;
         }
         private void FillGrid()
         {
@@ -120,6 +163,7 @@ namespace SkyNet
             PrintColumnIndicators();
             PrintLineIndicators();
             int modifier = 0;
+            Console.ForegroundColor = ConsoleColor.Red;
             for (int i = 0; i < MapSize; i++)
             {
 
@@ -134,7 +178,6 @@ namespace SkyNet
                     Console.SetCursorPosition(consoleX + modifier, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     string unitInNode = EvaluateUnitInNode(Grid[i, j]);
-                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(unitInNode);
 
                 }
@@ -219,7 +262,7 @@ namespace SkyNet
         }
 
 
-        //Esta funcion deberia ser optimizada. es un desastre.
+        //Aca podria ir un switch, la verdad. pero fuck switch statements, all my homies hate switch statements
         private ConsoleColor ReadPositionColor(Node input)
         {
             int type = input.TerrainType;

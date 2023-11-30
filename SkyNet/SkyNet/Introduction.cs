@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     internal class Introduction
     {
@@ -33,7 +27,7 @@ namespace SkyNet
             return _instance;
         }
 
-        private void GetConsoleSizeCenter()
+        public void GetConsoleSizeCenter()
         {
             W = Console.WindowWidth / 4;
             H = Console.WindowHeight / 3;
@@ -46,7 +40,7 @@ namespace SkyNet
             TerrainTutorial();
             OperatorTutorial();
             SelectSaveFile();
-           
+            Console.Clear();
         }
 
         private void ShowResolutionWarning()
@@ -226,7 +220,7 @@ namespace SkyNet
             H++;
             Console.WriteLine("\t|________________________________________________________________|");
             Console.SetCursorPosition(W, H);
-            
+
             H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("\t               Have fun! Press any key to continue.                ");
@@ -246,7 +240,7 @@ namespace SkyNet
             H++;
             Console.WriteLine("\t---------------------------------------------------------------------------");
             Console.SetCursorPosition(W, H);
-            
+
             H++;
             Console.WriteLine("\t 1 - Start new game. (WARNING: DELETES ALL SAVED DATA, IF ANY IS PRESENT)");
             Console.SetCursorPosition(W, H);
@@ -259,13 +253,13 @@ namespace SkyNet
 
             H += 2;
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("\t               Enter option:");
+            Console.Write("\t               Enter option: ");
             string pick = Console.ReadLine();
             Console.Clear();
             string mensaje = pick.ToLower() switch
             {
-                "1" => "Enjoy your new game!",
-                "2" => "Attempting to load game...",
+                "1" => "Enjoy your new game! (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
+                "2" => "Attempting to load game... (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
                 _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
             };
             Console.SetCursorPosition(W, H);
