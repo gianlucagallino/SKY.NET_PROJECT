@@ -1,4 +1,5 @@
-﻿using SkyNet.Entidades.Mapa;
+﻿using SkyNet.Entidades;
+using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
 
 namespace SkyNet.Menu
@@ -151,7 +152,9 @@ namespace SkyNet.Menu
             Console.ReadKey();
         }
 
-        private void SelectOperator() // Este no tiene nada hecho, hay que armar las 3 subopciones. Idealmente, en todo metodo tambien debemos tener un mensaje de si falla encontrar el operador o algo similar
+        private void SelectOperator() // Este no tiene nada hecho, hay que armar las 3 subopciones.
+                                      // Idealmente, en todo metodo tambien debemos tener un mensaje
+                                      // de si falla encontrar el operador o algo similar
         {/*
             Console.Clear();
             Console.WriteLine("Enter operator name: ");
@@ -169,8 +172,119 @@ namespace SkyNet.Menu
             }
             Console.ReadLine();
         }*/
+
+            Console.Clear();
+            Console.WriteLine("Enter operator Id ");
+            int indexer = Convert.ToInt32(selectedHQ);
+            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX;
+            int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
+            int operatorId = Convert.ToInt32(Console.ReadLine());
+            var selectedOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(operatorId));
+
+            if (selectedOperator != null)
+            {
+                Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}");
+                Console.WriteLine("Choose an option:");
+                Console.WriteLine("1. Move To");
+                Console.WriteLine("2. Transfer Battery");
+                Console.WriteLine("3. Transfer Load");
+
+                string subOption = Console.ReadLine();
+                HandleSubOption(subOption, selectedOperator);
+            }
+            else
+            {
+                Console.WriteLine($"Operator {operatorId} not found.");
+            }
+
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+
+
+        }
+        private void HandleSubOption(string subOption, MechanicalOperator selectedOperator)
+        {
+            Dictionary<string, Action> subOptions = new Dictionary<string, Action>
+            {
+                {"1",()=>MoveToMenu(selectedOperator) },
+                {"2",()=> TransferBatteryMenu(selectedOperator) },
+                {"3",()=>TransferLoadMenu(selectedOperator) },
+                {"4",()=>GeneralOrderMenu(selectedOperator) }
+            };
+
+            if (subOptions.ContainsKey(subOption))
+            {
+                subOptions[subOption].Invoke();
+            }
+            else
+            {
+                Console.WriteLine("Invalid option");
+            }
         }
 
+        private void GeneralOrderMenu(MechanicalOperator selectedOperator)
+        {
+            
+        }
+
+        private void MoveToMenu(MechanicalOperator selectedOperator)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter destination coordinates X: ");
+            //aca habria q ingresar las coordenadas para q vayan al mapa
+            int Xposition = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter destination coordinates Y: ");
+            int Yposition = Convert.ToInt32(Console.ReadLine());
+            Location location = new Location(Xposition, Yposition);
+            selectedOperator.MoveTo(location);
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
+        private void TransferBatteryMenu(MechanicalOperator selectedOperator)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter destination operator Id: ");
+            string destOperatorId = Console.ReadLine();
+            int indexer = Convert.ToInt32(selectedHQ);
+            var destinationOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+
+            if (destinationOperator != null)
+            {
+                Console.WriteLine("Enter percentage of battery to transfer: ");
+                double percentage = Convert.ToDouble(Console.ReadLine());
+
+                selectedOperator.TransferBattery(destinationOperator, percentage);
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine($"Operator {destOperatorId} not found.");
+            }
+        }
+
+        private void TransferLoadMenu(MechanicalOperator selectedOperator)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter destination operator Id: ");
+            string destOperatorId = Console.ReadLine();
+            int indexer = Convert.ToInt32(selectedHQ);
+            var destinationOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+
+            if (destinationOperator != null)
+            {
+                Console.WriteLine("Enter amount of load to transfer: ");
+                double amountKG = Convert.ToDouble(Console.ReadLine());
+
+                selectedOperator.TransferLoad(destinationOperator, amountKG);
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine($"Operator {destOperatorId} not found.");
+            }
+        }
         private void AddOperator()
         {
             //NECESITA VERIFICACIONES
