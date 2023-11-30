@@ -2,12 +2,10 @@
 {
     public class Battery
     {
-        private double mAhCapacity;//amperios 
-        private int type;//tipo bateria
-        private double currentChargePercentage;//porcentaje carga actual
+        private double mAhCapacity;
+        private int type;
+        private double currentChargePercentage;
         private DamageSimulator damageSimulator;
-
-
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
         public double CurrentChargePercentage { get; set; }
