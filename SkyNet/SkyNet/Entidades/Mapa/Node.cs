@@ -1,4 +1,6 @@
-﻿namespace SkyNet
+﻿using SkyNet.Entidades.Operadores;
+
+namespace SkyNet.Entidades.Mapa
 {
     public class Node
     {

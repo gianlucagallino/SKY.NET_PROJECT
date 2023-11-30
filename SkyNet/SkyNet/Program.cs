@@ -1,3 +1,7 @@
+using SkyNet.Entidades.Mapa;
+using SkyNet.Entidades.Operadores;
+using SkyNet.Menu;
+
 namespace SkyNet
 {
 

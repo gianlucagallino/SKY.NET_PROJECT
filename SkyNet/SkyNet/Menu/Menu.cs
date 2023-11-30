@@ -1,4 +1,4 @@
-﻿namespace SkyNet
+﻿namespace SkyNet.Menu
 {
 
     internal class Menu

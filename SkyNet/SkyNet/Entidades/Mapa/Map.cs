@@ -1,8 +1,8 @@
-
 using System.Text.Json;
+using System.Transactions;
 
 
-namespace SkyNet
+namespace SkyNet.Entidades.Mapa
 {
     internal class Map
     {

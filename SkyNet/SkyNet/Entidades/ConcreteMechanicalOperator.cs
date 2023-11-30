@@ -1,4 +1,6 @@
-﻿namespace SkyNet
+﻿using SkyNet.Entidades.Operadores;
+
+namespace SkyNet.Entidades
 {
     internal class ConcreteMechanicalOperator : MechanicalOperator
     {
