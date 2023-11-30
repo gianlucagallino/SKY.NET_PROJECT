@@ -1,5 +1,6 @@
 ﻿using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
+using System;
 
 namespace SkyNet.Menu
 {
@@ -154,8 +155,8 @@ namespace SkyNet.Menu
             Console.ReadLine();
         }
 
-        private void SelectOperator()
-        {
+        private void SelectOperator() // Este no tiene nada hecho, hay que armar las 3 subopciones. Idealmente, en todo metodo tambien debemos tener un mensaje de si falla encontrar el operador o algo similar
+        {/*
             Console.Clear();
             Console.WriteLine("Enter operator name: ");
             string operatorName = Console.ReadLine();
@@ -171,17 +172,38 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Operator {operatorName} not found.");
             }
             Console.ReadLine();
+        }*/
         }
 
         private void AddReserveOperator()
         {
+            //NECESITA VERIFICACIONES
             Console.Clear();
-            Console.WriteLine("Enter reserve operator details: ");
-            string operatorDetails = Console.ReadLine();
+            Console.WriteLine("Enter operator type (1 = K9, 2 = UAV, 3 = M8): ");
+            int indexer = Convert.ToInt32(selectedHQ);
+            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX;
+            int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
+            int operatorType = Convert.ToInt32(Console.ReadLine()); //Agregar verif
 
-            operators.Add(newOperator);
-
-            Console.WriteLine($"Adding reserve operator: {newOperator.Id}");
+            if (operatorType == 1)
+            {
+                M8 m8 = new M8(Xposition, Yposition);
+                Map.GetInstance().HQList[indexer].Operators.Add(m8);
+                Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
+            }
+            else if (operatorType == 2)
+            {
+                K9 k9 = new K9(Xposition, Yposition);
+                Map.GetInstance().HQList[indexer].Operators.Add(k9);
+                Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
+            }
+            else
+            {
+                UAV uav = new UAV(Xposition, Yposition);
+                Map.GetInstance().HQList[indexer].Operators.Add(uav);
+                Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
+            }
+            Console.WriteLine("Added!");
             Console.ReadLine();
         }
 
