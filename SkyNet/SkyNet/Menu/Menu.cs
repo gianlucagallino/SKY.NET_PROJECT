@@ -222,9 +222,29 @@ namespace SkyNet.Menu
             }
         }
 
+        private Node[,] GetGrid()
+        {
+            return Map.Grid;//al ser miembro estatico no me funcionaba con el GetInstance().
+            //Revisar que funcione!!!
+        }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
-            
+            if (selectedOperator.BusyStatus == false) { 
+            Console.Clear();
+            Console.WriteLine("Executing General Order...");
+
+            Node[,] grid = GetGrid();
+
+                selectedOperator.GeneralOrder(grid);
+                Console.WriteLine("General Order executed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Operator is busy. General Order cannot be executed.");
+            }
+
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
         }
 
         private void MoveToMenu(MechanicalOperator selectedOperator)
