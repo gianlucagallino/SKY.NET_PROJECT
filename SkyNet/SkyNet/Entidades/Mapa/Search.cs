@@ -17,15 +17,39 @@
             return Math.Abs(a.NodeLocation.LocationX - b.NodeLocation.LocationX) + Math.Abs(a.NodeLocation.LocationY - b.NodeLocation.LocationY);
         }
 
-        // Check if a node is valid and walkable (without considering dangers)
-        static bool IsValidAndWalkable(Node n, Node[,] grid)
+        // Check if a node is valid, and not water, for walking units, no danger consideration (optimal)
+        static bool IsValidAndOptimalW(Node n, Node[,] grid) //Modify
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
                    !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
         }
 
-        // Explore neighboring nodes and update their costs
+        // Check if a node is safe, and not water, for walking units (danger-free)
+        static bool IsValidAndSafelW(Node n, Node[,] grid) //Modify
+        {
+            return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
+                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+        }
+
+        // Check if a node is valid for Flying  units, no danger consideration (optimal)
+        static bool IsValidAndOptimalF(Node n, Node[,] grid) //Modify
+        {
+            return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
+                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+        }
+
+        // Check if a node is safe for flying units (danger-free)
+        static bool IsValidAndSafeF(Node n, Node[,] grid) //Modify
+        {
+            return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
+                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+        }
+
+        // Explore neighboring nodes and update their costs+
         //REFERENCIAS DE NOTACION
         //F = Total estimated cost (G + H)
         //G = Cost from the start node to the current node
@@ -46,7 +70,7 @@
                     {
                         Node neighbour = grid[neighborX, neighborY];
 
-                        if (IsValidAndWalkable(neighbour, grid) && !closedSet.Contains(neighbour))
+                        if (IsValidAndOptimalW(neighbour, grid) && !closedSet.Contains(neighbour))
                         {
                             int newG = currentNode.G + 1;
                             if (!openSet.Contains(neighbour) || newG < neighbour.G)
