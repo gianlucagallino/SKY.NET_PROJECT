@@ -57,7 +57,7 @@ namespace SkyNet.Menu
             }
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine(" ------------------------------");
+            Console.WriteLine(" -------------------------------");
 
 
             // Read and set the selected HQ
@@ -75,25 +75,25 @@ namespace SkyNet.Menu
             Console.WriteLine(" -------------------------------  ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("1. Show Operator Status");
+            Console.WriteLine("1. Show Operator Status          ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("2. Show Operators at Location");
+            Console.WriteLine("2. Show Operators at Location     ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("3. Total Recall");
+            Console.WriteLine("3. Total Recall                   ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("4. Select Operator");
+            Console.WriteLine("4. Select Operator                 ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("5. Add New Operator");
+            Console.WriteLine("5. Add New Operator                ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("6. Destroy Operator");
+            Console.WriteLine("6. Destroy Operator                ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine(" ------------------------------");
+            Console.WriteLine(" -------------------------------");
             Console.SetCursorPosition(W, H);
             H++;
             Console.Write("     Pick an option: ");
@@ -198,7 +198,8 @@ namespace SkyNet.Menu
             Console.ReadKey();
         }
 
-        private void SelectOperator() {
+        private void SelectOperator()
+        { 
 
             Console.Clear();
             Console.WriteLine("Enter operator Id ");
@@ -277,11 +278,12 @@ namespace SkyNet.Menu
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
-            if (selectedOperator.BusyStatus == false) { 
-            Console.Clear();
-            Console.WriteLine("Executing General Order...");
+            if (selectedOperator.BusyStatus == false)
+            {
+                Console.Clear();
+                Console.WriteLine("Executing General Order...");
 
-            Node[,] grid = GetGrid();
+                Node[,] grid = GetGrid();
 
                 selectedOperator.GeneralOrder(grid);
                 Console.WriteLine("General Order executed successfully.");
