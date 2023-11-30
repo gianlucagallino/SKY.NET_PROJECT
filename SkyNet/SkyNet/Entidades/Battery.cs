@@ -14,7 +14,7 @@
 
         public Battery(DamageSimulator damageSimulator)
         {
-            this.damageSimulator = damageSimulator;
+            this.DamageSimulatorP = damageSimulator;
         }
 
         public Battery()
