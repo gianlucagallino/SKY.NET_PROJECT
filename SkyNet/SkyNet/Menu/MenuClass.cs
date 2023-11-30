@@ -8,12 +8,19 @@ namespace SkyNet.Menu
     {
         private bool menuOptionsFlag;
         private string selectedHQ;
+        public int W { set; get; }
+        public int H { set; get; }
 
         public MenuClass()
         {
             menuOptionsFlag = false;
         }
 
+        public void GetConsoleSizeAfterMap()
+        {
+            W = Map.MapSize * 2 + 5;
+            H = 5;
+        }
         public void RunMenu()
         {
             bool isRunning = true;
@@ -28,50 +35,87 @@ namespace SkyNet.Menu
 
         private void PrintMenu()
         {
-            Console.Clear();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine(" _______________________________");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("|        Management Menu        | ");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine(" ------------------------------- ");
 
             int conta = 1;
             for (int i = 0; i < Map.GetInstance().HeadquarterCounter; i++)
             {
+                Console.SetCursorPosition(W, H);
+                H++;
                 Console.WriteLine($"{conta}. HeadQuarter {conta}");
-            }
+                conta++;
 
+            }
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine(" ------------------------------");
 
 
             // Read and set the selected HQ
             selectedHQ = GetValidHQSelection();
 
-            Console.Clear();
-            Console.WriteLine(" _______________________________");
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" _______________________________  ");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("|        Operator Menu          | ");
-            Console.WriteLine(" ------------------------------- ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" -------------------------------  ");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("1. Show Operator Status");
-            Console.WriteLine("2. Show Operator Status at Location");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("2. Show Operators at Location");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("3. Total Recall");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("4. Select Operator");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("5. Add New Operator");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("6. Destroy Operator");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine(" ------------------------------");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.Write("     Pick an option: ");
         }
 
 
         private string GetValidHQSelection()
         {
-            double maxHQ = Map.GetInstance().HeadquarterCounter;
+            int maxHQ = Map.GetInstance().HeadquarterCounter;
+            string input = "";
+            bool isRunning = true;
 
-            while (true) //esto pasarlo a un booleano
+            while (isRunning)
             {
+                Console.SetCursorPosition(W, H);
+                H++;
                 Console.Write($"     Pick an HQ (1-{maxHQ}): ");
-                string input = Console.ReadLine(); //hay que hacer verificacion
+                input = Console.ReadLine();
 
                 if (int.TryParse(input, out int selected) && selected >= 1 && selected <= maxHQ)
                 {
-                    return input;
+                    isRunning = false;
                 }
                 else
                 {
@@ -79,6 +123,8 @@ namespace SkyNet.Menu
                     Console.WriteLine($"Invalid selection. Please enter a number between 1 and {maxHQ}.");
                 }
             }
+
+            return input;
         }
 
         private void ExecuteCommand(string menuPick)
@@ -152,26 +198,7 @@ namespace SkyNet.Menu
             Console.ReadKey();
         }
 
-        private void SelectOperator() // Este no tiene nada hecho, hay que armar las 3 subopciones.
-                                      // Idealmente, en todo metodo tambien debemos tener un mensaje
-                                      // de si falla encontrar el operador o algo similar
-        {/*
-            Console.Clear();
-            Console.WriteLine("Enter operator name: ");
-            string operatorName = Console.ReadLine();
-
-            var selectedOperator = operators.FirstOrDefault(op => op.Id == operatorName);
-
-            if (selectedOperator != null)
-            {
-                Console.WriteLine($"Selected operator: {selectedOperator.Id}, Status: {selectedOperator.Status}");
-            }
-            else
-            {
-                Console.WriteLine($"Operator {operatorName} not found.");
-            }
-            Console.ReadLine();
-        }*/
+        private void SelectOperator() {
 
             Console.Clear();
             Console.WriteLine("Enter operator Id ");

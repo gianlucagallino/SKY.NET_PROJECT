@@ -23,7 +23,7 @@ namespace SkyNet.Entidades.Mapa
 
 
         public static Node[,] Grid { get; set; }
-        public double HeadquarterCounter { get; set; }
+        public int HeadquarterCounter { get; set; }
         public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
         public static int MapSize { get; set; }
