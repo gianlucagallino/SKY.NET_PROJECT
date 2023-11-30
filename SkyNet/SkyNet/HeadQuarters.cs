@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     internal class HeadQuarters
     {
@@ -31,15 +29,15 @@ namespace SkyNet
                     int Yposition = rng.Next(0, Map.MapSize); // this point the instance is still being built, so it evaluates to null, and breaks stuff.
                     if (generatedType == 1 && !CheckWater(Xposition, Yposition))
                     {
-                            Operators.Add(new M8(Xposition, Yposition));
-                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
-                            inLoop = false;
+                        Operators.Add(new M8(Xposition, Yposition));
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
+                        inLoop = false;
                     }
                     else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
                     {
-                            Operators.Add(new K9(Xposition, Yposition));
-                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
-                            inLoop = false;
+                        Operators.Add(new K9(Xposition, Yposition));
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
+                        inLoop = false;
                     }
                     else if (generatedType == 3) //CheckWater is not necessary, UAV's can fly. 
                     {
@@ -50,8 +48,8 @@ namespace SkyNet
                 }
             }
         }
-    
-        private bool CheckWater(int x , int y)
+
+        private bool CheckWater(int x, int y)
         {
             if (Map.Grid[x, y].TerrainType == 2) return true;
             return false;

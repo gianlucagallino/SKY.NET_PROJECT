@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     internal class Introduction
     {
@@ -46,7 +40,7 @@ namespace SkyNet
             TerrainTutorial();
             OperatorTutorial();
             SelectSaveFile();
-           
+
         }
 
         private void ShowResolutionWarning()
@@ -226,7 +220,7 @@ namespace SkyNet
             H++;
             Console.WriteLine("\t|________________________________________________________________|");
             Console.SetCursorPosition(W, H);
-            
+
             H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("\t               Have fun! Press any key to continue.                ");
@@ -246,7 +240,7 @@ namespace SkyNet
             H++;
             Console.WriteLine("\t---------------------------------------------------------------------------");
             Console.SetCursorPosition(W, H);
-            
+
             H++;
             Console.WriteLine("\t 1 - Start new game. (WARNING: DELETES ALL SAVED DATA, IF ANY IS PRESENT)");
             Console.SetCursorPosition(W, H);
