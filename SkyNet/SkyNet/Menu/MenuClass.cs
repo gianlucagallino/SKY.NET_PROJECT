@@ -172,46 +172,16 @@ namespace SkyNet.Menu
         private void ShowOperatorStatusAtLocation()
         {
             Console.Clear();
-            Console.WriteLine("Enter location coordinates:");
-
-            int Xinput;
-            Console.Write("X: ");
-            while (!int.TryParse(Console.ReadLine(), out Xinput))
+            Console.WriteLine("Enter location coordinates: ");
+            //INPUT
+            int Xinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
+            int Yinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
+            Console.WriteLine($"Operator Status at those coordinates:");
+            int indexer = Convert.ToInt32(selectedHQ);
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators.Where(op => op.LocationP.LocationX == Xinput && op.LocationP.LocationY == Yinput))
             {
-                Console.WriteLine("Invalid input. Please enter a valid integer for X:");
+                Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
-
-            int Yinput;
-            Console.Write("Y: ");
-            while (!int.TryParse(Console.ReadLine(), out Yinput))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid integer for Y:");
-            }
-
-
-            int indexer;
-            if (int.TryParse(selectedHQ, out indexer) && indexer >= 0 && indexer < Map.GetInstance().HQList.Count)
-            {
-                Console.WriteLine($"Operator Status at those coordinates:");
-
-                // Busca el operador en la posición específica
-                MechanicalOperator targetOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.LocationP.LocationX == Xinput && op.LocationP.LocationY == Yinput);
-
-                if (targetOperator != null)
-                {
-                    // Imprime el Id del operador encontrado
-                    Console.WriteLine($"Operator Name: {targetOperator.Id}, Status: {targetOperator.Status}");
-                }
-                else
-                {
-                    Console.WriteLine("No operator found at the specified coordinates.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid HQ index.");
-            }
-
             Console.ReadKey();
         }
 
@@ -228,8 +198,7 @@ namespace SkyNet.Menu
             Console.ReadKey();
         }
 
-        private void SelectOperator()
-        {
+        private void SelectOperator() {
 
             Console.Clear();
             Console.WriteLine("Enter operator Id ");
@@ -308,12 +277,11 @@ namespace SkyNet.Menu
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
-            if (selectedOperator.BusyStatus == false)
-            {
-                Console.Clear();
-                Console.WriteLine("Executing General Order...");
+            if (selectedOperator.BusyStatus == false) { 
+            Console.Clear();
+            Console.WriteLine("Executing General Order...");
 
-                Node[,] grid = GetGrid();
+            Node[,] grid = GetGrid();
 
                 selectedOperator.GeneralOrder(grid);
                 Console.WriteLine("General Order executed successfully.");
