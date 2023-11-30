@@ -10,6 +10,7 @@ namespace SkyNet
 {
     internal class HeadQuarters
     {
+        private Random rng;
         public List<MechanicalOperator> Operators { get; set; }
         public Location LocationHeadQuarters { get; set; }
 
@@ -17,6 +18,7 @@ namespace SkyNet
         {
             Operators = new List<MechanicalOperator>();
             LocationHeadQuarters = new Location(x,y);
+            rng = new Random();
             GenerateRandomAmountOfOperators();
         }
 
@@ -24,11 +26,9 @@ namespace SkyNet
         private void GenerateRandomAmountOfOperators()
         {
 
-            Random x = new Random();
-            int OpAmount = x.Next(0, 11);
+            int OpAmount = rng.Next(0, 11);
             for (int i = 0; i < OpAmount; i++)
             {
-                Random rng = new Random();
                 int generatedType = rng.Next(1, 4);
                 int Xposition =rng.Next(0,  100);//esto es para testear
                 int Yposition = rng.Next(0, 100);
