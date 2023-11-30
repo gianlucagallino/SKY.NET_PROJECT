@@ -209,7 +209,8 @@ namespace SkyNet.Menu
                 {"1",()=>MoveToMenu(selectedOperator) },
                 {"2",()=> TransferBatteryMenu(selectedOperator) },
                 {"3",()=>TransferLoadMenu(selectedOperator) },
-                {"4",()=>GeneralOrderMenu(selectedOperator) }
+                {"4",()=>GeneralOrderMenu(selectedOperator) },
+                {"5",()=>ChangeBatteryMenu(selectedOperator) }
             };
 
             if (subOptions.ContainsKey(subOption))
@@ -226,6 +227,24 @@ namespace SkyNet.Menu
         {
             return Map.Grid;//al ser miembro estatico no me funcionaba con el GetInstance().
             //Revisar que funcione!!!
+        }
+        private void ChangeBatteryMenu(MechanicalOperator selectedOperator)
+        {
+            Console.Clear();
+
+            if (selectedOperator.DamageSimulatorP.PerforatedBattery)
+            {
+                Console.WriteLine("Performing Battery Change...");
+                Node[,] grid = GetGrid();
+                selectedOperator.BatteryChange(grid);
+                Console.WriteLine("Battery Change completed successfully");
+            }
+            else
+            {
+                Console.WriteLine("Battery is not perforated.Battery cannot be changed");
+            }
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
