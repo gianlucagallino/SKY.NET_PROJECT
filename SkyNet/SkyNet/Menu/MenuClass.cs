@@ -4,12 +4,12 @@ using SkyNet.Entidades.Operadores;
 
 namespace SkyNet.Menu
 {
-    internal class Menu
+    internal class MenuClass
     {
         private bool menuOptionsFlag;
         private string selectedHQ;
 
-        public Menu()
+        public MenuClass()
         {
             menuOptionsFlag = false;
         }
