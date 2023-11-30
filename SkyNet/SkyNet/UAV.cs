@@ -14,6 +14,7 @@ namespace SkyNet
         private int bladeAmount;
         private bool integratedCamera;
 
+
         public float FlightHeight { get; set; }
         public int BladeAmount { get; set; }
         public bool IntegratedCamera { get; set; }
@@ -33,6 +34,12 @@ namespace SkyNet
             battery.MAHCapacity = 4000;
             battery.CurrentChargePercentage = 100;
             battery.Type = 3;
+        }
+
+        public UAV(int xposition, int yposition) : base(xposition, yposition)
+        {
+           LocationP.LocationX = xposition;
+            LocationP.LocationY = yposition;
         }
     }
 }

@@ -29,12 +29,9 @@ namespace SkyNet
 
 
         private Node[,] grid;
-        private int mapSize;
-        private double headquarterCounter;
-        private double recyclingCounter;
-
         public Node[,] Grid { get { return grid; } set { grid = value; } }
         public double HeadquarterCounter { get; set; }
+        public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
         public int MapSize { get; set; }
 
@@ -49,6 +46,7 @@ namespace SkyNet
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
+            HQList = new List<HeadQuarters>();
             FillGrid();
 
         }
@@ -92,7 +90,7 @@ namespace SkyNet
                     if (!list.Contains(Grid[RandomX, RandomY]))
                     {
                         Grid[RandomX, RandomY].TerrainType = 5;
-                        list.Add(Grid[RandomX, RandomY]);
+                        HQList.Add(new HeadQuarters(RandomX, RandomY));
                         inLoop = false;
                     }
                 }
@@ -133,23 +131,55 @@ namespace SkyNet
             int modifier = 0;
             for (int i = 0; i < MapSize; i++)
             {
-                
+
 
                 for (int j = 0; j < MapSize; j++)
                 {
                     // Initialize each node in the grid
                     int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX + 2, Console.BufferWidth - 1);
                     int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY + 1, Console.BufferHeight - 1);
-                    
 
-                    Console.SetCursorPosition(consoleX+modifier, consoleY);
+
+                    Console.SetCursorPosition(consoleX + modifier, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
-                    Console.Write("  ");
-                    
+                    string unitInNode = EvaluateUnitInNode(Grid[i, j]);
+                    Console.Write(unitInNode);
+
                 }
                 modifier++;
             }
             Console.BackgroundColor = ConsoleColor.Black; // vuelve al negro, para que no se quede "pegado" el ultimo color.
+        }
+
+        private string EvaluateUnitInNode(Node input)
+        {
+            string printType;
+
+            if (input.OperatorsInNode.Count == 0)
+            {
+                printType = "  ";
+            }
+            else if (input.OperatorsInNode.Count > 1)
+            {
+                printType = " @";
+            }
+            else
+            {
+                if (input.OperatorsInNode[0].GetType().Name == "M8")
+                {
+                    printType = " M";
+                }
+                else if (input.OperatorsInNode[0].GetType().Name == "K9")
+                {
+                    printType = " K";
+                }
+                else
+                {
+                    printType = " U";
+                }
+            }
+
+            return printType;
         }
 
         private void PrintColumnIndicators()
@@ -170,7 +200,7 @@ namespace SkyNet
                     Console.Write(i + " ");
                 }
                 else Console.Write(i);
-                Console.BackgroundColor= ConsoleColor.Black;//necesario por prolijidad visual
+                Console.BackgroundColor = ConsoleColor.Black;//necesario por prolijidad visual
             }
             Console.Write("\n");
         }
@@ -210,7 +240,7 @@ namespace SkyNet
             }
             else if (type == 2)
             {
-                return ConsoleColor.Blue; 
+                return ConsoleColor.Blue;
             }
             else if (type == 3)
             {

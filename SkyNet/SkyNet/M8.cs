@@ -27,6 +27,12 @@ namespace SkyNet
             battery.Type = 2;
         }
 
+        public  M8(int xposition, int yposition) : base(xposition, yposition)
+        {
+            LocationP.LocationX = xposition;
+            LocationP.LocationY = yposition; 
+        }
+
         /* public void Reconnoiter()
          {
 
