@@ -59,10 +59,10 @@ namespace SkyNet.Entidades.Mapa
             while (!isValidInput)
             {
                 Console.SetCursorPosition(XCenter, YCenter);
-                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 50): ");
+                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 30): ");
 
 
-                if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Neccesary for Tryparse.
+                if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Necessary for TryParse.
                 {
                     if (tempNum >= 30 && tempNum <= 100)
                     {
@@ -118,6 +118,7 @@ namespace SkyNet.Entidades.Mapa
         private void LoopTerrainSelection(List<Node> list, double HQC, double RC)
         {
             Random rng = new Random();
+
             for (int i = 0; i < HQC; i++)
             {
                 bool inLoop = true;
@@ -134,6 +135,7 @@ namespace SkyNet.Entidades.Mapa
                     }
                 }
             }
+
             for (int i = 0; i < RC; i++)
             {
                 bool inLoop = true;
