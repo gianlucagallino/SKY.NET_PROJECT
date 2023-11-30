@@ -1,4 +1,7 @@
+
+﻿using System.Text.Json;
 ﻿using System.Transactions;
+
 
 namespace SkyNet
 {
@@ -288,6 +291,16 @@ namespace SkyNet
                 return ConsoleColor.Magenta;
             }
             else return ConsoleColor.White;
+        }
+
+        //esto permitiria serializar el mapa 
+        public string SerializeToJson()
+        {
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+        }
+        public static Map DeserializeFromJson(string jsonString)
+        {
+            return JsonSerializer.Deserialize<Map>(jsonString);
         }
     }
 }
