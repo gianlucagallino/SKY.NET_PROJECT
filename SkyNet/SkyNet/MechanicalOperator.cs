@@ -96,6 +96,9 @@ namespace SkyNet
             this.id = id;
         }
 
+
+        public int SimulateTime(TimeSimulator taskType)
+
         protected MechanicalOperator(int xposition, int yposition)
         {
             LocationP = new Location(xposition, yposition);
@@ -104,7 +107,8 @@ namespace SkyNet
         public void SimulateTime(TimeSimulator taskType)
         {
             int time = (int)taskType;
-            this.timeSpent += time;
+            timeSpent += time;
+            return time;
         }
         public double CalculateMovementSpeed()
         {
@@ -144,8 +148,6 @@ namespace SkyNet
               Console.WriteLine("No path found.");
             }
 
-       
-          
 
             double distance = CalculateDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
@@ -157,7 +159,9 @@ namespace SkyNet
                 action.Invoke(this);
             }
 
-            SimulateTime(TimeSimulator.MoveToPerNode);
+            int timeSpentMoveToPerNode=SimulateTime(TimeSimulator.MoveToPerNode)*10;
+            timeSpent += timeSpentMoveToPerNode;
+
         }
 
         private double CalculateBatteryConsumption(double distance)
