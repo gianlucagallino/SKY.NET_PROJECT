@@ -27,17 +27,17 @@
                 if (generatedType == 1)
                 {
                     Operators.Add(new M8(Xposition, Yposition));
-                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
+                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
                 }
                 else if (generatedType == 2)
                 {
                     Operators.Add(new K9(Xposition, Yposition));
-                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
+                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
                 }
                 else
                 {
                     Operators.Add(new UAV(Xposition, Yposition));
-                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
+                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
                 }
             }
         }

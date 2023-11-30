@@ -18,8 +18,7 @@
          */
 
 
-        private Node[,] grid;
-        public Node[,] Grid { get { return grid; } set { grid = value; } }
+        public static Node[,] Grid { get; set; }
         public double HeadquarterCounter { get; set; }
         public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
@@ -145,8 +144,9 @@
         private string EvaluateUnitInNode(Node input)
         {
             string printType;
+            int amount = input.OperatorsInNode.Count();
 
-            if (input.OperatorsInNode.Count == 0)
+            if (amount == 0)
             {
                 printType = "  ";
             }
