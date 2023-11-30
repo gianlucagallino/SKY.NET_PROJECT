@@ -183,11 +183,13 @@ namespace SkyNet.Menu
 
             if (selectedOperator != null)
             {
-                Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}");
-                Console.WriteLine("Choose an option:");
-                Console.WriteLine("1. Move To");
-                Console.WriteLine("2. Transfer Battery");
-                Console.WriteLine("3. Transfer Load");
+                Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}" +
+                    $"\n Choose an option:" +
+                    $"\n 1. Move To" +
+                    $"\n 2. Transfer Battery" +
+                    $"\n 3. Transfer Load" +
+                    $"\n 4. General Order: if operator is damaged, repair it at the headquerter" +
+                    $"\n 5. Battery Change");
 
                 string subOption = Console.ReadLine();
                 HandleSubOption(subOption, selectedOperator);
