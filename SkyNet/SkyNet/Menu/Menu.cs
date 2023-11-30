@@ -1,9 +1,12 @@
-﻿namespace SkyNet.Menu
-{
+﻿using SkyNet.Entidades.Mapa;
+using SkyNet.Entidades.Operadores;
 
+namespace SkyNet.Menu
+{
     internal class Menu
     {
         private bool menuOptionsFlag;
+        private string selectedHQ;
 
         public Menu()
         {
@@ -13,7 +16,7 @@
         public void RunMenu()
         {
             bool isRunning = true;
-            //tipos de menu dependiendo de la cantidad de hqs
+
             while (isRunning)
             {
                 PrintMenu();
@@ -29,16 +32,52 @@
             Console.WriteLine("|        Management Menu        | ");
             Console.WriteLine(" ------------------------------- ");
 
-            if (!menuOptionsFlag)
+            int conta = 1;
+            for (int i = 0; i < Map.GetInstance().HeadquarterCounter; i++)
             {
-                // Agregar opciones de menú aquí
-                menuOptionsFlag = true;
+                Console.WriteLine($"{conta}. HeadQuarter {conta}");
             }
 
-            // Imprimir opciones de menú
-
             Console.WriteLine(" ------------------------------");
-            Console.Write("     Pick an HQ: ");
+
+
+            // Read and set the selected HQ
+            selectedHQ = GetValidHQSelection();
+
+            Console.Clear();
+            Console.WriteLine(" _______________________________");
+            Console.WriteLine("|        Operator Menu          | ");
+            Console.WriteLine(" ------------------------------- ");
+            Console.WriteLine("1. Show Operator Status");
+            Console.WriteLine("2. Show Operator Status at Location");
+            Console.WriteLine("3. Total Recall");
+            Console.WriteLine("4. Select Operator");
+            Console.WriteLine("5. Add Reserve Operator");
+            Console.WriteLine("6. Remove Reserve Operator");
+            Console.WriteLine(" ------------------------------");
+            Console.Write("     Pick an option: ");
+        }
+
+
+        private string GetValidHQSelection()
+        {
+            double maxHQ = Map.GetInstance().HeadquarterCounter;
+
+            while (true)
+            {
+                Console.Write($"     Pick an HQ (1-{maxHQ}): ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int selected) && selected >= 1 && selected <= maxHQ)
+                {
+                    return input;
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Invalid selection. Please enter a number between 1 and {maxHQ}.");
+                }
+            }
         }
 
         private void ExecuteCommand(string menuPick)
@@ -71,25 +110,31 @@
                     break;
             }
         }
-
         private void ShowOperatorStatus()
         {
             Console.Clear();
             Console.WriteLine("Operator Status:");
-            foreach (MechanicalOperator oper in Operators)
+            int indexer = Convert.ToInt32(selectedHQ);
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators)
             {
-                Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
+
+                {
+                    Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
+                }
+                Console.ReadLine();
             }
-            Console.ReadLine();
         }
 
         private void ShowOperatorStatusAtLocation()
         {
             Console.Clear();
             Console.WriteLine("Enter location coordinates: ");
-
-            Console.WriteLine($"Operator Status at {locationName}:");
-            foreach MechanicalOperator oper in Operators.Where(op => op.LocationP.LocationId.ToString() == locationName)) //esto por que es name?? no se ni por que tienen nombre
+            //INPUT
+            int Xinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
+            int Yinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
+            Console.WriteLine($"Operator Status at those coordinates:");
+            int indexer = Convert.ToInt32(selectedHQ);
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators.Where(op => op.LocationP.LocationX == Xinput && op.LocationP.LocationY == Yinput)
             {
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
@@ -100,9 +145,10 @@
         {
             Console.Clear();
             Console.WriteLine("Performing total recall...");
-            foreach (MechanicalOperator oper in Operators)
+            int indexer = Convert.ToInt32(selectedHQ);
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators)
             {
-                oper.LocationP = new Location { LocationId = localizacioncuartelquellama };  // aca me falta
+                oper.MoveTo(Map.GetInstance().HQList[indexer].LocationHeadQuarters);
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             Console.ReadLine();
@@ -133,13 +179,6 @@
             Console.WriteLine("Enter reserve operator details: ");
             string operatorDetails = Console.ReadLine();
 
-            var newOperator = new ConcreteMechanicalOperator
-            {
-                Id = operatorDetails,
-                Status = "Reserve",
-                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran */
-            };
-
             operators.Add(newOperator);
 
             Console.WriteLine($"Adding reserve operator: {newOperator.Id}");
@@ -167,4 +206,3 @@
         }
     }
 }
-
