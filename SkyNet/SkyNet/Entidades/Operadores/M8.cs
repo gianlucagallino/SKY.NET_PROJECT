@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades.Operadores
+﻿using SkyNet.Entidades.Mapa;
+
+namespace SkyNet.Entidades.Operadores
 {
     class M8 : MechanicalOperator
     {
@@ -10,6 +12,7 @@
             battery.MAHCapacity = 12250;
             battery.CurrentChargePercentage = 100;
             battery.Type = 2;
+            id = Convert.ToString("M8-"+Map.M8Counter);
         }
 
         public M8(int xposition, int yposition) : base(xposition, yposition)
