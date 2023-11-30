@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades
+﻿using SkyNet.Entidades.Operadores;
+
+namespace SkyNet.Entidades
 {
     public class DamageSimulator
     {
