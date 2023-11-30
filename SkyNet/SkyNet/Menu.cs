@@ -1,30 +1,33 @@
 ﻿namespace SkyNet
 {
-    /*
+
     internal class Menu
     {
-        private List<MechanicalOperator> operators;
         private bool menuOptionsFlag;
 
-        public Menu(List<MechanicalOperator> operators)
+        public Menu()
         {
-            this.operators = operators;
             menuOptionsFlag = false;
         }
 
         public void RunMenu()
         {
-            PrintMenu();
-            string menuPick = Console.ReadLine();
-            ExecuteCommand(menuPick);
+            bool isRunning = true;
+            //tipos de menu dependiendo de la cantidad de hqs
+            while (isRunning)
+            {
+                PrintMenu();
+                string menuPick = Console.ReadLine();
+                ExecuteCommand(menuPick);
+            }
         }
 
         private void PrintMenu()
         {
             Console.Clear();
-            Console.WriteLine("\n           Welcome to the Skynet Headquarters            ");
-            Console.WriteLine("                     Management Menu                      ");
-            Console.WriteLine(" ---------------------------------------------------------");
+            Console.WriteLine(" _______________________________");
+            Console.WriteLine("|        Management Menu        | ");
+            Console.WriteLine(" ------------------------------- ");
 
             if (!menuOptionsFlag)
             {
@@ -33,8 +36,9 @@
             }
 
             // Imprimir opciones de menú
-            Console.WriteLine(" ---------------------------------------------------------");
-            Console.WriteLine("                  Please enter your Pick:                 ");
+
+            Console.WriteLine(" ------------------------------");
+            Console.Write("     Pick an HQ: ");
         }
 
         private void ExecuteCommand(string menuPick)
@@ -72,7 +76,7 @@
         {
             Console.Clear();
             Console.WriteLine("Operator Status:");
-            foreach (var oper in operators)
+            foreach (MechanicalOperator oper in Operators)
             {
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
@@ -82,24 +86,23 @@
         private void ShowOperatorStatusAtLocation()
         {
             Console.Clear();
-            Console.WriteLine("Enter location: ");
-            string locationName = Console.ReadLine();
+            Console.WriteLine("Enter location coordinates: ");
 
             Console.WriteLine($"Operator Status at {locationName}:");
-            foreach (var oper in operators.Where(op => op.LocationP.LocationId.ToString() == locationName))
+            foreach MechanicalOperator oper in Operators.Where(op => op.LocationP.LocationId.ToString() == locationName)) //esto por que es name?? no se ni por que tienen nombre
             {
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
             Console.ReadLine();
         }
-        /*
+
         private void TotalRecall()
         {
             Console.Clear();
             Console.WriteLine("Performing total recall...");
-            foreach (var oper in operators)
+            foreach (MechanicalOperator oper in Operators)
             {
-                oper.LocationP = new Location { LocationId = 1 };  // aca me falta
+                oper.LocationP = new Location { LocationId = localizacioncuartelquellama };  // aca me falta
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             Console.ReadLine();
@@ -134,7 +137,7 @@
             {
                 Id = operatorDetails,
                 Status = "Reserve",
-                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran *//*
+                LocationP = new Location { } /* Inicializa las propiedades de Location si es necesario o ver cuales eran */
             };
 
             operators.Add(newOperator);
@@ -162,6 +165,6 @@
             }
             Console.ReadLine();
         }
-    }*/
+    }
 }
 

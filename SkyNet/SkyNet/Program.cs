@@ -11,13 +11,10 @@ namespace SkyNet
         {
             Introduction.GetInstance().Play();
             Map.GetInstance().PrintMap();
-            // menu = new Menu(operators);
-
-            // while (isRunning)
-            {
-                //     menu.RunMenu();
-            }
+            Menu menu = new Menu();
+            menu.RunMenu();
         }
     }
 }
+
 

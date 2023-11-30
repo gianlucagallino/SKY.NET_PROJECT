@@ -5,8 +5,6 @@
 
         //Todo esto es codigo grafico. 
 
-        private int w;
-        private int h;
         public int W { get; set; }
         public int H { get; set; }
         private Introduction()
