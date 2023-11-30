@@ -46,6 +46,7 @@ namespace SkyNet
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
             RecyclingCounter = 0;
+            HQList = new List<HeadQuarters>();
             FillGrid();
 
         }

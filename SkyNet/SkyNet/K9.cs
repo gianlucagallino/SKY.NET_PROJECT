@@ -28,10 +28,10 @@ namespace SkyNet
             battery.Type = 1;
         }
 
-        public K9(int xposition, int yposition)
+        public K9(int xposition, int yposition) : base(xposition, yposition)
         {
-            location.LocationX = xposition;
-            location.LocationY = yposition;
+            LocationP.LocationX = xposition;
+            LocationP.LocationY = yposition;
         }
         /*public void Patrol()
 {

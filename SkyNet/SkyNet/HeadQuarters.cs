@@ -33,14 +33,17 @@ namespace SkyNet
                 if (generatedType == 1)
                 {
                     Operators.Add(new M8(Xposition, Yposition));
+                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
                 }
                 else if (generatedType == 2)
                 {
                     Operators.Add(new K9(Xposition, Yposition));
+                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
                 }
                 else
                 {
                     Operators.Add(new UAV(Xposition, Yposition));
+                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
                 }
             }
         }

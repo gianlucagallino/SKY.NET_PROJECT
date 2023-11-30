@@ -35,6 +35,7 @@ namespace SkyNet
         public Node(int horizontal, int vertical)
         {
             NodeLocation = new Location(horizontal, vertical);
+            OperatorsInNode = new List<MechanicalOperator>();
             TerrainType = SetNonLimitedTerrainType();
             TerrainTypeMethod();
         }

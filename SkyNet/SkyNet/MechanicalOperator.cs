@@ -16,7 +16,6 @@ namespace SkyNet
         protected double maxLoadOriginal;
         protected double currentLoad;
         protected float optimalSpeed;
-        protected Location location;
         private DamageSimulator damageSimulator;
         private Node[,] grid;
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
@@ -81,18 +80,25 @@ namespace SkyNet
                                  { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
                              { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
                         };
-            //LocationP = new Location();
+            
 
         }
+
+
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
             this.maxLoad = maxLoad;
             this.maxLoadOriginal = minLoad;
             this.battery = battery;
-            this.location = location;
+            this.LocationP = location;
             this.status = status;
             this.id = id;
+        }
+
+        protected MechanicalOperator(int xposition, int yposition)
+        {
+            LocationP = new Location(xposition, yposition);
         }
 
         public void SimulateTime(TimeSimulator taskType)
@@ -298,7 +304,7 @@ namespace SkyNet
 
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
-            return location == destination.location;
+            return LocationP == destination.LocationP;
         }
 
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
