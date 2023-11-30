@@ -1,4 +1,6 @@
-﻿namespace SkyNet
+﻿using System.Net.Http.Headers;
+
+namespace SkyNet
 {
     internal class HeadQuarters
     {
@@ -18,30 +20,42 @@
         private void GenerateRandomAmountOfOperators()
         {
 
-            int OpAmount = rng.Next(0, 11);
+            int OpAmount = rng.Next(1, 15); // 15 operator cap, para no explotar el mapa. 
             for (int i = 0; i < OpAmount; i++)
             {
-                int generatedType = rng.Next(1, 4);
-                int Xposition = rng.Next(0, 100);//esto es para testear
-                int Yposition = rng.Next(0, 100);
-                if (generatedType == 1)
+                bool inLoop = true;
+                while (inLoop)
                 {
-                    Operators.Add(new M8(Xposition, Yposition));
-                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
-                }
-                else if (generatedType == 2)
-                {
-                    Operators.Add(new K9(Xposition, Yposition));
-                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
-                }
-                else
-                {
-                    Operators.Add(new UAV(Xposition, Yposition));
-                    Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
+                    int generatedType = rng.Next(1, 4);
+                    int Xposition = rng.Next(0, Map.MapSize); //We use static variables in this method, instead of GetInstance(), as by
+                    int Yposition = rng.Next(0, Map.MapSize); // this point the instance is still being built, so it evaluates to null, and breaks stuff.
+                    if (generatedType == 1 && !CheckWater(Xposition, Yposition))
+                    {
+                            Operators.Add(new M8(Xposition, Yposition));
+                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
+                            inLoop = false;
+                    }
+                    else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
+                    {
+                            Operators.Add(new K9(Xposition, Yposition));
+                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
+                            inLoop = false;
+                    }
+                    else if (generatedType == 3) //CheckWater is not necessary, UAV's can fly. 
+                    {
+                        Operators.Add(new UAV(Xposition, Yposition));
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
+                        inLoop = false;
+                    }
                 }
             }
         }
-
+    
+        private bool CheckWater(int x , int y)
+        {
+            if (Map.Grid[x, y].TerrainType == 2) return true;
+            return false;
+        }
         public void ShowOperatorStatus()
         {
             foreach (MechanicalOperator op in Operators)

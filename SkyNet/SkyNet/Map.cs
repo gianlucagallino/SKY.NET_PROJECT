@@ -22,7 +22,7 @@
         public double HeadquarterCounter { get; set; }
         public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
-        public int MapSize { get; set; }
+        public static int MapSize { get; set; }
 
         public int SizeOffset { get; set; }
 
@@ -30,7 +30,7 @@
 
         private Map()
         {
-            MapSize = 100; //ver grabacion, arreglar. 
+            MapSize = 100;
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
@@ -118,6 +118,7 @@
             PrintColumnIndicators();
             PrintLineIndicators();
             int modifier = 0;
+            Console.ForegroundColor = ConsoleColor.Red;
             for (int i = 0; i < MapSize; i++)
             {
 
@@ -132,7 +133,6 @@
                     Console.SetCursorPosition(consoleX + modifier, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     string unitInNode = EvaluateUnitInNode(Grid[i, j]);
-                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(unitInNode);
 
                 }
@@ -217,7 +217,7 @@
         }
 
 
-        //Esta funcion deberia ser optimizada. es un desastre.
+        //Aca podria ir un switch, la verdad. pero fuck switch statements, all my homies hate switch statements
         private ConsoleColor ReadPositionColor(Node input)
         {
             int type = input.TerrainType;
