@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades.Operadores
+﻿using SkyNet.Entidades.Mapa;
+
+namespace SkyNet.Entidades.Operadores
 {
     public abstract class MechanicalOperator
     {
