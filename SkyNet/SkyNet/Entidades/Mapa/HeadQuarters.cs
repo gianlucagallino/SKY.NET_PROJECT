@@ -13,6 +13,7 @@ namespace SkyNet.Entidades.Mapa
         // Location of the headquarters on the map
         public Location LocationHeadQuarters { get; set; }
 
+
         // Constructor initializes the headquarters and generates operators
         public HeadQuarters(int x, int y)
         {

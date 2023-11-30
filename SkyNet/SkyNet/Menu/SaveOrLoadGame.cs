@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using SkyNet.Entidades.Mapa;
 
 namespace SkyNet.Menu
@@ -57,9 +51,9 @@ namespace SkyNet.Menu
                     Console.WriteLine("Enter the number of the game you want to load");
                     if (TryGetSelectedGameIndex(Console.ReadLine(), loadedGames.Count, out int selectedGameIndex) && selectedGameIndex > 0)
                     {
-                      
+
                         Map selectedGame = loadedGames[selectedGameIndex - 1];
-                        
+
                     }
                     else
                     {
