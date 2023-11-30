@@ -24,26 +24,26 @@ namespace SkyNet
         private void GenerateRandomAmountOfOperators()
         {
             Random rng = new Random();
-            double OpAmount = rng.Next(0, 11);
-            for (int i = 0; i<OpAmount; i++)
+            int OpAmount = rng.Next(0, 11);
+            for (int i = 0; i < OpAmount; i++)
             {
-                double generatedType = rng.Next(1, 4);
-                int Xposition= rng.Next(0,  Map.GetInstance().MapSize-1);
-                int Yposition = rng.Next(0, Map.GetInstance().MapSize - 1);
+                int generatedType = rng.Next(1, 4);
+                int Xposition =rng.Next(0,  100);//esto es para testear
+                int Yposition = rng.Next(0, 100);
                 if (generatedType == 1)
                 {
                     Operators.Add(new M8(Xposition, Yposition));
-                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
+                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
                 }
                 else if (generatedType == 2)
                 {
                     Operators.Add(new K9(Xposition, Yposition));
-                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
+                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
                 }
                 else
                 {
                     Operators.Add(new UAV(Xposition, Yposition));
-                    // aca habria que agregar el operador al nodo Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add()
+                    Map.GetInstance().Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
                 }
             }
         }

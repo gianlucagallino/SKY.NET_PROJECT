@@ -91,13 +91,13 @@ namespace SkyNet
                     {
                         Grid[RandomX, RandomY].TerrainType = 5;
                         HQList.Add(new HeadQuarters(RandomX, RandomY));
+                        list.Add(Grid[RandomX, RandomY]);  // Add the selected node to the list
                         inLoop = false;
                     }
                 }
             }
             for (int i = 0; i < RC; i++)
             {
-
                 bool inLoop = true;
                 while (inLoop)
                 {
@@ -106,7 +106,7 @@ namespace SkyNet
                     if (!list.Contains(Grid[RandomX, RandomY]))
                     {
                         Grid[RandomX, RandomY].TerrainType = 4;
-                        list.Add(Grid[RandomX, RandomY]);
+                        list.Add(Grid[RandomX, RandomY]);  // Add the selected node to the list
                         inLoop = false;
                     }
                 }
@@ -143,6 +143,7 @@ namespace SkyNet
                     Console.SetCursorPosition(consoleX + modifier, consoleY);
                     Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
                     string unitInNode = EvaluateUnitInNode(Grid[i, j]);
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(unitInNode);
 
                 }

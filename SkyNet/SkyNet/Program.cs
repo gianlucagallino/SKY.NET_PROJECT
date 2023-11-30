@@ -11,7 +11,7 @@ namespace SkyNet
 
         static void Main(string[] args)
         {
-            Introduction.GetInstance().Play();
+            //Introduction.GetInstance().Play();
             Map.GetInstance().PrintMap();
            // menu = new Menu(operators);
 

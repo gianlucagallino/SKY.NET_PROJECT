@@ -97,14 +97,12 @@ namespace SkyNet
         }
 
 
-        public int SimulateTime(TimeSimulator taskType)
-
         protected MechanicalOperator(int xposition, int yposition)
         {
             LocationP = new Location(xposition, yposition);
         }
 
-        public void SimulateTime(TimeSimulator taskType)
+        public int SimulateTime(TimeSimulator taskType)
         {
             int time = (int)taskType;
             timeSpent += time;
