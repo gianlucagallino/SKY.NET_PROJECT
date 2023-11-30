@@ -16,6 +16,7 @@ namespace SkyNet.Entidades.Operadores
         private Node[,] grid;
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
         protected int timeSpent;
+        
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
@@ -29,6 +30,7 @@ namespace SkyNet.Entidades.Operadores
         public DamageSimulator DamageSimulatorP { get; set; }
         public Node[,] Grid { get; set; }
         public int TimeSpent { get; private set; }
+       
         public MechanicalOperator()
         {
             id = string.Empty;
@@ -90,7 +92,22 @@ namespace SkyNet.Entidades.Operadores
             Node goal = new Node(loc.LocationX, loc.LocationY);
 
             AStarAlgorithm astar = new AStarAlgorithm();
-            List<Node> path = astar.FindPath(start, goal, grid);
+
+            Console.WriteLine("If you want optimal search, press 1\n" +
+                               "If you want safe search, press 2");
+            int search = Convert.ToInt32(Console.ReadLine());
+            bool safety = false;
+            bool isWalkingUnit = true;
+            if (search == 2)
+            {
+              safety = true;
+            }
+            if (Id.Contains("UAV"))
+            {
+                isWalkingUnit = false;
+            }
+
+            List<Node> path = astar.FindPath(start, goal, grid, safety, isWalkingUnit);
 
 
             int roadLenght = path.Count;

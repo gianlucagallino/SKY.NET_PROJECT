@@ -341,18 +341,21 @@ namespace SkyNet.Menu
                 M8 m8 = new M8(Xposition, Yposition);
                 Map.GetInstance().HQList[indexer].Operators.Add(m8);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
+                Map.M8Counter++;
             }
             else if (operatorType == 2)
             {
                 K9 k9 = new K9(Xposition, Yposition);
                 Map.GetInstance().HQList[indexer].Operators.Add(k9);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
+                Map.K9Counter++;
             }
             else
             {
                 UAV uav = new UAV(Xposition, Yposition);
                 Map.GetInstance().HQList[indexer].Operators.Add(uav);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
+                Map.UAVCounter++;
             }
             Console.WriteLine("Added!");
             Console.ReadKey();

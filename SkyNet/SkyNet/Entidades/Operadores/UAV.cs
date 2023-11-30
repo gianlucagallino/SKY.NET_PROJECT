@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades.Operadores
+﻿using SkyNet.Entidades.Mapa;
+
+namespace SkyNet.Entidades.Operadores
 {
     class UAV : MechanicalOperator
     {
@@ -11,6 +13,7 @@
             battery.MAHCapacity = 4000;
             battery.CurrentChargePercentage = 100;
             battery.Type = 3;
+            id = Convert.ToString("UAV-" + Map.UAVCounter);
         }
 
         public UAV(int xposition, int yposition) : base(xposition, yposition)

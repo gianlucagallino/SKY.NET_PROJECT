@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades.Operadores
+﻿using SkyNet.Entidades.Mapa;
+
+namespace SkyNet.Entidades.Operadores
 {
     class K9 : MechanicalOperator
     {
@@ -13,6 +15,7 @@
             battery.MAHCapacity = 6500;
             battery.CurrentChargePercentage = 100;
             battery.Type = 1;
+            id = Convert.ToString("K9-" + Map.K9Counter);
         }
 
         public K9(int xposition, int yposition) : base(xposition, yposition)

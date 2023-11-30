@@ -27,13 +27,18 @@ namespace SkyNet.Entidades.Mapa
         public List<HeadQuarters> HQList { get; set; }
         public double RecyclingCounter { get; set; }
         public static int MapSize { get; set; }
-
+        public static int M8Counter { get; set; }
+        public static int K9Counter { get; set; }
+        public static int UAVCounter { get; set; }
         public int SizeOffset { get; set; }
 
 
 
         private Map()
         {
+            M8Counter = 0;
+            K9Counter = 0;
+            UAVCounter = 0;
             MapSize = AskForMapSize();
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
@@ -41,7 +46,7 @@ namespace SkyNet.Entidades.Mapa
             RecyclingCounter = 0;
             HQList = new List<HeadQuarters>();
             FillGrid();
-
+            
         }
 
         private int AskForMapSize()
