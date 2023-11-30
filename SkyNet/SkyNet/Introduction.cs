@@ -27,7 +27,7 @@
             return _instance;
         }
 
-        private void GetConsoleSizeCenter()
+        public void GetConsoleSizeCenter()
         {
             W = Console.WindowWidth / 4;
             H = Console.WindowHeight / 3;
@@ -40,7 +40,7 @@
             TerrainTutorial();
             OperatorTutorial();
             SelectSaveFile();
-
+            Console.Clear();
         }
 
         private void ShowResolutionWarning()
@@ -253,13 +253,13 @@
 
             H += 2;
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("\t               Enter option:");
+            Console.Write("\t               Enter option: ");
             string pick = Console.ReadLine();
             Console.Clear();
             string mensaje = pick.ToLower() switch
             {
-                "1" => "Enjoy your new game!",
-                "2" => "Attempting to load game...",
+                "1" => "Enjoy your new game! (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
+                "2" => "Attempting to load game... (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
                 _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
             };
             Console.SetCursorPosition(W, H);

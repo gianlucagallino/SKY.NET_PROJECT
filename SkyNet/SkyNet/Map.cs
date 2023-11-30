@@ -1,4 +1,6 @@
-﻿namespace SkyNet
+﻿using System.Transactions;
+
+namespace SkyNet
 {
     internal class Map
     {
@@ -30,7 +32,7 @@
 
         private Map()
         {
-            MapSize = 100;
+            MapSize = AskForMapSize();
             SizeOffset = MapSize.ToString().Length;
             Grid = new Node[MapSize, MapSize];
             HeadquarterCounter = 0;
@@ -38,6 +40,46 @@
             HQList = new List<HeadQuarters>();
             FillGrid();
 
+        }
+
+        private int AskForMapSize()
+        {
+            int XCenter = Console.WindowWidth / 4;
+            int YCenter = Console.WindowHeight / 3;
+            int tempNum = 0;
+            bool isValidInput = false;
+
+            while (!isValidInput)
+            {
+                Console.SetCursorPosition(XCenter, YCenter);
+                Console.Write("Please, enter your desired map size between 30-100 (inclusive): ");
+
+
+                if (int.TryParse(Console.ReadLine(), out tempNum))
+                {
+                    if (tempNum >= 30 && tempNum <= 100)
+                    {
+                        // Valid input, set the flag to true to exit the loop
+                        isValidInput = true;
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(XCenter, YCenter);
+                        Console.WriteLine("Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
+                        Thread.Sleep(1500);
+                        Console.Clear();
+                    }
+                }
+                else
+                {
+                    Console.SetCursorPosition(XCenter, YCenter);
+                    Console.WriteLine("Invalid input. Please enter a valid integer. Try again.");
+                    Thread.Sleep(1500);
+                    Console.Clear();
+                }
+            }
+            Console.Clear();
+            return tempNum;
         }
         private void FillGrid()
         {
