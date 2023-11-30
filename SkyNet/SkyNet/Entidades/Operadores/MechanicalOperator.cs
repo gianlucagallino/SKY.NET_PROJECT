@@ -83,8 +83,8 @@ namespace SkyNet.Entidades.Operadores
 
         public void MoveTo(Location loc)
         {
-            double finalSpeed = CalculateMovementSpeed();
-            OptimalSpeed = finalSpeed;
+            //double finalSpeed = CalculateMovementSpeed();
+           // OptimalSpeed = finalSpeed;
 
             int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
