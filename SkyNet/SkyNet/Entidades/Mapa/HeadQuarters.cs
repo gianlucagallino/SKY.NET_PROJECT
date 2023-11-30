@@ -4,10 +4,16 @@ namespace SkyNet.Entidades.Mapa
 {
     internal class HeadQuarters
     {
+        // Random number generator for operator generation
         private Random rng;
+
+        // List to store MechanicalOperators
         public List<MechanicalOperator> Operators { get; set; }
+
+        // Location of the headquarters on the map
         public Location LocationHeadQuarters { get; set; }
 
+        // Constructor initializes the headquarters and generates operators
         public HeadQuarters(int x, int y)
         {
             Operators = new List<MechanicalOperator>();
@@ -15,6 +21,8 @@ namespace SkyNet.Entidades.Mapa
             rng = new Random();
             GenerateRandomAmountOfOperators();
         }
+
+        // Generates a random number of operators and adds them to the list
         private void GenerateRandomAmountOfOperators()
         {
             int OpAmount = rng.Next(1, 15);
@@ -29,6 +37,7 @@ namespace SkyNet.Entidades.Mapa
                     int Xposition = rng.Next(0, Map.MapSize);
                     int Yposition = rng.Next(0, Map.MapSize);
 
+                    // Checks the type of operator and terrain type before adding to the list
                     if (generatedType == 1 && !CheckWater(Xposition, Yposition))
                     {
                         M8 m8 = new M8(Xposition, Yposition);
@@ -57,11 +66,14 @@ namespace SkyNet.Entidades.Mapa
             }
         }
 
+        // Checks if the given location is water (TerrainType == 2)
         private bool CheckWater(int x, int y)
         {
             if (Map.Grid[x, y].TerrainType == 2) return true;
             return false;
         }
+
+        // Displays the status of all operators
         public void ShowOperatorStatus()
         {
             foreach (MechanicalOperator op in Operators)
@@ -69,6 +81,8 @@ namespace SkyNet.Entidades.Mapa
                 Console.WriteLine(op.Status);
             }
         }
+
+        // Displays the status of operators at a specific location
         public void ShowOperatorStatusAtLocation(Location loc)
         {
             foreach (MechanicalOperator op in Operators)
@@ -79,6 +93,8 @@ namespace SkyNet.Entidades.Mapa
                 }
             }
         }
+
+        // Commands all operators to move back to headquarters
         public void TotalRecall()
         {
             foreach (MechanicalOperator op in Operators)
@@ -86,21 +102,17 @@ namespace SkyNet.Entidades.Mapa
                 op.MoveTo(LocationHeadQuarters);
             }
         }
-        //esto depende para donde lo encaremos. 
-        /* public MechanicalOperator SelectOperator(string id)
-         {
-             return ;
-         }*/
 
+        // Adds a reserve operator to the list
         public void AddReserveOperator(MechanicalOperator oper)
         {
             Operators.Add(oper);
         }
+
+        // Removes a reserve operator from the list
         public void RemoveReserveOperator(MechanicalOperator oper)
         {
             Operators.Remove(oper);
         }
-
-
     }
 }

@@ -15,7 +15,7 @@ namespace SkyNet
         {
             Introduction.GetInstance().Play();
             Map.GetInstance().PrintMap();
-            MenuClass menu=new MenuClass();
+            MenuClass menu = new MenuClass();
             menu.RunMenu();
         }
     }

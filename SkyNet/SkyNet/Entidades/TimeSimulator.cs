@@ -7,6 +7,5 @@
         MoveToPerNode = 10,
         BatteryChange = 60,
         DamageRepair = 120
-
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using SkyNet.Entidades.Mapa;
+﻿using SkyNet.Entidades.Mapa;
 
 namespace SkyNet.Menu
 {

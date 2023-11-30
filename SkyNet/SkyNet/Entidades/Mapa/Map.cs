@@ -1,16 +1,10 @@
 using System.Text.Json;
-using System.Transactions;
 
 
 namespace SkyNet.Entidades.Mapa
 {
     internal class Map
     {
-
-        //Esto, idealmente, deberia ser un singleton. No realmente, por el tema de tener varias partidas. Capaz se puede reutilizar el mismo mapa. 
-        //Igualmente, opino que no deberia ser infinitamente instanciable, asi que hay que pensar algo. 
-
-        //Ah, y reducir hardcodeo + abstraer patrones repetitivos a funciones. 
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
          * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
@@ -46,7 +40,7 @@ namespace SkyNet.Entidades.Mapa
             RecyclingCounter = 0;
             HQList = new List<HeadQuarters>();
             FillGrid();
-            
+
         }
 
         private int AskForMapSize()
@@ -153,6 +147,7 @@ namespace SkyNet.Entidades.Mapa
             }
         }
 
+        // Singleton instance
         private static Map _instance;
         public static Map GetInstance()
         {

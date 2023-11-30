@@ -244,8 +244,8 @@
             Console.Clear();
             string mensaje = pick.ToLower() switch
             {
-                "1" => "Enjoy your new game!",
-                "2" => "Attempting to load game...",
+                "1" => "Enjoy your new game! ",
+                "2" => "Attempting to load game... (Illusion of free choice, this isnt connected to anything yet)",
                 _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
             };
             Console.SetCursorPosition(W, H);

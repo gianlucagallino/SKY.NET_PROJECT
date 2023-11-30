@@ -5,8 +5,6 @@ namespace SkyNet.Entidades.Mapa
     public class Node
     {
 
-
-        //mejorar descripcion, reducir shitcode
         private static Random rng = new Random();
 
 
@@ -16,6 +14,14 @@ namespace SkyNet.Entidades.Mapa
         //H = Heuristic estimate from the current node to the goal node
         //Parent = Reference to the previous node in the path
 
+        /* Referencias de TerrainType
+         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
+         * 1- Vertedero
+         * 2-Lago
+         * 3-Vertedero electronico
+         * 4-Sitio de reciclaje (Implementar maximo 5)
+         * 5-Cuartel general(maximo 3)
+         */
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
@@ -72,17 +78,6 @@ namespace SkyNet.Entidades.Mapa
             return n;
         }
 
-        //Es necesario agregar una sobrecarga de "interaaccion", con cada celda, correspondiente a su tipo. 
-        //Posible uso de sobrecarga de metodo. 
-
-        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
-         * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
-         * 1- Vertedero
-         * 2-Lago
-         * 3-Vertedero electronico
-         * 4-Sitio de reciclaje (Implementar maximo 5)
-         * 5-Cuartel general(maximo 3)
-         */
     }
 }
 

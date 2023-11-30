@@ -16,7 +16,7 @@ namespace SkyNet.Entidades.Operadores
         private Node[,] grid;
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
         protected int timeSpent;
-        
+
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
@@ -30,7 +30,7 @@ namespace SkyNet.Entidades.Operadores
         public DamageSimulator DamageSimulatorP { get; set; }
         public Node[,] Grid { get; set; }
         public int TimeSpent { get; private set; }
-       
+
         public MechanicalOperator()
         {
             id = string.Empty;
@@ -84,7 +84,7 @@ namespace SkyNet.Entidades.Operadores
         public void MoveTo(Location loc)
         {
             //double finalSpeed = CalculateMovementSpeed();
-           // OptimalSpeed = finalSpeed;
+            // OptimalSpeed = finalSpeed;
 
             int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
@@ -100,7 +100,7 @@ namespace SkyNet.Entidades.Operadores
             bool isWalkingUnit = true;
             if (search == 2)
             {
-              safety = true;
+                safety = true;
             }
             if (Id.Contains("UAV"))
             {
@@ -165,7 +165,7 @@ namespace SkyNet.Entidades.Operadores
         {
             destination.busyStatus = true;
             busyStatus = true;
-            
+
             if (amountPercentage < 0)
             {
                 Console.WriteLine("Amount must be non-negative for Transfer Battery.");
@@ -191,10 +191,10 @@ namespace SkyNet.Entidades.Operadores
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
                 MoveTo(destination.LocationP);
 
-                
+
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                 new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
-                
+
 
                 if (ValidateBatteryTransfer(amountPercentage))
                 {
@@ -218,7 +218,7 @@ namespace SkyNet.Entidades.Operadores
                 destination.busyStatus = false;
                 busyStatus = false;
             }
-            
+
             if (AreOperatorsInSameLocation(destination))
             {
                 //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
@@ -239,13 +239,13 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                
+
                 MoveTo(destination.LocationP);
-                                
+
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                     new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
-                
-                
+
+
                 if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
                 {
                     destination.currentLoad += amountKG;

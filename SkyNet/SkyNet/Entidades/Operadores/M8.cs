@@ -4,7 +4,7 @@ namespace SkyNet.Entidades.Operadores
 {
     class M8 : MechanicalOperator
     {
-        public M8( string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status) : base(maxLoad, maxLoadOriginal, battery, location, status, id)
+        public M8(string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status) : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {
             maxLoad = 40;
             maxLoadOriginal = 40;
@@ -12,7 +12,7 @@ namespace SkyNet.Entidades.Operadores
             battery.MAHCapacity = 12250;
             battery.CurrentChargePercentage = 100;
             battery.Type = 2;
-            id = Convert.ToString("M8-"+Map.M8Counter);
+            id = Convert.ToString("M8-" + Map.M8Counter);
         }
 
         public M8(int xposition, int yposition) : base(xposition, yposition)
