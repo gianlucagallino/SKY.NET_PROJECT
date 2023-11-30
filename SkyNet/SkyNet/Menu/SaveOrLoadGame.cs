@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SkyNet
+namespace SkyNet.Menu
 {
     public class SaveOrLoadGame
     {
@@ -13,7 +13,7 @@ namespace SkyNet
         {
             try
             {
-                string gameJson=Map.GetInstance().SerializeToJson();
+                string gameJson = Map.GetInstance().SerializeToJson();
                 File.WriteAllText("saved_game.json", gameJson);
                 Console.WriteLine("Game saved successfully");
             }
@@ -53,19 +53,19 @@ namespace SkyNet
                         continue;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Error loading the game: {ex.Message}");
                     Console.WriteLine("An error occurred while loading the game. Please try again.");
                 }
-                 
+
             }
             return null;
         }
 
         static void LoadGamesFromFiles(string[] files, List<Map> loadedGames)
         {
-            foreach(string file in files)
+            foreach (string file in files)
             {
                 if (File.Exists(file))
                 {
