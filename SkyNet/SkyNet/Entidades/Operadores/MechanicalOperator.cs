@@ -56,7 +56,7 @@ namespace SkyNet.Entidades.Operadores
         {
             this.maxLoad = maxLoad;
             maxLoadOriginal = minLoad;
-            this.battery = battery;
+            Battery = battery;
             LocationP = location;
             this.status = status;
             this.id = id;
@@ -76,15 +76,15 @@ namespace SkyNet.Entidades.Operadores
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - Battery.CurrentChargePercentage / Battery.MAHCapacity * 100;
-            double slownessMultiplier = batteryPercentageSpent % 10; //this line calculates how many times to apply the speed debuff
+            double slownessMultiplier = Math.Floor(batteryPercentageSpent / 10); ; //this line calculates how many times to apply the speed debuff
             double finalSpeed = OptimalSpeed - OptimalSpeed / 10 * slownessMultiplier;
             return finalSpeed;
         }
 
         public void MoveTo(Location loc)
         {
-            double finalSpeed = CalculateMovementSpeed();
-            OptimalSpeed = finalSpeed;
+            //double finalSpeed = CalculateMovementSpeed();
+           // OptimalSpeed = finalSpeed;
 
             int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
