@@ -17,32 +17,31 @@
             return Math.Abs(a.NodeLocation.LocationX - b.NodeLocation.LocationX) + Math.Abs(a.NodeLocation.LocationY - b.NodeLocation.LocationY);
         }
 
-        // Check if a node is valid, and not water, for walking units, no danger consideration (optimal)
-        static bool IsValidAndOptimalW(Node n, Node[,] grid) //Modify
+        // Check if a node is valid, and not water, for walking units, no danger consideration (optimal) (Code: 1)
+        static bool IsValidAndOptimalW(Node n, Node[,] grid)
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
-                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+                   !(grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].TerrainType == 2);
         }
 
-        // Check if a node is safe, and not water, for walking units (danger-free)
-        static bool IsValidAndSafelW(Node n, Node[,] grid) //Modify
+        // Check if a node is safe, and not water, for walking units (danger-free) (Code: 2)
+        static bool IsValidAndSafelW(Node n, Node[,] grid)
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
-                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle && !(grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].TerrainType == 2);
         }
 
-        // Check if a node is valid for Flying  units, no danger consideration (optimal)
-        static bool IsValidAndOptimalF(Node n, Node[,] grid) //Modify
+        // Check if a node is valid for Flying  units, no danger consideration (optimal) (Code: 3)
+        static bool IsValidAndOptimalF(Node n, Node[,] grid)
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
-                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
-                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+                   n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1);
         }
 
-        // Check if a node is safe for flying units (danger-free)
-        static bool IsValidAndSafeF(Node n, Node[,] grid) //Modify
+        // Check if a node is safe for flying units (danger-free) (Code: 4)
+        static bool IsValidAndSafeF(Node n, Node[,] grid)
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
@@ -69,6 +68,8 @@
                     if (neighborX >= 0 && neighborX < grid.GetLength(0) && neighborY >= 0 && neighborY < grid.GetLength(1))
                     {
                         Node neighbour = grid[neighborX, neighborY];
+
+
 
                         if (IsValidAndOptimalW(neighbour, grid) && !closedSet.Contains(neighbour))
                         {
