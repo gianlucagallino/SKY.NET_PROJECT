@@ -106,7 +106,7 @@ namespace SkyNet.Menu
                 default:
                     Console.Clear();
                     Console.WriteLine(" Pay attention to your inputs, please. (Press any key) ");
-                    Console.ReadLine();
+                    Console.ReadKey();
                     break;
             }
         }
@@ -135,7 +135,7 @@ namespace SkyNet.Menu
             {
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         private void TotalRecall()
@@ -148,7 +148,7 @@ namespace SkyNet.Menu
                 oper.MoveTo(Map.GetInstance().HQList[indexer].LocationHeadQuarters);
             }
             Console.WriteLine("All operators recalled to Headquarters.");
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         private void SelectOperator() // Este no tiene nada hecho, hay que armar las 3 subopciones. Idealmente, en todo metodo tambien debemos tener un mensaje de si falla encontrar el operador o algo similar
@@ -200,25 +200,30 @@ namespace SkyNet.Menu
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
             }
             Console.WriteLine("Added!");
+            Console.ReadKey();
         }
 
         private void RemoveOperator()
         {
             Console.Clear();
             Console.WriteLine("Enter Operator ID to remove: ");
-            string operatorId = Console.ReadLine(); 
+            string operatorId = Console.ReadLine();
+
+            int indexer = Convert.ToInt32(selectedHQ);
+            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX;
+            int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
             //verificar que exista
-            var removeOp=operators.First(op => op.Id==operadorId )
+            var removeOp = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id == operatorId);
             if (removeOp != null)
             {
-                operators.Remove(reserveOp);
-                Console.WriteLine($"Removing reserve operator: {reserveOp.Id}");
+                Map.GetInstance().HQList[indexer].Operators.Remove(removeOp);
+                Console.WriteLine($"Removing operator: {removeOp.Id}");
             }
             else
             {
-                Console.WriteLine($"Reserve operator {operatorName} not found.");
+                Console.WriteLine($"Operator {operatorId} not found.");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
     }
 }
