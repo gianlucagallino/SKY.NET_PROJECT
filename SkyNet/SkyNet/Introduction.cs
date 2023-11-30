@@ -3,21 +3,16 @@
     internal class Introduction
     {
 
-        //esto es un desastre, hay que hacerlo mejor. Necesita mas funciones, una por ejemplo de aumentar Y position. Esto es una proof of concept.
+        //Todo esto es codigo grafico. 
+
         private int w;
         private int h;
         public int W { get; set; }
         public int H { get; set; }
         private Introduction()
-        {
-
-
-        }
+        { }
 
         private static Introduction _instance;
-
-
-
         public static Introduction GetInstance()
         {
             if (_instance == null) //si no existe, se implementa
@@ -52,24 +47,20 @@
             H++;
             Console.WriteLine(" ________________________________________________________________ ");
             Console.SetCursorPosition(W, H);
-
             H++;
             Console.WriteLine("|                                                                |");
             Console.SetCursorPosition(W, H);
-
             H++;
             Console.WriteLine("|   This experience is made with a fullscreen console in mind.   |");
             Console.SetCursorPosition(W, H);
-
             H++;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("*         Please, turn fullscreen on, or stuff WILL break.       *");
+            Console.WriteLine("*         Please, turn fullscreen on, or things WILL break.       *");
             Console.SetCursorPosition(W, H);
             Console.ForegroundColor = ConsoleColor.White;
             H++;
             Console.WriteLine("|________________________________________________________________|");
             Console.SetCursorPosition(W, H);
-
             H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("                    PRESS ENTER TO CONTINUE                      ");
@@ -113,11 +104,9 @@
                 Console.SetCursorPosition(W, H);
                 H++;
                 Console.WriteLine("\t       |_|                                                                                                    ");
-                Console.SetCursorPosition(W, H);
-                H++;
             }
 
-            H += 2;
+            H += 3;
             Console.SetCursorPosition(W, H);
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\t                                    PRESS ANY KEY TO CONTINUE                                              ");
@@ -220,7 +209,6 @@
             H++;
             Console.WriteLine("\t|________________________________________________________________|");
             Console.SetCursorPosition(W, H);
-
             H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("\t               Have fun! Press any key to continue.                ");
@@ -258,8 +246,8 @@
             Console.Clear();
             string mensaje = pick.ToLower() switch
             {
-                "1" => "Enjoy your new game! (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
-                "2" => "Attempting to load game... (You fell for the illusion of free choice. There is no permanency yet, but its a planned feature...)",
+                "1" => "Enjoy your new game!",
+                "2" => "Attempting to load game...",
                 _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
             };
             Console.SetCursorPosition(W, H);

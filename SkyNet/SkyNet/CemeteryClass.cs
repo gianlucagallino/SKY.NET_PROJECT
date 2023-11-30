@@ -478,26 +478,26 @@ public void TransferBattery(MechanicalOperator destination, double amountPercent
 
         //Enum
         /*
-        using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+                        using System;
+                using System.Collections.Generic;
+                using System.Linq;
+                using System.Text;
+                using System.Threading.Tasks;
 
-namespace SkyNet
-    {
-        public enum EnumColors
+                namespace SkyNet
+            {
+                public enum EnumColors
 
-        {/* Yo no se de enums, y por ahora no hace falta. pero idealmente al optimizar, lo usariamos. 
-        BoringSector = ConsoleColor.DarkBlue,
-        Dumpster = ConsoleColor.DarkGreen,
-        Lake = ConsoleColor.Cyan,
-        ElectroDumpster = ConsoleColor.Yellow,
-        HQ = ConsoleColor.Gray,
-        Recycler = ConsoleColor.Green,
-        *//*
-        }
-}*/
+                {/* Yo no se de enums, y por ahora no hace falta. pero idealmente al optimizar, lo usariamos. 
+                BoringSector = ConsoleColor.DarkBlue,
+                Dumpster = ConsoleColor.DarkGreen,
+                Lake = ConsoleColor.Cyan,
+                ElectroDumpster = ConsoleColor.Yellow,
+                HQ = ConsoleColor.Gray,
+                Recycler = ConsoleColor.Green,
+                *//*
+                }
+        }*/
 
 
         /*
@@ -533,5 +533,45 @@ namespace SkyNet
             this.vertical = vertical;
         }
     }*/
+
+
+        //Viejo sistema de sincronizacion de operadores con hq y nodo. 
+
+        /*
+            private void GenerateRandomAmountOfOperators()
+            {
+
+                int OpAmount = rng.Next(1, 15); // 15 operator cap, para no explotar el mapa. 
+                for (int i = 0; i < OpAmount; i++)
+                {
+                    bool inLoop = true;
+                    while (inLoop)
+                    {
+                        int generatedType = rng.Next(1, 4);
+                        int Xposition = rng.Next(0, Map.MapSize); //We use static variables in this method, instead of GetInstance(), as by
+                        int Yposition = rng.Next(0, Map.MapSize); // this point the instance is still being built, so it evaluates to null, and breaks stuff.
+                        if (generatedType == 1 && !CheckWater(Xposition, Yposition))
+                        {
+                            Operators.Add(new M8(Xposition, Yposition));
+                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
+                            inLoop = false;
+                        }
+                        else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
+                        {
+                            Operators.Add(new K9(Xposition, Yposition));
+                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
+                            inLoop = false;
+                        }
+                        else if (generatedType == 3) //CheckWater is not necessary, UAV's can fly. 
+                        {
+                            Operators.Add(new UAV(Xposition, Yposition));
+                            Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
+                            inLoop = false;
+                        }
+                    }
+                }
+            }
+
+            */
     }
 }

@@ -13,36 +13,39 @@
             rng = new Random();
             GenerateRandomAmountOfOperators();
         }
-
-
         private void GenerateRandomAmountOfOperators()
         {
+            int OpAmount = rng.Next(1, 15);
 
-            int OpAmount = rng.Next(1, 15); // 15 operator cap, para no explotar el mapa. 
             for (int i = 0; i < OpAmount; i++)
             {
                 bool inLoop = true;
+
                 while (inLoop)
                 {
                     int generatedType = rng.Next(1, 4);
-                    int Xposition = rng.Next(0, Map.MapSize); //We use static variables in this method, instead of GetInstance(), as by
-                    int Yposition = rng.Next(0, Map.MapSize); // this point the instance is still being built, so it evaluates to null, and breaks stuff.
+                    int Xposition = rng.Next(0, Map.MapSize);
+                    int Yposition = rng.Next(0, Map.MapSize);
+
                     if (generatedType == 1 && !CheckWater(Xposition, Yposition))
                     {
-                        Operators.Add(new M8(Xposition, Yposition));
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new M8(Xposition, Yposition));
+                        M8 m8 = new M8(Xposition, Yposition);
+                        Operators.Add(m8);
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
                         inLoop = false;
                     }
                     else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
                     {
-                        Operators.Add(new K9(Xposition, Yposition));
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new K9(Xposition, Yposition));
+                        K9 k9 = new K9(Xposition, Yposition);
+                        Operators.Add(k9);
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
                         inLoop = false;
                     }
-                    else if (generatedType == 3) //CheckWater is not necessary, UAV's can fly. 
+                    else if (generatedType == 3)
                     {
-                        Operators.Add(new UAV(Xposition, Yposition));
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(new UAV(Xposition, Yposition));
+                        UAV uav = new UAV(Xposition, Yposition);
+                        Operators.Add(uav);
+                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
                         inLoop = false;
                     }
                 }
