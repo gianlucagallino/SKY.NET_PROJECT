@@ -29,40 +29,11 @@ namespace SkyNet.Entidades.Operadores
         public DamageSimulator DamageSimulatorP { get; set; }
         public Node[,] Grid { get; set; }
         public int TimeSpent { get; private set; }
-
-
-        // Example usage- >Para calcular distancia. 
-        /*
-        > Node start = posicion actual del operador a mover
-         Node goal = new Node { NodeLocation = new Location { LocationX = 4, LocationY = 4 } }; pos a llegar
-
-         AStarAlgorithm astar = new AStarAlgorithm();
-         List<Node> path = astar.FindPath(start, goal, grid);
-
-        > int longitudDeCaminito = path.Length();
-
-         if (path != null)
-         {
-             
-         //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
-        //ANIMAR LA COSA
-         }
-         else
-             {
-              Console.WriteLine("No path found.");
-                }
-
-       
-             */
-
-
-        //Hay que revisar este constructor. El profe menciono que debian tener valores no vacios
         public MechanicalOperator()
         {
             id = string.Empty;
             busyStatus = false;
             battery = new Battery();
-            //battery.CurrentCharge = battery.MAHCapacity;
             status = "ACTIVE";
             maxLoad = 1000;
             maxLoadOriginal = 0;
@@ -70,17 +41,14 @@ namespace SkyNet.Entidades.Operadores
             optimalSpeed = 100;
             damageSimulator = new DamageSimulator();
             terrainDamages = new Dictionary<int, Action<MechanicalOperator>>()
-                        {
-                             { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
-                             { 2, (oper) => { if (oper is M8 || oper is K9)
-                                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
-                             { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
-                        };
-
+            {
+              { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
+              { 2, (oper) => { if (oper is M8 || oper is K9)
+                { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+              { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
+            };
 
         }
-
-
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
@@ -91,7 +59,6 @@ namespace SkyNet.Entidades.Operadores
             this.status = status;
             this.id = id;
         }
-
 
         protected MechanicalOperator(int xposition, int yposition)
         {
@@ -133,8 +100,14 @@ namespace SkyNet.Entidades.Operadores
                 foreach (Node node in path)
                 {
                     LocationP = node.NodeLocation;
+
+                    //aca actualiza la posicion del operador
+                    if (LocationP.Equals(loc))
+                    {
+                        Console.WriteLine("Destination reached!");
+                        break;
+                    }
                 }
-                //ACTUALIZAR LA POSICION DEL OPERADOR A SER GOAL
                 //ANIMAR LA COSA
             }
             else
@@ -175,7 +148,7 @@ namespace SkyNet.Entidades.Operadores
         {
             destination.busyStatus = true;
             busyStatus = true;
-            //calcula que la carga no sea negativa
+            
             if (amountPercentage < 0)
             {
                 Console.WriteLine("Amount must be non-negative for Transfer Battery.");
@@ -201,10 +174,10 @@ namespace SkyNet.Entidades.Operadores
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
                 MoveTo(destination.LocationP);
 
-                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
-                    new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
-                // TODO valores a revisar creo q vuelve a ser el optimal speed
+                new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
+                
 
                 if (ValidateBatteryTransfer(amountPercentage))
                 {
@@ -217,7 +190,6 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
-
         public void TransferLoad(MechanicalOperator destination, double amountKG)
         {
             destination.busyStatus = true;
@@ -229,7 +201,7 @@ namespace SkyNet.Entidades.Operadores
                 destination.busyStatus = false;
                 busyStatus = false;
             }
-            //compara si estan en la misma ubicacion
+            
             if (AreOperatorsInSameLocation(destination))
             {
                 //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
@@ -250,16 +222,13 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
+                
                 MoveTo(destination.LocationP);
-
-                // Calcula la distancia entre los operadores y disminuye la batería del operador actual.
+                                
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                     new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
-                //TODO valores a revisar esto no esta calculado en la velocidad optima?
-
-
-                // Luego, realiza la transferencia de carga.
+                
+                
                 if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
                 {
                     destination.currentLoad += amountKG;
@@ -278,7 +247,6 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
-
         //AJUSTAR A SEARCH Y ASTAR
         private double CalculateDistance(List<Node> nodes)
         {
@@ -286,20 +254,12 @@ namespace SkyNet.Entidades.Operadores
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
-                Node currentNode = nodes[i];
-                Node nextNode = nodes[i + 1];
-
-                double difCoordX = Math.Abs(currentNode.NodeLocation.LocationX - nextNode.NodeLocation.LocationX);
-                double difCoordY = Math.Abs(currentNode.NodeLocation.LocationY - nextNode.NodeLocation.LocationY);
-                double distance = (difCoordX + difCoordY) * 10; // Multiplicamos por 10 para tener en cuenta la escala de 10 km por nodo
-
+                double distance = 10;
                 totalDistance += distance;
             }
 
             return totalDistance;
         }
-
-
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
             return LocationP == destination.LocationP;
@@ -326,8 +286,6 @@ namespace SkyNet.Entidades.Operadores
                 return false;
             }
         }
-        //Metodos de nuevas funcionalidades TP Parte 2
-
         public List<Node> GetLocal(Location A, int terrainType, Node[,] grilla)
         {
             List<Node> nodeList = new List<Node>();
@@ -342,7 +300,6 @@ namespace SkyNet.Entidades.Operadores
 
             return nodeList;
         }
-
         private Node FindClosestNode(List<Node> nodes)
         {
             if (nodes.Count == 0)
@@ -365,7 +322,6 @@ namespace SkyNet.Entidades.Operadores
 
             return closestNode;
         }
-
         private void HandleOrder(Node[,] grid, int terrainType, double loadAmount)
         {
             List<Node> closestNodes = GetLocal(LocationP, terrainType, grid);
@@ -377,7 +333,6 @@ namespace SkyNet.Entidades.Operadores
             MoveTo(destination.NodeLocation);
             currentLoad = loadAmount;
         }
-
         private bool IsDamaged()
         {
             if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
@@ -389,7 +344,6 @@ namespace SkyNet.Entidades.Operadores
             { return false; }
 
         }
-
         public Location FindHeadquartersLocation(Node[,] grid)
         {
             Location nearestHeadquarters = null;
@@ -413,9 +367,7 @@ namespace SkyNet.Entidades.Operadores
                     }
                 }
             }
-
             return nearestHeadquarters;
-
         }
 
         public void BatteryChange(Node[,] grid)
@@ -445,10 +397,7 @@ namespace SkyNet.Entidades.Operadores
                 damageSimulator.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
             }
-
             damageSimulator.Repair(this);
         }
-
     }
-
 }
