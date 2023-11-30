@@ -54,10 +54,10 @@ namespace SkyNet.Entidades.Mapa
             while (!isValidInput)
             {
                 Console.SetCursorPosition(XCenter, YCenter);
-                Console.Write("Please, enter your desired map size between 30-100 (inclusive): ");
+                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 50): ");
 
 
-                if (int.TryParse(Console.ReadLine(), out tempNum))
+                if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Neccesary for Tryparse.
                 {
                     if (tempNum >= 30 && tempNum <= 100)
                     {
