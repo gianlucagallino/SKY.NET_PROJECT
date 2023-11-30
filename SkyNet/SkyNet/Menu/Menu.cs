@@ -1,6 +1,5 @@
 ﻿using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
-using System;
 
 namespace SkyNet.Menu
 {
@@ -53,8 +52,8 @@ namespace SkyNet.Menu
             Console.WriteLine("2. Show Operator Status at Location");
             Console.WriteLine("3. Total Recall");
             Console.WriteLine("4. Select Operator");
-            Console.WriteLine("5. Add Reserve Operator");
-            Console.WriteLine("6. Remove Reserve Operator");
+            Console.WriteLine("5. Add New Operator");
+            Console.WriteLine("6. Destroy Operator");
             Console.WriteLine(" ------------------------------");
             Console.Write("     Pick an option: ");
         }
@@ -64,10 +63,10 @@ namespace SkyNet.Menu
         {
             double maxHQ = Map.GetInstance().HeadquarterCounter;
 
-            while (true)
+            while (true) //esto pasarlo a un booleano
             {
                 Console.Write($"     Pick an HQ (1-{maxHQ}): ");
-                string input = Console.ReadLine();
+                string input = Console.ReadLine(); //hay que hacer verificacion
 
                 if (int.TryParse(input, out int selected) && selected >= 1 && selected <= maxHQ)
                 {
@@ -99,10 +98,10 @@ namespace SkyNet.Menu
                     SelectOperator();
                     break;
                 case "5":
-                    AddReserveOperator();
+                    AddOperator();
                     break;
                 case "6":
-                    RemoveReserveOperator();
+                    RemoveOperator();
                     break;
                 default:
                     Console.Clear();
@@ -119,10 +118,7 @@ namespace SkyNet.Menu
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators)
             {
 
-                {
-                    Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
-                }
-                Console.ReadLine();
+                Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
             }
         }
 
@@ -135,7 +131,7 @@ namespace SkyNet.Menu
             int Yinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
             Console.WriteLine($"Operator Status at those coordinates:");
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators.Where(op => op.LocationP.LocationX == Xinput && op.LocationP.LocationY == Yinput)
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer].Operators.Where(op => op.LocationP.LocationX == Xinput && op.LocationP.LocationY == Yinput))
             {
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
             }
@@ -175,7 +171,7 @@ namespace SkyNet.Menu
         }*/
         }
 
-        private void AddReserveOperator()
+        private void AddOperator()
         {
             //NECESITA VERIFICACIONES
             Console.Clear();
@@ -204,21 +200,19 @@ namespace SkyNet.Menu
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
             }
             Console.WriteLine("Added!");
-            Console.ReadLine();
         }
 
-        private void RemoveReserveOperator()
+        private void RemoveOperator()
         {
             Console.Clear();
-            Console.WriteLine("Enter reserve operator name: ");
-            string operatorName = Console.ReadLine();
-
-            var reserveOperator = operators.FirstOrDefault(op => op.Id == operatorName && op.Status == "Reserve");
-
-            if (reserveOperator != null)
+            Console.WriteLine("Enter Operator ID to remove: ");
+            string operatorId = Console.ReadLine(); 
+            //verificar que exista
+            var removeOp=operators.First(op => op.Id==operadorId )
+            if (removeOp != null)
             {
-                operators.Remove(reserveOperator);
-                Console.WriteLine($"Removing reserve operator: {reserveOperator.Id}");
+                operators.Remove(reserveOp);
+                Console.WriteLine($"Removing reserve operator: {reserveOp.Id}");
             }
             else
             {
