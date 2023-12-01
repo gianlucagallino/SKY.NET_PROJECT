@@ -386,7 +386,20 @@ namespace SkyNet.Menu
             Console.WriteLine("Enter destination coordinates Y: ");
             int Yposition = Convert.ToInt32(Console.ReadLine());
             Location location = new Location(Xposition, Yposition);
-            selectedOperator.MoveTo(location);
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("If you want optimal search, press 1\n" +
+                                   "If you want safe search, press 2");
+                int search = Convert.ToInt32(Console.ReadLine());
+                bool safety = false;
+                if (search == 2)
+                {
+                    safety = true;
+                }
+
+                int indexer = Convert.ToInt32(selectedHQ);
+                selectedOperator.MoveTo(location, safety);
             H++;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
