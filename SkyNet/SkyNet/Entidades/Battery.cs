@@ -17,6 +17,15 @@
             this.DamageSimulatorP = damageSimulator;
         }
 
+        public Battery(double mahCapacity, int type, double currentChargePercentage, double maxCharge, DamageSimulator damageSimulator)
+        {
+            MAHCapacity = mahCapacity;
+            Type = type;
+            CurrentChargePercentage = currentChargePercentage;
+            MaxCharge = maxCharge;
+            DamageSimulatorP = damageSimulator;
+        }
+
         public Battery()
         {
 

@@ -53,17 +53,19 @@ namespace SkyNet.Entidades.Operadores
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
         {
-            this.maxLoad = maxLoad;
-            maxLoadOriginal = minLoad;
-            Battery = battery;
+            MaxLoad = maxLoad;
+            MaxLoadOriginal = minLoad;
+            Battery = new Battery();
             LocationP = location;
             this.status = status;
             this.id = id;
+
         }
 
         protected MechanicalOperator(int xposition, int yposition)
         {
             LocationP = new Location(xposition, yposition);
+            Battery = new Battery();
         }
 
         public int SimulateTime(TimeSimulator taskType)

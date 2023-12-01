@@ -20,9 +20,20 @@ namespace SkyNet.Entidades.Operadores
 
         public K9(int xposition, int yposition) : base(xposition, yposition)
         {
+            maxLoad = 250;
+            maxLoadOriginal = 250;
+            optimalSpeed = 100;
+            Battery = new Battery();
+            Battery.MAHCapacity = 6500;
+            Battery.CurrentChargePercentage = 100;
+            Battery.Type = 1;
+            id = Convert.ToString("K9-" + Map.K9Counter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
         }
-
+        public override string ToString()
+        {
+            return $"MAH Capacity: {Battery.MAHCapacity}, Type: {Battery.Type}, Current Charge: {Battery.CurrentChargePercentage}%";
+        }
     }
 }
