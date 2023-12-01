@@ -170,7 +170,7 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators) 
             {
-                Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
+                Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}, "+oper.ToString());
             }
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");

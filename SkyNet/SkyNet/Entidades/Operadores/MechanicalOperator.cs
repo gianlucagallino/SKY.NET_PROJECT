@@ -346,7 +346,7 @@ namespace SkyNet.Entidades.Operadores
                 Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
             }
 
-            Node closestNode = nodes[0];
+            Node closestNode = nodes[0];//tira OUT OF RANGE
             double minDistance = double.MaxValue;
 
             foreach (var node in nodes)
