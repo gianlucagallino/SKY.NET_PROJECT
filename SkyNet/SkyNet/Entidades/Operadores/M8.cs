@@ -23,6 +23,7 @@ namespace SkyNet.Entidades.Operadores
             Battery.MAHCapacity = 12250;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 2;
+            Battery.DamageSimulatorP = new DamageSimulator();
             Id = Convert.ToString("M8-" + Map.M8Counter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
