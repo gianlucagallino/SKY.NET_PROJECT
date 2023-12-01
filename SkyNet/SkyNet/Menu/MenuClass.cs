@@ -479,11 +479,11 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("Enter Operator ID to remove: ");
+            Console.Write("Enter Operator ID to remove: ");
             string operatorId = Console.ReadLine();
 
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX;
+            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX; //Out of range 
             int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
             //verificar que exista
             var removeOp = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id == operatorId);
