@@ -202,7 +202,7 @@ namespace SkyNet.Menu
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
+                Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}, "+oper.ToString());
                 H++;
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Press any key to continue");
@@ -471,13 +471,28 @@ namespace SkyNet.Menu
 
         private void TransferLoadMenu(MechanicalOperator selectedOperator)
         {
+            Location currentLocation = selectedOperator.LocationP;
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+
+
+            //LISTA DE TODOS LOS OPERADORES DE TODOS LOS CUARTELES
+            foreach (HeadQuarters hq in Map.GetInstance().HQList)
+            {
+                List<MechanicalOperator> operators = hq.Operators;
+
+                foreach (MechanicalOperator op in operators)
+                {
+                    Console.WriteLine(op.Id + " " + op.Battery.CurrentChargePercentage);
+                }
+            }
+
             Console.WriteLine("Enter destination operator Id: ");
             string destOperatorId = Console.ReadLine();
-            int indexer = Convert.ToInt32(selectedHQ);
-            var destinationOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+            var destinationOperator = Map.GetInstance().HQList
+                         .SelectMany(hq => hq.Operators)
+                         .FirstOrDefault(op => op.Id.Equals(destOperatorId, StringComparison.OrdinalIgnoreCase));
 
             if (destinationOperator != null)
             {
