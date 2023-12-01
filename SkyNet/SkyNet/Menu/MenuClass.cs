@@ -234,7 +234,7 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer - 1].Operators)
             {
-                oper.MoveTo(Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters, safety);
+                oper.MoveTo(Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters, safety, indexer-1, oper.Id);
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             H++;
@@ -252,7 +252,7 @@ namespace SkyNet.Menu
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             //Deberiamos traer una lista de todos operadores con sus id en el cuartel q seleccionas
-            List<MechanicalOperator> operators = Map.GetInstance().HQList[0].Operators;
+            List<MechanicalOperator> operators = Map.GetInstance().HQList[0].Operators;//  esto por que es 0????
             foreach (MechanicalOperator op in operators)
             {
                 Console.WriteLine(op.Id);
@@ -412,7 +412,7 @@ namespace SkyNet.Menu
             }
 
             int indexer = Convert.ToInt32(selectedHQ);
-            selectedOperator.MoveTo(location, safety);
+            selectedOperator.MoveTo(location, safety, indexer-1, selectedOperator.Id);
             H++;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
@@ -509,7 +509,7 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("Enter operator type (1 = K9, 2 = UAV, 3 = M8): ");
+            Console.WriteLine("Enter operator type (1 = M8, 2 = K9, 3 = UAV): ");
             int indexer = Convert.ToInt32(selectedHQ);
             int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;

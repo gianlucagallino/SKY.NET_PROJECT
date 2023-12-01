@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Mapa;
+using System;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -109,7 +110,7 @@ namespace SkyNet.Entidades.Operadores
             return finalSpeed;
         }
 
-        public void MoveTo(Location loc, bool safety)
+        public void MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
             //double finalSpeed = CalculateMovementSpeed();
             // OptimalSpeed = finalSpeed;
@@ -148,7 +149,10 @@ namespace SkyNet.Entidades.Operadores
 
                         Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
                         Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationY].OperatorsInNode.Add(this);
-
+                        foreach (MechanicalOperator op in Map.GetInstance().HQList[hqNumber].Operators)
+                        {
+                            if (op.Id == opId) op.LocationP = goal.NodeLocation;
+                        }
                         //ANIMAR LA COSA
                     }
 
