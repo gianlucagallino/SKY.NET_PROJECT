@@ -215,7 +215,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP, true); //Al ser una operacion de rescate, es esencial que la nave que rescata no se dañe. 
+                MoveTo(destination.LocationP, safety, indexer - 1, operatorId); //Rellenar las variables; //Al ser una operacion de rescate, es esencial que la nave que rescata no se dañe. 
 
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
@@ -266,7 +266,7 @@ namespace SkyNet.Entidades.Operadores
             else
             {
 
-                MoveTo(destination.LocationP, true); //no se le da la opcion de seleccion al usuario, la seguridad es importante. 
+                MoveTo(destination.LocationP, safety, indexer-1 , operatorId); //Rellenar las variables
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                 new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
@@ -373,7 +373,7 @@ namespace SkyNet.Entidades.Operadores
         }
         private void MoveToAndProcess(Node destination, double loadAmount)
         {
-            MoveTo(destination.NodeLocation, true); //ESTE SAFE ES TEMPORAL; HAY QUE PREGUNTAR
+            MoveTo(destination.NodeLocation, safety, indexer - 1, operatorId); //Rellenar las variables; //ESTE SAFE ES TEMPORAL; HAY QUE PREGUNTAR
             CurrentLoad = loadAmount;
         }
         private bool IsDamaged()
@@ -418,7 +418,7 @@ namespace SkyNet.Entidades.Operadores
             if (DamageSimulatorP.PerforatedBattery)
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, false); //aca se podria preguntar, igual hay que refactorizar. pero asumiendo que tiene bateria limitada, preferible que sea camino optimo
+                MoveTo(nearestHeadquarters, safety, indexer - 1, operatorId); //Rellenar las variables; //aca se podria preguntar, igual hay que refactorizar. pero asumiendo que tiene bateria limitada, preferible que sea camino optimo
                 DamageSimulatorP.RepairBatteryOnly(this);
                 SimulateTime(TimeSimulator.BatteryChange);
             }
@@ -435,7 +435,7 @@ namespace SkyNet.Entidades.Operadores
             else if (IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, true);//lo  mismo, preguntar
+                MoveTo(nearestHeadquarters, safety, indexer - 1, operatorId); //Rellenar las variables;//lo  mismo, preguntar
 
                 DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
