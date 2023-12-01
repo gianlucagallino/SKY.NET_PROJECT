@@ -35,7 +35,8 @@ namespace SkyNet.Entidades
                 StuckServoSimulate,
                 PerforatedBatterySimulate,
                 DisconnectedBatteryPortSimulate,
-                PaintScratchSimulate
+                PaintScratchSimulate,
+                ElectronicLandfillSimulate
             };
         }
         public void SimulateRandomDamage(MechanicalOperator oper)

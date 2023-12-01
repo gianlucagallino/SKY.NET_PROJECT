@@ -31,6 +31,8 @@ namespace SkyNet.Entidades.Operadores
         //public Node[,] Grid { get; set; }
         public int TimeSpent { get; private set; }
 
+        public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
+
         public MechanicalOperator()
         {
             BusyStatus = false;
@@ -59,6 +61,7 @@ namespace SkyNet.Entidades.Operadores
             LocationP = location;
             Status = status;
             Id = id;
+
         }
 
         protected MechanicalOperator(int xposition, int yposition)
@@ -66,6 +69,15 @@ namespace SkyNet.Entidades.Operadores
             LocationP = new Location(xposition, yposition);
             Battery = new Battery();
             Status = StatusString(BusyStatus);
+            DamageSimulatorP = new DamageSimulator();
+            TerrainDamages = new Dictionary<int, Action<MechanicalOperator>>()
+            {
+              { 1, (oper) => DamageSimulatorP.SimulateRandomDamage(oper) },
+              { 2, (oper) => { if (oper is M8 || oper is K9)
+                { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+              { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
+            };
+
         }
 
         public string StatusString(bool busy)
@@ -148,7 +160,7 @@ namespace SkyNet.Entidades.Operadores
             Battery.DecreaseBattery(batteryConsumption);
 
             // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
-            if (terrainDamages.TryGetValue(terrainType, out var action))
+            if (TerrainDamages.TryGetValue(terrainType, out var action)) 
             {
                 action.Invoke(this);
             }
