@@ -504,6 +504,11 @@ namespace SkyNet.Menu
                 Map.GetInstance().HQList[indexer].Operators.Add(m8);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
                 Map.M8Counter++;
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Added!");
+                Console.ReadKey();
             }
             else if (operatorType == 2)
             {
@@ -511,19 +516,30 @@ namespace SkyNet.Menu
                 Map.GetInstance().HQList[indexer].Operators.Add(k9);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
                 Map.K9Counter++;
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Added!");
+                Console.ReadKey();
             }
-            else
+            else if (operatorType == 3)
             {
                 UAV uav = new UAV(Xposition, Yposition);
                 Map.GetInstance().HQList[indexer].Operators.Add(uav);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
                 Map.UAVCounter++;
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Added!");
+                Console.ReadKey();
             }
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("Added!");
+            Console.WriteLine("Failed.");
             Console.ReadKey();
+
         }
 
         private void RemoveOperator()
