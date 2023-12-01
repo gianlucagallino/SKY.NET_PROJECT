@@ -65,6 +65,21 @@ namespace SkyNet.Entidades.Operadores
         {
             LocationP = new Location(xposition, yposition);
             Battery = new Battery();
+            Status = StatusString(BusyStatus);
+        }
+
+        public string StatusString(bool busy)
+        {
+            string status = "";
+            if (busy)
+            {
+                status = "Operator is not available";
+            }
+            else
+            {
+                status = "Operator is available";
+            }
+            return status;
         }
 
 
