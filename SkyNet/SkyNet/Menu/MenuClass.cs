@@ -438,14 +438,9 @@ namespace SkyNet.Menu
 
             Console.WriteLine("Enter destination operator Id: ");
             string destOperatorId = Console.ReadLine();
-
             var destinationOperator = Map.GetInstance().HQList
                          .SelectMany(hq => hq.Operators)
                          .FirstOrDefault(op => op.Id.Equals(destOperatorId, StringComparison.OrdinalIgnoreCase));
-
-            int indexer = Convert.ToInt32(selectedHQ);
-            var destinationOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
-
 
             if (destinationOperator != null)
             {
@@ -463,6 +458,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
             
+
             }
             else
             {
