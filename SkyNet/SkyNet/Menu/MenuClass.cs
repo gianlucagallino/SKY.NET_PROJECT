@@ -161,7 +161,7 @@ namespace SkyNet.Menu
                     break;
             }
         }
-        private void ShowOperatorStatus() //Esto no anda. muestra valores void. 
+        private void ShowOperatorStatus() 
         {
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
@@ -170,15 +170,11 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators) 
             {
-                ClearMenuRemains();
-                GetConsoleSizeAfterMap();
-                Console.SetCursorPosition(W, H);
-                Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}"); //Error, printing void (probablemente tenga que ver con constructores)
-                H++;
-                Console.SetCursorPosition(W, H);
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
+                Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
             }
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
         }
 
         private void ShowOperatorStatusAtLocation()
@@ -189,10 +185,8 @@ namespace SkyNet.Menu
             Console.Write("Enter X location coordinates: "); //LA X; DP LA Y
             H++;
             //INPUT
-            
+            ClearMenuRemains();
             int Xinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
-
-            ClearMenuRemains(); 
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             Console.Write("Enter Y location coordinates: "); //LA X; DP LA Y
@@ -203,7 +197,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine($"Operator Status at those coordinates:"); //No se ni si anda, pero printea void (wow)
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)  //out of bounds??
+            foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)
             {
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
@@ -291,7 +285,6 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-
 
         }
         private void HandleSubOption(string subOption, MechanicalOperator selectedOperator)
