@@ -27,6 +27,7 @@ namespace SkyNet.Entidades.Operadores
             Battery.MAHCapacity = 6500;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 1;
+            Battery.DamageSimulatorP = new DamageSimulator();
             Id = Convert.ToString("K9-" + Map.K9Counter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;

@@ -24,11 +24,12 @@
             CurrentChargePercentage = currentChargePercentage;
             MaxCharge = maxCharge;
             DamageSimulatorP = damageSimulator;
+
         }
 
         public Battery()
         {
-
+  
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {
@@ -46,11 +47,11 @@
 
         public void DecreaseBattery(double amountBatteryPercentage)
         {
-            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage; //Damage simulator devuelve null
+            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage; //Por que Damage simulator devuelve null
 
-            if (currentChargePercentage - amountBatteryPercentage >= 0)
+            if (CurrentChargePercentage - amountBatteryPercentage >= 0)
             {
-                currentChargePercentage -= amountBatteryPercentage;
+                CurrentChargePercentage -= amountBatteryPercentage;
             }
             else { Console.WriteLine("The battery level cannot go below 0; it is not possible to perform that task."); }
         }
