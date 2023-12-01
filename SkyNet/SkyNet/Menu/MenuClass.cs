@@ -242,16 +242,23 @@ namespace SkyNet.Menu
             Console.ReadKey();
         }
 
-        private void SelectOperator() {
+        private void SelectOperator() 
+        {
 
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+            //Deberiamos traer una lista de todos operadores con sus id en el cuartel q seleccionas
+            List<MechanicalOperator> operators = Map.GetInstance().HQList[0].Operators;
+            foreach (MechanicalOperator op in operators)
+            {
+                Console.WriteLine(op.Id);
+            }
             Console.Write("Enter operator Id: ");
             int indexer = Convert.ToInt32(selectedHQ);
             int Xposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationX;
             int Yposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationY;
-            int operatorId = Convert.ToInt32(Console.ReadLine()); //Formato incorrecto? verificacion falta 
+            string operatorId = Console.ReadLine(); //Formato incorrecto? verificacion falta 
             var selectedOperator = Map.GetInstance().HQList[indexer-1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId)); //al tocar 4, obj ref not set to an instance of an object. 
 
             if (selectedOperator != null)
