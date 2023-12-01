@@ -130,7 +130,8 @@ namespace SkyNet.Entidades.Operadores
             List<Node> path = astar.FindPath(start, goal, Map.Grid, safety, isWalkingUnit);
 
 
-            if (path.Count==null){
+            if (path.Count == 0)
+            {
                 Console.WriteLine("No se encontro camino");
             } //path fue null. safe search
 
@@ -141,35 +142,35 @@ namespace SkyNet.Entidades.Operadores
                     LocationP = node.NodeLocation;
 
                     //aca actualiza la posicion del operador
-                    if (LocationP.Equals(loc))
+                    if (LocationP.LocationX==loc.LocationX && LocationP.LocationY==loc.LocationY)
                     {
                         Console.WriteLine("Destination reached!");
-                        break;
-                    }
-                }
-                //ANIMAR LA COSA
-            }
-            else
-            {
-                Console.WriteLine("No path found.");
-            }
 
+                        Map.Grid[start.NodeLocation.LocationX, start.NodeLocation.LocationX].OperatorsInNode.Remove(this);
+                        Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationX].OperatorsInNode.Add(this);
+
+                        //ANIMAR LA COSA
+                    }
+
+
+
+
+                    // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
+                    if (TerrainDamages.TryGetValue(terrainType, out var action))
+                    {
+                        action.Invoke(this);
+                    }
+
+                    int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10;
+                    TimeSpent += timeSpentMoveToPerNode;
+
+                }
+            }
 
             double distance = CalculateDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
-
-            // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
-            if (TerrainDamages.TryGetValue(terrainType, out var action)) 
-            {
-                action.Invoke(this);
-            }
-
-            int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10;
-            TimeSpent += timeSpentMoveToPerNode;
-
         }
-
         private double CalculateBatteryConsumption(double distance)
         {
             return 0.05 * (distance / 10);

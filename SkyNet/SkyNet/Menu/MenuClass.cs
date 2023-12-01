@@ -232,7 +232,7 @@ namespace SkyNet.Menu
             }
 
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators) //OUT OF RANGE
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators)
             {
                 oper.MoveTo(Map.GetInstance().HQList[indexer-1].LocationHeadQuarters, safety);
             }
@@ -241,6 +241,8 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+            Console.SetCursorPosition(0, 0);
+            Map.GetInstance().PrintMap(); //actualiza el mapa
         }
 
         private void SelectOperator() 
@@ -349,6 +351,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+            Map.GetInstance().PrintMap(); //actualiza el mapa
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
@@ -377,6 +380,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+            Map.GetInstance().PrintMap(); //actualiza el mapa
         }
 
         private void MoveToMenu(MechanicalOperator selectedOperator)
@@ -535,6 +539,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Failed.");
                 Console.ReadKey();
             }
+            Map.GetInstance().PrintMap(); //actualiza el mapa
 
         }
 
@@ -550,10 +555,12 @@ namespace SkyNet.Menu
             int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Out of range 
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             //verificar que exista
-            var removeOp = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id == operatorId);
+            MechanicalOperator removeOp = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id == operatorId);
             if (removeOp != null)
             {
-                Map.GetInstance().HQList[indexer].Operators.Remove(removeOp);
+                Location toDelete = removeOp.LocationP;
+                Map.Grid[toDelete.LocationX, toDelete.LocationY].OperatorsInNode.Remove(removeOp);
+                Map.GetInstance().HQList[indexer-1].Operators.Remove(removeOp);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -567,6 +574,7 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Operator {operatorId} not found.");
             }
             Console.ReadKey();
+            Map.GetInstance().PrintMap(); //actualiza el mapa
         }
 
         private void ClearMenuRemains()
