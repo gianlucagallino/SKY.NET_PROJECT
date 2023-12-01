@@ -17,7 +17,6 @@ namespace SkyNet.Entidades.Operadores
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
         protected int timeSpent;
 
-
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
         public Battery Battery { get; set; }
