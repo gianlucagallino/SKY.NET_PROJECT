@@ -34,7 +34,7 @@ namespace SkyNet.Entidades.Operadores
 
         public override string ToString()
         {
-            return $"MAH Capacity: {Battery.MAHCapacity}, Type: {Battery.Type}, Current Charge: {Battery.CurrentChargePercentage}%";
+            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%";
         }
     }
 }

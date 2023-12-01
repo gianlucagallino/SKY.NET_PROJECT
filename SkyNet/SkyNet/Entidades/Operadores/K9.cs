@@ -25,7 +25,7 @@ namespace SkyNet.Entidades.Operadores
             OptimalSpeed = 100;
             Battery = new Battery();
             Battery.MAHCapacity = 6500;
-            Battery.CurrentChargePercentage = 80;
+            Battery.CurrentChargePercentage = 100;
             Battery.Type = 1;
             Battery.DamageSimulatorP = new DamageSimulator();
             Id = Convert.ToString("K9-" + Map.K9Counter);
@@ -34,7 +34,7 @@ namespace SkyNet.Entidades.Operadores
         }
         public override string ToString()
         {
-            return $"MAH Capacity: {Battery.MAHCapacity}, Type: {Battery.Type}, Current Charge: {Battery.CurrentChargePercentage}%";
+            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%";
         }
     }
 }
