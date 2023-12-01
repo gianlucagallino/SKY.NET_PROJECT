@@ -189,8 +189,10 @@ namespace SkyNet.Menu
             Console.Write("Enter X location coordinates: "); //LA X; DP LA Y
             H++;
             //INPUT
-            ClearMenuRemains();
+            
             int Xinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
+
+            ClearMenuRemains(); 
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             Console.Write("Enter Y location coordinates: "); //LA X; DP LA Y
@@ -201,7 +203,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine($"Operator Status at those coordinates:"); //No se ni si anda, pero printea void (wow)
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)
+            foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)  //out of bounds??
             {
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
