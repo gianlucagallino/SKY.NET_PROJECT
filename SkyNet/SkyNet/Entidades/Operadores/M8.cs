@@ -17,9 +17,19 @@ namespace SkyNet.Entidades.Operadores
 
         public M8(int xposition, int yposition) : base(xposition, yposition)
         {
+            maxLoad = 40;
+            maxLoadOriginal = 40;
+            optimalSpeed = 250;
+            Battery.MAHCapacity = 12250;
+            Battery.CurrentChargePercentage = 100;
+            Battery.Type = 2;
+            id = Convert.ToString("M8-" + Map.M8Counter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
         }
-
+        public override string ToString()
+        {
+            return $"MAH Capacity: {Battery.MAHCapacity}, Type: {Battery.Type}, Current Charge: {Battery.CurrentChargePercentage}%";
+        }
     }
 }

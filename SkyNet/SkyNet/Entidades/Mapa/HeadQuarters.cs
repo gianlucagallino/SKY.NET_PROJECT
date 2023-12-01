@@ -46,6 +46,7 @@ namespace SkyNet.Entidades.Mapa
                         Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
                         inLoop = false;
                         Map.M8Counter++;
+                       // Console.WriteLine(m8.ToString()); para testear
                     }
                     else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
                     {
@@ -54,6 +55,7 @@ namespace SkyNet.Entidades.Mapa
                         Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
                         inLoop = false;
                         Map.K9Counter++;
+                        //Console.WriteLine(k9.ToString());
                     }
                     else if (generatedType == 3)
                     {
@@ -62,6 +64,7 @@ namespace SkyNet.Entidades.Mapa
                         Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
                         inLoop = false;
                         Map.UAVCounter++;
+                       // Console.WriteLine(uav.ToString()); para testear
                     }
                 }
             }
