@@ -196,7 +196,6 @@ namespace SkyNet.Entidades.Operadores
             if (amountPercentage < 0)
             {
                 Console.WriteLine("Amount must be non-negative for Transfer Battery.");
-                return;
             }
             if (AreOperatorsInSameLocation(destination))
             {
@@ -351,7 +350,7 @@ namespace SkyNet.Entidades.Operadores
                 Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
             }
 
-            Node closestNode = nodes[0];
+            Node closestNode = nodes[0];//tira OUT OF RANGE para el general order
             double minDistance = double.MaxValue;
 
             foreach (var node in nodes)
