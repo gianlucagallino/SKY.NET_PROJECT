@@ -118,7 +118,9 @@ namespace SkyNet.Entidades.Operadores
             List<Node> path = astar.FindPath(start, goal, Map.Grid, safety, isWalkingUnit);
 
 
-            int roadLength = path.Count;
+            if (path.Count==null){
+                Console.WriteLine("No se encontro camino");
+            } //path fue null. safe search
 
             if (path != null)
             {

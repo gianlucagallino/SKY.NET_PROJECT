@@ -217,9 +217,14 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Performing total recall...");
             H++;
-            Console.WriteLine("If you want optimal search, press 1\n" +
-                               "If you want safe search, press 2");
-            int search = Convert.ToInt32(Console.ReadLine());
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("If you want optimal search, press 1\n");
+                H++;
+                Console.SetCursorPosition(W, H);
+            Console.WriteLine("If you want safe search, press 2");
+            H++;
+            Console.SetCursorPosition(W, H);
+            int search = Convert.ToInt32(Console.ReadLine()); //verificaciones
             bool safety = false;
             if (search == 2)
             {
