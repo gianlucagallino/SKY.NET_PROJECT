@@ -192,7 +192,6 @@ namespace SkyNet.Entidades.Operadores
             if (amountPercentage < 0)
             {
                 Console.WriteLine("Amount must be non-negative for Transfer Battery.");
-                return;
             }
             if (AreOperatorsInSameLocation(destination))
             {
