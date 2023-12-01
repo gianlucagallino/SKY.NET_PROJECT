@@ -243,14 +243,13 @@ namespace SkyNet.Entidades.Operadores
                 MoveTo(destination.LocationP);
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
-                    new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
+                new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
 
 
                 if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
                 {
                     destination.currentLoad += amountKG;
                     currentLoad -= amountKG;
-
                     battery.DecreaseBattery(CalculateBatteryConsumption(distance));
                     destination.busyStatus = false;
                     busyStatus = false;
@@ -321,7 +320,7 @@ namespace SkyNet.Entidades.Operadores
         {
             if (nodes.Count == 0)
             {
-                return null;
+                Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
             }
 
             Node closestNode = nodes[0];
