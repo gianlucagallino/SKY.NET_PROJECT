@@ -185,7 +185,7 @@
             }
 
             // If no path is found
-            return null;
+            return new List<Node>();
         }
 
         // Construct the path from the goal node to the start node
