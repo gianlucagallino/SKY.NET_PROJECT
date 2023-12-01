@@ -420,7 +420,7 @@ namespace SkyNet.Menu
             Console.WriteLine("Enter destination operator Id: ");
             string destOperatorId = Console.ReadLine();
             int indexer = Convert.ToInt32(selectedHQ);
-            var destinationOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+            var destinationOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
 
             if (destinationOperator != null)
             {
@@ -454,7 +454,7 @@ namespace SkyNet.Menu
             Console.WriteLine("Enter destination operator Id: ");
             string destOperatorId = Console.ReadLine();
             int indexer = Convert.ToInt32(selectedHQ);
-            var destinationOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+            var destinationOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
 
             if (destinationOperator != null)
             {
@@ -487,14 +487,14 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Enter operator type (1 = K9, 2 = UAV, 3 = M8): ");
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
-            int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
+            int Xposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
+            int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             int operatorType = Convert.ToInt32(Console.ReadLine()); //Agregar verif
 
             if (operatorType == 1)
             {
                 M8 m8 = new M8(Xposition, Yposition);
-                Map.GetInstance().HQList[indexer].Operators.Add(m8);
+                Map.GetInstance().HQList[indexer - 1].Operators.Add(m8);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
                 Map.M8Counter++;
                 ClearMenuRemains();
@@ -506,7 +506,7 @@ namespace SkyNet.Menu
             else if (operatorType == 2)
             {
                 K9 k9 = new K9(Xposition, Yposition);
-                Map.GetInstance().HQList[indexer].Operators.Add(k9);
+                Map.GetInstance().HQList[indexer - 1].Operators.Add(k9);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
                 Map.K9Counter++;
                 ClearMenuRemains();
@@ -518,7 +518,7 @@ namespace SkyNet.Menu
             else if (operatorType == 3)
             {
                 UAV uav = new UAV(Xposition, Yposition);
-                Map.GetInstance().HQList[indexer].Operators.Add(uav);
+                Map.GetInstance().HQList[indexer - 1].Operators.Add(uav);
                 Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
                 Map.UAVCounter++;
                 ClearMenuRemains();
@@ -527,11 +527,14 @@ namespace SkyNet.Menu
                 Console.WriteLine("Added!");
                 Console.ReadKey();
             }
-            ClearMenuRemains();
-            GetConsoleSizeAfterMap();
-            Console.SetCursorPosition(W, H);
-            Console.WriteLine("Failed.");
-            Console.ReadKey();
+            else
+            {
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Failed.");
+                Console.ReadKey();
+            }
 
         }
 
@@ -544,10 +547,10 @@ namespace SkyNet.Menu
             string operatorId = Console.ReadLine();
 
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationX; //Out of range 
-            int Yposition = Map.GetInstance().HQList[indexer].LocationHeadQuarters.LocationY;
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Out of range 
+            int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             //verificar que exista
-            var removeOp = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id == operatorId);
+            var removeOp = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id == operatorId);
             if (removeOp != null)
             {
                 Map.GetInstance().HQList[indexer].Operators.Remove(removeOp);
