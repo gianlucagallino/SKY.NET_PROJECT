@@ -259,7 +259,7 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
             int Xposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationX;
             int Yposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationY;
-            string operatorId = Console.ReadLine(); //Formato incorrecto? verificacion falta 
+            string operatorId = Console.ReadLine().ToUpper(); //Formato incorrecto? verificacion falta 
             var selectedOperator = Map.GetInstance().HQList[indexer-1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId)); //al tocar 4, obj ref not set to an instance of an object. 
 
             if (selectedOperator != null)
@@ -274,6 +274,7 @@ namespace SkyNet.Menu
                     $"\n 3. Transfer Load" +
                     $"\n 4. General Order: if operator is damaged, repair it at the headquerter" +
                     $"\n 5. Battery Change");
+                Console.WriteLine("Select option: ");
 
                 string subOption = Console.ReadLine();
                 HandleSubOption(subOption, selectedOperator);
@@ -414,13 +415,28 @@ namespace SkyNet.Menu
         }
         private void TransferBatteryMenu(MechanicalOperator selectedOperator)
         {
+            Location currentLocation = selectedOperator.LocationP;
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+
+
+            //LISTA DE TODOS LOS OPERADORES DE TODOS LOS CUARTELES
+            foreach (HeadQuarters hq in Map.GetInstance().HQList)
+            {
+                List<MechanicalOperator> operators = hq.Operators;
+
+                foreach (MechanicalOperator op in operators)
+                {
+                    Console.WriteLine(op.Id+" "+op.Battery.CurrentChargePercentage);
+                }
+            }
+
             Console.WriteLine("Enter destination operator Id: ");
             string destOperatorId = Console.ReadLine();
-            int indexer = Convert.ToInt32(selectedHQ);
-            var destinationOperator = Map.GetInstance().HQList[indexer].Operators.FirstOrDefault(op => op.Id.Equals(destOperatorId));
+            var destinationOperator = Map.GetInstance().HQList
+                         .SelectMany(hq => hq.Operators)
+                         .FirstOrDefault(op => op.Id.Equals(destOperatorId, StringComparison.OrdinalIgnoreCase));
 
             if (destinationOperator != null)
             {
@@ -434,8 +450,10 @@ namespace SkyNet.Menu
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
+                Console.WriteLine($"Bateria operador {destinationOperator.Battery.CurrentChargePercentage}");
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
+            
             }
             else
             {

@@ -33,16 +33,16 @@
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {
-            if (currentChargePercentage + amountBatteryPercentage <= 100)
+            if (CurrentChargePercentage + amountBatteryPercentage <= 100)
             {
-                currentChargePercentage += amountBatteryPercentage;
+                CurrentChargePercentage += amountBatteryPercentage;
             }
             else { Console.WriteLine("The battery is at its maximum charge level"); }
         }
 
         public void CompleteBatteryLevel()
         {
-            currentChargePercentage = 100;
+            CurrentChargePercentage = 100;
         }
 
         public void DecreaseBattery(double amountBatteryPercentage)
