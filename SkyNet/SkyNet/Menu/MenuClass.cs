@@ -161,14 +161,14 @@ namespace SkyNet.Menu
                     break;
             }
         }
-        private void ShowOperatorStatus() 
+        private void ShowOperatorStatus()
         {
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Operator Status:");
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators) 
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer - 1].Operators)
             {
                 Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}");
             }
@@ -219,8 +219,8 @@ namespace SkyNet.Menu
             H++;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("If you want optimal search, press 1\n");
-                H++;
-                Console.SetCursorPosition(W, H);
+            H++;
+            Console.SetCursorPosition(W, H);
             Console.WriteLine("If you want safe search, press 2");
             H++;
             Console.SetCursorPosition(W, H);
@@ -232,9 +232,9 @@ namespace SkyNet.Menu
             }
 
             int indexer = Convert.ToInt32(selectedHQ);
-            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators)
+            foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer - 1].Operators)
             {
-                oper.MoveTo(Map.GetInstance().HQList[indexer-1].LocationHeadQuarters, safety);
+                oper.MoveTo(Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters, safety);
             }
             Console.WriteLine("All operators recalled to Headquarters.");
             H++;
@@ -245,7 +245,7 @@ namespace SkyNet.Menu
             Map.GetInstance().PrintMap(); //actualiza el mapa
         }
 
-        private void SelectOperator() 
+        private void SelectOperator()
         {
 
             ClearMenuRemains();
@@ -259,10 +259,10 @@ namespace SkyNet.Menu
             }
             Console.Write("Enter operator Id: ");
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationX;
-            int Yposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationY;
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
+            int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             string operatorId = Console.ReadLine().ToUpper(); //Formato incorrecto? verificacion falta 
-            var selectedOperator = Map.GetInstance().HQList[indexer-1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId)); //al tocar 4, obj ref not set to an instance of an object. 
+            var selectedOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId)); //al tocar 4, obj ref not set to an instance of an object. 
 
             if (selectedOperator != null)
             {
@@ -356,13 +356,14 @@ namespace SkyNet.Menu
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
-            if (selectedOperator.BusyStatus == false) {
+            if (selectedOperator.BusyStatus == false)
+            {
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Executing General Order...");
 
-            Node[,] grid = GetGrid();
+                Node[,] grid = GetGrid();
 
                 selectedOperator.GeneralOrder(grid);
                 ClearMenuRemains();
@@ -398,20 +399,20 @@ namespace SkyNet.Menu
             Console.WriteLine("Enter destination coordinates Y: ");
             int Yposition = Convert.ToInt32(Console.ReadLine());
             Location location = new Location(Xposition, Yposition);
-                ClearMenuRemains();
-                GetConsoleSizeAfterMap();
-                Console.SetCursorPosition(W, H);
-                Console.WriteLine("If you want optimal search, press 1\n" +
-                                   "If you want safe search, press 2");
-                int search = Convert.ToInt32(Console.ReadLine());
-                bool safety = false;
-                if (search == 2)
-                {
-                    safety = true;
-                }
+            ClearMenuRemains();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("If you want optimal search, press 1\n" +
+                               "If you want safe search, press 2");
+            int search = Convert.ToInt32(Console.ReadLine());
+            bool safety = false;
+            if (search == 2)
+            {
+                safety = true;
+            }
 
-                int indexer = Convert.ToInt32(selectedHQ);
-                selectedOperator.MoveTo(location, safety);
+            int indexer = Convert.ToInt32(selectedHQ);
+            selectedOperator.MoveTo(location, safety);
             H++;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
@@ -432,7 +433,7 @@ namespace SkyNet.Menu
 
                 foreach (MechanicalOperator op in operators)
                 {
-                    Console.WriteLine(op.Id+" "+op.Battery.CurrentChargePercentage);
+                    Console.WriteLine(op.Id + " " + op.Battery.CurrentChargePercentage);
                 }
             }
 
@@ -457,7 +458,7 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Bateria operador {destinationOperator.Battery.CurrentChargePercentage}");
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
-            
+
 
             }
             else
@@ -510,7 +511,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Enter operator type (1 = K9, 2 = UAV, 3 = M8): ");
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer-1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             int operatorType = Convert.ToInt32(Console.ReadLine()); //Agregar verif
 
@@ -579,7 +580,7 @@ namespace SkyNet.Menu
             {
                 Location toDelete = removeOp.LocationP;
                 Map.Grid[toDelete.LocationX, toDelete.LocationY].OperatorsInNode.Remove(removeOp);
-                Map.GetInstance().HQList[indexer-1].Operators.Remove(removeOp);
+                Map.GetInstance().HQList[indexer - 1].Operators.Remove(removeOp);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -599,7 +600,7 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-             for (int i = 0; i <15; i++)
+            for (int i = 0; i < 15; i++)
             {
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("                                                         ");

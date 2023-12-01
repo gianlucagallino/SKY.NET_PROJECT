@@ -139,15 +139,15 @@ namespace SkyNet.Entidades.Operadores
             {
                 foreach (Node node in path)
                 {
-                    LocationP = node.NodeLocation;
+                    Location TempLocation = node.NodeLocation;
 
                     //aca actualiza la posicion del operador
-                    if (LocationP.LocationX==loc.LocationX && LocationP.LocationY==loc.LocationY)
+                    if (TempLocation.LocationX==loc.LocationX && TempLocation.LocationY==loc.LocationY)
                     {
                         Console.WriteLine("Destination reached!");
 
-                        Map.Grid[start.NodeLocation.LocationX, start.NodeLocation.LocationX].OperatorsInNode.Remove(this);
-                        Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationX].OperatorsInNode.Add(this);
+                        Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
+                        Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationY].OperatorsInNode.Add(this);
 
                         //ANIMAR LA COSA
                     }
@@ -290,10 +290,11 @@ namespace SkyNet.Entidades.Operadores
         private double CalculateDistance(List<Node> nodes)
         {
             double totalDistance = 0;
+            double distance = 10;
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
-                double distance = 10;
+                
                 totalDistance += distance;
             }
 
