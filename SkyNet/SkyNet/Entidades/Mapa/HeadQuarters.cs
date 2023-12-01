@@ -77,6 +77,8 @@ namespace SkyNet.Entidades.Mapa
             return false;
         }
 
+        /* esto deberia ir en codigo? menu? no se. 
+
         // Displays the status of all operators
         public void ShowOperatorStatus()
         {
@@ -117,6 +119,6 @@ namespace SkyNet.Entidades.Mapa
         public void RemoveReserveOperator(MechanicalOperator oper)
         {
             Operators.Remove(oper);
-        }
+        }*/
     }
 }

@@ -4,6 +4,7 @@ namespace SkyNet.Entidades.Operadores
 {
     public abstract class MechanicalOperator
     {
+        /*
         protected string id;
         protected bool busyStatus;
         protected Battery battery;
@@ -13,9 +14,9 @@ namespace SkyNet.Entidades.Operadores
         protected double currentLoad;
         protected float optimalSpeed;
         private DamageSimulator damageSimulator;
-        private Node[,] grid;
+        private Node[,] grid;*/
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
-        protected int timeSpent;
+        //protected int timeSpent;
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
@@ -27,26 +28,25 @@ namespace SkyNet.Entidades.Operadores
         public double OptimalSpeed { get; set; }
         public Location LocationP { get; set; }
         public DamageSimulator DamageSimulatorP { get; set; }
-        public Node[,] Grid { get; set; }
+        //public Node[,] Grid { get; set; }
         public int TimeSpent { get; private set; }
 
         public MechanicalOperator()
         {
-            id = string.Empty;
-            busyStatus = false;
-            battery = new Battery();
-            status = "ACTIVE";
-            maxLoad = 1000;
-            maxLoadOriginal = 0;
-            currentLoad = 0;
-            optimalSpeed = 100;
-            damageSimulator = new DamageSimulator();
+            BusyStatus = false;
+            Battery = new Battery();
+            Status = "ACTIVE";
+            MaxLoad = 1000;
+            MaxLoadOriginal = 0;
+            CurrentLoad = 0;
+            OptimalSpeed = 100;
+            DamageSimulatorP = new DamageSimulator();
             terrainDamages = new Dictionary<int, Action<MechanicalOperator>>()
             {
-              { 1, (oper) => damageSimulator.SimulateRandomDamage(oper) },
+              { 1, (oper) => DamageSimulatorP.SimulateRandomDamage(oper) },
               { 2, (oper) => { if (oper is M8 || oper is K9)
                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
-              { 3, (oper) => damageSimulator.ElectronicLandfillSimulate(oper) }
+              { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
             };
 
         }
@@ -57,9 +57,8 @@ namespace SkyNet.Entidades.Operadores
             MaxLoadOriginal = minLoad;
             Battery = new Battery();
             LocationP = location;
-            this.status = status;
-            this.id = id;
-
+            Status = status;
+            Id = id;
         }
 
         protected MechanicalOperator(int xposition, int yposition)
@@ -68,10 +67,11 @@ namespace SkyNet.Entidades.Operadores
             Battery = new Battery();
         }
 
+
         public int SimulateTime(TimeSimulator taskType)
         {
             int time = (int)taskType;
-            timeSpent += time;
+            TimeSpent += time;
             return time;
         }
         public double CalculateMovementSpeed()
@@ -82,36 +82,28 @@ namespace SkyNet.Entidades.Operadores
             return finalSpeed;
         }
 
-        public void MoveTo(Location loc)
+        public void MoveTo(Location loc, bool safety)
         {
             //double finalSpeed = CalculateMovementSpeed();
             // OptimalSpeed = finalSpeed;
 
-            int terrainType = grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
+            int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType; //ERROR: Object reference not set to an instance of an object
 
             Node start = new Node(LocationP.LocationX, LocationP.LocationY);
             Node goal = new Node(loc.LocationX, loc.LocationY);
 
             AStarAlgorithm astar = new AStarAlgorithm();
 
-            Console.WriteLine("If you want optimal search, press 1\n" +
-                               "If you want safe search, press 2");
-            int search = Convert.ToInt32(Console.ReadLine());
-            bool safety = false;
             bool isWalkingUnit = true;
-            if (search == 2)
-            {
-                safety = true;
-            }
             if (Id.Contains("UAV"))
             {
                 isWalkingUnit = false;
             }
 
-            List<Node> path = astar.FindPath(start, goal, grid, safety, isWalkingUnit);
+            List<Node> path = astar.FindPath(start, goal, Map.Grid, safety, isWalkingUnit);
 
 
-            int roadLenght = path.Count;
+            int roadLength = path.Count;
 
             if (path != null)
             {
@@ -145,7 +137,7 @@ namespace SkyNet.Entidades.Operadores
             }
 
             int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10;
-            timeSpent += timeSpentMoveToPerNode;
+            TimeSpent += timeSpentMoveToPerNode;
 
         }
 
@@ -164,8 +156,8 @@ namespace SkyNet.Entidades.Operadores
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage)
         {
-            destination.busyStatus = true;
-            busyStatus = true;
+            destination.BusyStatus = true;
+            BusyStatus = true;
 
             if (amountPercentage < 0)
             {
@@ -176,16 +168,16 @@ namespace SkyNet.Entidades.Operadores
             {
                 if (ValidateBatteryTransfer(amountPercentage))
                 {
-                    destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.Battery.ChargeBattery(amountPercentage);
+                    Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
                 }
                 else
                 {
                     Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
-                    busyStatus = false;
+                    BusyStatus = false;
                 }
             }
             else
@@ -199,43 +191,43 @@ namespace SkyNet.Entidades.Operadores
 
                 if (ValidateBatteryTransfer(amountPercentage))
                 {
-                    destination.battery.ChargeBattery(amountPercentage);
-                    battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.Battery.ChargeBattery(amountPercentage);
+                    Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                    Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
                 }
             }
         }
         public void TransferLoad(MechanicalOperator destination, double amountKG)
         {
-            destination.busyStatus = true;
-            busyStatus = true;
+            destination.BusyStatus = true;
+            BusyStatus = true;
             if (amountKG < 0)
             {
                 Console.WriteLine("Amount must be non-negative for TransferLoad.");
+                destination.BusyStatus = false;
+                BusyStatus = false;
                 return;
-                destination.busyStatus = false;
-                busyStatus = false;
             }
 
             if (AreOperatorsInSameLocation(destination))
             {
                 //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
-                if (destination.currentLoad + amountKG < destination.MaxLoad)
+                if (destination.CurrentLoad + amountKG < destination.MaxLoad)
                 {
-                    destination.currentLoad += amountKG;
-                    currentLoad -= amountKG;
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.CurrentLoad += amountKG;
+                    CurrentLoad -= amountKG;
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
                     Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                 }
             }
             else
@@ -247,20 +239,20 @@ namespace SkyNet.Entidades.Operadores
                 new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
 
 
-                if (destination.currentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
+                if (destination.CurrentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
                 {
-                    destination.currentLoad += amountKG;
-                    currentLoad -= amountKG;
-                    battery.DecreaseBattery(CalculateBatteryConsumption(distance));
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.CurrentLoad += amountKG;
+                    CurrentLoad -= amountKG;
+                    Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferLoad);
                 }
                 else
                 {
                     Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
-                    destination.busyStatus = false;
-                    busyStatus = false;
+                    destination.BusyStatus = false;
+                    BusyStatus = false;
                 }
             }
         }
@@ -284,8 +276,8 @@ namespace SkyNet.Entidades.Operadores
 
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
-            double increaseAmperes = destination.battery.MAHCapacity * amountPercentage / 100;
-            double decreasePercentage = 100 * increaseAmperes / battery.MAHCapacity;
+            double increaseAmperes = destination.Battery.MAHCapacity * amountPercentage / 100;
+            double decreasePercentage = 100 * increaseAmperes / Battery.MAHCapacity;
 
             return decreasePercentage;
         }
@@ -293,7 +285,7 @@ namespace SkyNet.Entidades.Operadores
         {
             double decreasePercentage = CalculatePercentage(this, amountPercentage);
 
-            if (battery.CurrentChargePercentage >= decreasePercentage && !damageSimulator.DisconnectedBatteryPort)
+            if (Battery.CurrentChargePercentage >= decreasePercentage && !DamageSimulatorP.DisconnectedBatteryPort)
             {
                 return true;
             }
@@ -348,7 +340,7 @@ namespace SkyNet.Entidades.Operadores
         private void MoveToAndProcess(Node destination, double loadAmount)
         {
             MoveTo(destination.NodeLocation);
-            currentLoad = loadAmount;
+            CurrentLoad = loadAmount;
         }
         private bool IsDamaged()
         {
@@ -389,17 +381,17 @@ namespace SkyNet.Entidades.Operadores
 
         public void BatteryChange(Node[,] grid)
         {
-            if (damageSimulator.PerforatedBattery)
+            if (DamageSimulatorP.PerforatedBattery)
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
                 MoveTo(nearestHeadquarters);
-                damageSimulator.RepairBatteryOnly(this);
+                DamageSimulatorP.RepairBatteryOnly(this);
                 SimulateTime(TimeSimulator.BatteryChange);
             }
         }
         public void GeneralOrder(Node[,] grid)
         {
-            if (!busyStatus)
+            if (!BusyStatus)
             {
 
                 HandleOrder(grid, 3, MaxLoad);
@@ -411,10 +403,10 @@ namespace SkyNet.Entidades.Operadores
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
                 MoveTo(nearestHeadquarters);
 
-                damageSimulator.Repair(this);
+                DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
             }
-            damageSimulator.Repair(this);
+            DamageSimulatorP.Repair(this);
         }
     }
 }

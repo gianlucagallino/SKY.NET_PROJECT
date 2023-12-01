@@ -46,7 +46,7 @@
 
         public void DecreaseBattery(double amountBatteryPercentage)
         {
-            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage;
+            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage; //Damage simulator devuelve null
 
             if (currentChargePercentage - amountBatteryPercentage >= 0)
             {

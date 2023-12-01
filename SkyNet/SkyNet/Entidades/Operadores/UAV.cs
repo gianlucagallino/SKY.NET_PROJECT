@@ -7,26 +7,26 @@ namespace SkyNet.Entidades.Operadores
         public UAV(string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status)
             : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {
-            maxLoad = 5;
-            maxLoadOriginal = 5;
-            optimalSpeed = 150;
+            MaxLoad = 5;
+            MaxLoadOriginal = 5;
+            OptimalSpeed = 150;
             battery=new Battery();
             battery.MAHCapacity = 4000;
             battery.CurrentChargePercentage = 100;
             battery.Type = 3;
-            id = Convert.ToString("UAV-" + Map.UAVCounter);
+            Id = Convert.ToString("UAV-" + Map.UAVCounter);
         }
 
         public UAV(int xposition, int yposition) : base(xposition, yposition)
         {
-            maxLoad = 5;
-            maxLoadOriginal = 5;
-            optimalSpeed = 150;
+            MaxLoad = 5;
+            MaxLoadOriginal = 5;
+            OptimalSpeed = 150;
             Battery = new Battery();
             Battery.MAHCapacity = 4000;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 3;
-            id = Convert.ToString("UAV-" + Map.UAVCounter);
+            Id = Convert.ToString("UAV-" + Map.UAVCounter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
         }

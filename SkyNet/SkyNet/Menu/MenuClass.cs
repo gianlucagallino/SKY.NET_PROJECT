@@ -174,6 +174,9 @@ namespace SkyNet.Menu
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine($"Operator Id: {oper.Id}, Status: {oper.Status}"); //Error, printing void (probablemente tenga que ver con constructores)
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
             }
         }
@@ -186,6 +189,7 @@ namespace SkyNet.Menu
             Console.Write("Enter X location coordinates: "); //LA X; DP LA Y
             H++;
             //INPUT
+            ClearMenuRemains();
             int Xinput = Convert.ToInt32(Console.ReadLine()); //AGREGAR VERIF
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
@@ -195,7 +199,7 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            Console.WriteLine($"Operator Status at those coordinates:");
+            Console.WriteLine($"Operator Status at those coordinates:"); //No se ni si anda, pero printea void (wow)
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)
             {
@@ -203,6 +207,9 @@ namespace SkyNet.Menu
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Press any key to continue");
             }
             Console.ReadKey();
         }
@@ -213,12 +220,25 @@ namespace SkyNet.Menu
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Performing total recall...");
+            H++;
+            Console.WriteLine("If you want optimal search, press 1\n" +
+                               "If you want safe search, press 2");
+            int search = Convert.ToInt32(Console.ReadLine());
+            bool safety = false;
+            if (search == 2)
+            {
+                safety = true;
+            }
+
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer-1].Operators) //OUT OF RANGE
             {
-                oper.MoveTo(Map.GetInstance().HQList[indexer-1].LocationHeadQuarters);
+                oper.MoveTo(Map.GetInstance().HQList[indexer-1].LocationHeadQuarters, safety);
             }
             Console.WriteLine("All operators recalled to Headquarters.");
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
 

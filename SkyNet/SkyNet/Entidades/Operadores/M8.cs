@@ -6,24 +6,24 @@ namespace SkyNet.Entidades.Operadores
     {
         public M8(string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status) : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {
-            maxLoad = 40;
-            maxLoadOriginal = 40;
-            optimalSpeed = 250;
+            MaxLoad = 40;
+            MaxLoadOriginal = 40;
+            OptimalSpeed = 250;
             battery.MAHCapacity = 12250;
             battery.CurrentChargePercentage = 100;
             battery.Type = 2;
-            id = Convert.ToString("M8-" + Map.M8Counter);
+            Id = Convert.ToString("M8-" + Map.M8Counter);
         }
 
         public M8(int xposition, int yposition) : base(xposition, yposition)
         {
-            maxLoad = 40;
-            maxLoadOriginal = 40;
-            optimalSpeed = 250;
+            MaxLoad = 40;
+            MaxLoadOriginal = 40;
+            OptimalSpeed = 250;
             Battery.MAHCapacity = 12250;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 2;
-            id = Convert.ToString("M8-" + Map.M8Counter);
+            Id = Convert.ToString("M8-" + Map.M8Counter);
             LocationP.LocationX = xposition;
             LocationP.LocationY = yposition;
         }
