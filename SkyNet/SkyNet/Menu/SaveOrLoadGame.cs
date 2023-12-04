@@ -4,31 +4,37 @@ namespace SkyNet.Menu
 {
     public class SaveOrLoadGame
     {
-        static void SaveGame()
+        public static void SaveGame()
         {
-            try
+            bool ok = true;
+            while (ok)
             {
-                //De esta manera el usuario elige el nombre del archivo a guardar
-                Console.WriteLine("Enter the name for the saved game:");
-                string gameName = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(gameName))
+                try
                 {
-                    Console.WriteLine("Invalid game name. The game was not saved.");
-                    return;
+                    //De esta manera el usuario elige el nombre del archivo a guardar
+                    Console.WriteLine("Enter the name for the saved game:");
+                    string gameName = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(gameName))
+                    {
+                        Console.WriteLine("Invalid game name. The game was not saved.");
+
+                    }
+                    string gameJson = Map.GetInstance().SerializeToJson();
+                    File.WriteAllText($"{gameName}.json", gameJson);
+                    Console.WriteLine("Game saved successfully");
+                    Console.WriteLine($"File saved in: {Environment.CurrentDirectory}");
+                    ok=false;
                 }
-                string gameJson = Map.GetInstance().SerializeToJson();
-                File.WriteAllText($"{gameName}.json", gameJson);
-                Console.WriteLine("Game saved successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving the game: {ex.Message}");
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving the game: {ex.Message}");
+                }
             }
         }
 
         //De esta manera nueva de hacer LoadGame no retorna nada en medio del bucle.
-        static void LoadGame()
+        public static void LoadGame()
         {
             bool isValidSelection = true;
             List<Map> loadedGames = new List<Map>();

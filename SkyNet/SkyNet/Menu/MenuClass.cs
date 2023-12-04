@@ -96,6 +96,9 @@ namespace SkyNet.Menu
             Console.WriteLine("6. Destroy Operator               ");
             Console.SetCursorPosition(W, H);
             H++;
+            Console.WriteLine("7. Exit               ");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine(" -------------------------------");
             Console.SetCursorPosition(W, H);
             H++;
@@ -154,6 +157,9 @@ namespace SkyNet.Menu
                 case "6":
                     RemoveOperator();
                     break;
+                case "7":
+                    Exit();
+                    break;
                 default:
                     ClearMenuRemains();
                     GetConsoleSizeAfterMap();
@@ -163,6 +169,34 @@ namespace SkyNet.Menu
                     break;
             }
         }
+
+        private void Exit()
+        {
+            Console.WriteLine("Are you sure you want to exit? " +
+                "\n Press 1 if you want to exit and save the game" +
+                "\n Press 2 if you want to exit and don't save the game " +
+                "\n Press any other key to cancel");
+            int response = Convert.ToInt32(Console.ReadLine());
+
+            if (response == 1)
+            {
+                SaveOrLoadGame.SaveGame();
+            }
+            else if(response == 2)
+            {
+                Console.WriteLine("Thank you for playing!");
+                Environment.Exit(0);
+                
+            }
+            else
+            {
+                Console.ReadKey();
+
+            }
+
+          
+        }
+
         private void ShowOperatorStatus()
         {
             ClearMenuRemains();
