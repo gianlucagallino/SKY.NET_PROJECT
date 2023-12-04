@@ -1,6 +1,8 @@
 ﻿using SkyNet.Entidades;
 using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
+using System;
+using System.ComponentModel;
 
 namespace SkyNet.Menu
 {
@@ -217,20 +219,8 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Performing total recall...");
             H++;
-            Console.SetCursorPosition(W, H);
-            Console.WriteLine("If you want optimal search, press 1\n");
-            H++;
-            Console.SetCursorPosition(W, H);
-            Console.WriteLine("If you want safe search, press 2");
-            H++;
-            Console.SetCursorPosition(W, H);
-            int search = Convert.ToInt32(Console.ReadLine()); //verificaciones
-            bool safety = false;
-            if (search == 2)
-            {
-                safety = true;
-            }
-
+            Thread.Sleep(2000);
+            bool safety = AskForSafety();
             int indexer = Convert.ToInt32(selectedHQ);
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer - 1].Operators)
             {
@@ -326,7 +316,9 @@ namespace SkyNet.Menu
         }
         private void ChangeBatteryMenu(MechanicalOperator selectedOperator)
         {
-            Console.Clear();
+            string operatorId = selectedOperator.Id;
+            int whatHeadquarter = Convert.ToInt32(selectedHQ) - 1;
+            bool safety = AskForSafety();
 
             if (selectedOperator.DamageSimulatorP.PerforatedBattery)
             {
@@ -335,7 +327,7 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Performing Battery Change...");
                 Node[,] grid = GetGrid();
-                selectedOperator.BatteryChange(grid);
+                selectedOperator.BatteryChange(grid, safety, whatHeadquarter, operatorId);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -356,16 +348,19 @@ namespace SkyNet.Menu
         }
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
         {
+            string operatorId = selectedOperator.Id;
+            int whatHeadquarter = Convert.ToInt32(selectedHQ)-1;
+            bool safety = AskForSafety();
+
             if (selectedOperator.BusyStatus == false)
             {
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Executing General Order...");
-
+                Thread.Sleep(2000);
                 Node[,] grid = GetGrid();
-
-                selectedOperator.GeneralOrder(grid);
+                selectedOperator.GeneralOrder(grid, operatorId, whatHeadquarter, safety);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -424,6 +419,9 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+            string operatorId = selectedOperator.Id;
+            int whatHeadquarter = Convert.ToInt32(selectedHQ) - 1;
+            bool safety = AskForSafety();
 
 
             //LISTA DE TODOS LOS OPERADORES DE TODOS LOS CUARTELES
@@ -451,7 +449,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Enter percentage of battery to transfer: ");
                 double percentage = Convert.ToDouble(Console.ReadLine());
 
-                selectedOperator.TransferBattery(destinationOperator, percentage);
+                selectedOperator.TransferBattery(destinationOperator, percentage, safety, whatHeadquarter, operatorId);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -476,6 +474,9 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+            string operatorId = selectedOperator.Id;
+            int whatHeadquarter = Convert.ToInt32(selectedHQ) - 1;
+            bool safety = AskForSafety();
 
 
             //LISTA DE TODOS LOS OPERADORES DE TODOS LOS CUARTELES
@@ -503,7 +504,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Enter amount of load to transfer: ");
                 double amountKG = Convert.ToDouble(Console.ReadLine());
 
-                selectedOperator.TransferLoad(destinationOperator, amountKG);
+                selectedOperator.TransferLoad(destinationOperator, amountKG, safety, whatHeadquarter, operatorId);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
@@ -621,6 +622,29 @@ namespace SkyNet.Menu
                 Console.WriteLine("                                                         ");
                 H++;
             }
+        }
+
+        public bool AskForSafety()
+        {
+            ClearMenuRemains();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("If you want optimal search, press 1\n");
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("If you want safe search, press 2");
+            H++;
+            H++;
+            Console.SetCursorPosition(W, H);
+            int search = Convert.ToInt32(Console.ReadLine()); //verificaciones
+            bool safety = false;
+            if (search == 2)
+            {
+                safety = true;
+            }
+            return safety;
         }
     }
 }

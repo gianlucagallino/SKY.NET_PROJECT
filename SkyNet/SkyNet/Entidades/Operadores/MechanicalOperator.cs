@@ -188,7 +188,7 @@ namespace SkyNet.Entidades.Operadores
             }
 
         }
-        public void TransferBattery(MechanicalOperator destination, double amountPercentage)
+        public void TransferBattery(MechanicalOperator destination, double amountPercentage, bool safety, int whatHq, string opId)
         {
             destination.BusyStatus = true;
             BusyStatus = true;
@@ -215,7 +215,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP, safety, indexer - 1, operatorId); //Rellenar las variables; //Al ser una operacion de rescate, es esencial que la nave que rescata no se dañe. 
+                MoveTo(destination.LocationP, safety, whatHq, opId); //Rellenar las variables; //Al ser una operacion de rescate, es esencial que la nave que rescata no se dañe. 
 
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
@@ -233,7 +233,7 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
-        public void TransferLoad(MechanicalOperator destination, double amountKG)
+        public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
         {
             destination.BusyStatus = true;
             BusyStatus = true;
@@ -266,7 +266,7 @@ namespace SkyNet.Entidades.Operadores
             else
             {
 
-                MoveTo(destination.LocationP, safety, indexer-1 , operatorId); //Rellenar las variables
+                MoveTo(destination.LocationP, safety, whatHq, opId); //Rellenar las variables
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                 new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
@@ -365,15 +365,15 @@ namespace SkyNet.Entidades.Operadores
 
             return closestNode;
         }
-        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount)
+        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
         {
             List<Node> closestNodes = GetLocal(LocationP, terrainType, grid);
             Node mostClosestNode = FindClosestNode(closestNodes);
-            MoveToAndProcess(mostClosestNode, loadAmount);
+            MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
         }
-        private void MoveToAndProcess(Node destination, double loadAmount)
+        private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
         {
-            MoveTo(destination.NodeLocation, safety, indexer - 1, operatorId); //Rellenar las variables; //ESTE SAFE ES TEMPORAL; HAY QUE PREGUNTAR
+            MoveTo(destination.NodeLocation, safety, whatHq, opId); //Rellenar las variables; //ESTE SAFE ES TEMPORAL; HAY QUE PREGUNTAR
             CurrentLoad = loadAmount;
         }
         private bool IsDamaged()
@@ -413,29 +413,31 @@ namespace SkyNet.Entidades.Operadores
             return nearestHeadquarters;
         }
 
-        public void BatteryChange(Node[,] grid)
+        public void BatteryChange(Node[,] grid, bool safety, int whatHq, string opId)
         {
             if (DamageSimulatorP.PerforatedBattery)
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, safety, indexer - 1, operatorId); //Rellenar las variables; //aca se podria preguntar, igual hay que refactorizar. pero asumiendo que tiene bateria limitada, preferible que sea camino optimo
+                MoveTo(nearestHeadquarters, safety, whatHq, opId); //Rellenar las variables; //aca se podria preguntar, igual hay que refactorizar. pero asumiendo que tiene bateria limitada, preferible que sea camino optimo
                 DamageSimulatorP.RepairBatteryOnly(this);
                 SimulateTime(TimeSimulator.BatteryChange);
             }
         }
-        public void GeneralOrder(Node[,] grid)
+        public void GeneralOrder(Node[,] grid, string opId, int whatHq, bool safety)
         {
+            
+
             if (!BusyStatus)
             {
 
-                HandleOrder(grid, 3, MaxLoad);
+                HandleOrder(grid, 3, MaxLoad, safety, whatHq, opId);
 
-                HandleOrder(grid, 4, 0);
+                HandleOrder(grid, 4, 0, safety, whatHq, opId);
             }
             else if (IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, safety, indexer - 1, operatorId); //Rellenar las variables;//lo  mismo, preguntar
+                MoveTo(nearestHeadquarters, safety, whatHq, opId); //Rellenar las variables;//lo  mismo, preguntar
 
                 DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
