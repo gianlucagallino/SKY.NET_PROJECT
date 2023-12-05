@@ -28,7 +28,7 @@
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
-                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle && !(grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].TerrainType == 2);
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsDangerous && !(grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].TerrainType == 2);
         }
 
         // Check if a node is valid for Flying  units, no danger consideration (optimal) (Code: 3)
@@ -43,7 +43,7 @@
         {
             return n.NodeLocation.LocationX >= 0 && n.NodeLocation.LocationX < grid.GetLength(0) &&
                    n.NodeLocation.LocationY >= 0 && n.NodeLocation.LocationY < grid.GetLength(1) &&
-                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsObstacle;
+                   !grid[n.NodeLocation.LocationX, n.NodeLocation.LocationY].IsDangerous;
         }
 
 

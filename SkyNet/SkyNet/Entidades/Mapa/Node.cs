@@ -25,7 +25,6 @@ namespace SkyNet.Entidades.Mapa
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
-        public bool IsObstacle { get; set; }
         public Location NodeLocation { get; set; }
         public int F { get; set; }
         public int G { get; set; }
@@ -46,17 +45,10 @@ namespace SkyNet.Entidades.Mapa
             if (TerrainType == 1 || TerrainType == 3)
             {
                 IsDangerous = true;
-                IsObstacle = true;
-            }
-            else if (TerrainType == 2)
-            {
-                IsDangerous = false;
-                IsObstacle = false;
             }
             else
             {
                 IsDangerous = false;
-                IsObstacle = true;
             }
         }
 
