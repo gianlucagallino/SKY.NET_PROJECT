@@ -133,8 +133,8 @@ namespace SkyNet.Entidades.Operadores
 
             if (path.Count == 0)
             {
-                Console.WriteLine("No se encontro camino");
-            } //path fue null. safe search
+                Console.WriteLine("No path found for this unit.");
+            } 
 
             if (path != null)
             {
@@ -153,11 +153,7 @@ namespace SkyNet.Entidades.Operadores
                         {
                             if (op.Id == opId) op.LocationP = goal.NodeLocation;
                         }
-                        //ANIMAR LA COSA
                     }
-
-
-
 
                     // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
                     if (TerrainDamages.TryGetValue(terrainType, out var action))
@@ -215,7 +211,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP, safety, whatHq, opId); //Rellenar las variables; //Al ser una operacion de rescate, es esencial que la nave que rescata no se dañe. 
+                MoveTo(destination.LocationP, safety, whatHq, opId); 
 
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
@@ -266,7 +262,7 @@ namespace SkyNet.Entidades.Operadores
             else
             {
 
-                MoveTo(destination.LocationP, safety, whatHq, opId); //Rellenar las variables
+                MoveTo(destination.LocationP, safety, whatHq, opId);
 
                 double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
                 new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
@@ -289,7 +285,6 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
-        //AJUSTAR A SEARCH Y ASTAR
         private double CalculateDistance(List<Node> nodes)
         {
             double totalDistance = 0;
@@ -373,7 +368,7 @@ namespace SkyNet.Entidades.Operadores
         }
         private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
         {
-            MoveTo(destination.NodeLocation, safety, whatHq, opId); //Rellenar las variables; //ESTE SAFE ES TEMPORAL; HAY QUE PREGUNTAR
+            MoveTo(destination.NodeLocation, safety, whatHq, opId);
             CurrentLoad = loadAmount;
         }
         private bool IsDamaged()
@@ -418,7 +413,7 @@ namespace SkyNet.Entidades.Operadores
             if (DamageSimulatorP.PerforatedBattery)
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, safety, whatHq, opId); //Rellenar las variables; //aca se podria preguntar, igual hay que refactorizar. pero asumiendo que tiene bateria limitada, preferible que sea camino optimo
+                MoveTo(nearestHeadquarters, safety, whatHq, opId);
                 DamageSimulatorP.RepairBatteryOnly(this);
                 SimulateTime(TimeSimulator.BatteryChange);
             }
@@ -437,7 +432,7 @@ namespace SkyNet.Entidades.Operadores
             else if (IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, safety, whatHq, opId); //Rellenar las variables;//lo  mismo, preguntar
+                MoveTo(nearestHeadquarters, safety, whatHq, opId);
 
                 DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);

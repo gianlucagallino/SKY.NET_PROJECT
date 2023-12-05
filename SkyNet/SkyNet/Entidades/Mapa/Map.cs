@@ -65,6 +65,7 @@ namespace SkyNet.Entidades.Mapa
                     }
                     else
                     {
+                        Console.Clear();
                         Console.SetCursorPosition(XCenter, YCenter);
                         Console.WriteLine("Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
                         Thread.Sleep(1500);
@@ -73,6 +74,7 @@ namespace SkyNet.Entidades.Mapa
                 }
                 else
                 {
+                    Console.Clear();
                     Console.SetCursorPosition(XCenter, YCenter);
                     Console.WriteLine("Invalid input. Please enter a valid integer. Try again.");
                     Thread.Sleep(1500);
@@ -184,6 +186,7 @@ namespace SkyNet.Entidades.Mapa
                 }
                 modifier++;
             }
+
             Console.BackgroundColor = ConsoleColor.Black; // vuelve al negro, para que no se quede "pegado" el ultimo color.
         }
 

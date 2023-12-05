@@ -25,7 +25,6 @@ namespace SkyNet.Entidades.Mapa
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
-        public bool IsObstacle { get; set; }
         public Location NodeLocation { get; set; }
         public int F { get; set; }
         public int G { get; set; }
@@ -46,24 +45,29 @@ namespace SkyNet.Entidades.Mapa
             if (TerrainType == 1 || TerrainType == 3)
             {
                 IsDangerous = true;
-                IsObstacle = true;
-            }
-            else if (TerrainType == 2)
-            {
-                IsDangerous = false;
-                IsObstacle = false;
             }
             else
             {
                 IsDangerous = false;
-                IsObstacle = true;
             }
         }
 
-        public int SetNonLimitedTerrainType()
+        public int SetNonLimitedTerrainType() 
         {
-            int n = rng.Next(0, 4);
-            return n;
+            int n = rng.Next(0, 100); // This applies terrain appearance frequences
+            
+            if (n < 60)  // 60% chance of getting 0
+            {
+                return 0;
+            }
+            else if (n < 80)  // 20% chance of getting 1
+            {
+                return 1;
+            }
+            else  // 20% chance of getting 2
+            {
+                return 2;
+            }
         }
 
         public int SetHeadquarterTerrainType()

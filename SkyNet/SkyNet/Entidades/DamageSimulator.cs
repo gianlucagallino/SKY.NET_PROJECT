@@ -60,7 +60,7 @@ namespace SkyNet.Entidades
         public void StuckServoSimulate(MechanicalOperator oper)
         {
             oper.MaxLoad = 0;
-            Console.WriteLine("This operator cannot carry weight");
+            //Console.WriteLine("This operator cannot carry weight"); No estoy seguro de que sea el lugar para un mensaje
             StuckServo = true;
         }
 
