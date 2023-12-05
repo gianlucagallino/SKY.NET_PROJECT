@@ -1,6 +1,7 @@
 ﻿using SkyNet.Entidades;
 using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
+using System;
 
 namespace SkyNet.Menu
 {
@@ -98,35 +99,6 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             H++;
             Console.Write("     Pick an option: ");
-        }
-
-
-        private string GetValidHQSelection()
-        {
-            int maxHQ = Map.GetInstance().HeadquarterCounter;
-            string input = "";
-            bool isRunning = true;
-
-            while (isRunning)
-            {
-                Console.SetCursorPosition(W, H);
-                H++;
-                Console.Write($"     Pick an HQ (1-{maxHQ}): ");
-                input = Console.ReadLine();
-
-                if (int.TryParse(input, out int selected) && selected >= 1 && selected <= maxHQ)
-                {
-                    isRunning = false;
-                }
-                else
-                {
-                    Console.SetCursorPosition(W, H);
-                    H++;
-                    Console.WriteLine($"Invalid selection. Please enter a number between 1 and {maxHQ}.");
-                }
-            }
-
-            return input;
         }
 
         private void ExecuteCommand(string menuPick)
@@ -267,17 +239,21 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-            Console.SetCursorPosition(0, 0);
-            Map.GetInstance().PrintMap(); //actualiza el mapa
+            UpdateMap();
         }
 
         private void SelectOperator()
         {
+            int subOption;
+            int indexer = Convert.ToInt32(selectedHQ);
+            int Xposition;
+            int Yposition;
+            string operatorId;
 
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            int indexer = Convert.ToInt32(selectedHQ);
+            
             H++;
             //Trae una lista del cuartel seleccionado
             List<MechanicalOperator> operators = Map.GetInstance().HQList[indexer - 1].Operators;
@@ -290,9 +266,9 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.Write("Enter operator Id: ");
 
-            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
-            int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
-            string operatorId = Console.ReadLine().ToUpper(); 
+            Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
+            Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
+            operatorId = Console.ReadLine().ToUpper(); 
             var selectedOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId));
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
@@ -300,17 +276,39 @@ namespace SkyNet.Menu
             if (selectedOperator != null)
             {
 
-                Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}" +
-                    $"\n Choose an option:" +
-                    $"\n 1. Move To" +
-                    $"\n 2. Transfer Battery" +
-                    $"\n 3. Transfer Load" +
-                    $"\n 4. General Order: if operator is damaged, repair it at the headquerter" +
-                    $"\n 5. Battery Change");
+                Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}");
+                H++;
+                Console.SetCursorPosition(W, H);
+                    Console.WriteLine("Choose an option: ");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("1. Move To");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("2. Transfer Battery");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("3. Transfer Load");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("4. General Order (Repair damages at HQ)");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("5. Battery Change");
+                H++;
+                Console.SetCursorPosition(W, H);
                 Console.WriteLine("Select option: ");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.Write("Enter an integer from 1 to 5:");
+                while (!int.TryParse(Console.ReadLine(), out subOption) || subOption < 1 || subOption > 5)
+                {
 
-                string subOption = Console.ReadLine();
-                HandleSubOption(subOption, selectedOperator);
+                    Console.SetCursorPosition(W, H);
+                    Console.Write("Invalid input. Please enter an integer from 1 to 5:");
+                }
+
+                HandleSubOption(subOption.ToString(), selectedOperator);
             }
             else
             {
@@ -375,7 +373,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-            Map.GetInstance().PrintMap(); //actualiza el mapa
+            UpdateMap();
         }
 
         private void GeneralOrderMenu(MechanicalOperator selectedOperator)
@@ -408,48 +406,45 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-            Map.GetInstance().PrintMap(); //actualiza el mapa
+            UpdateMap();
         }
 
         private void MoveToMenu(MechanicalOperator selectedOperator)
         {
             int Xinput;
             int Yinput;
+            bool safety;
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            ClearMenuRemains();
             Console.Write($"Enter an X location from 0 to {Map.MapSize - 1}: ");
             while (!int.TryParse(Console.ReadLine(), out Xinput) || Xinput < 0 || Xinput >= Map.MapSize)
             {
+                Console.SetCursorPosition(W, H);
                 Console.Write($"Invalid input. Enter an integer between 0 and {Map.MapSize - 1}: ");
             }
-            GetConsoleSizeAfterMap();
+            H++;
+       
             Console.SetCursorPosition(W, H);
             Console.Write($"Enter a Y location from 0 to {Map.MapSize - 1}: ");
             while (!int.TryParse(Console.ReadLine(), out Yinput) || Yinput < 0 || Yinput >= Map.MapSize)
             {
+                Console.SetCursorPosition(W, H);
                 Console.Write($"Invalid input. Enter a number from 0 to {Map.MapSize - 1}: ");
             }
             Location location = new Location(Xinput, Yinput);
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
+            H++;
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("For optimal search, press 1\n" +
-                               "For safe search, press 2");
-            int search = Convert.ToInt32(Console.ReadLine());
-            bool safety = false;
-            if (search == 2)
-            {
-                safety = true;
-            }
-
+            safety = AskForSafety();
             int indexer = Convert.ToInt32(selectedHQ);
             selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id);
             H++;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+            UpdateMap();
         }
         private void TransferBatteryMenu(MechanicalOperator selectedOperator)
         {
@@ -563,7 +558,7 @@ namespace SkyNet.Menu
             GetConsoleSizeAfterMap();
 
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; 
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             int operatorType;
             Console.SetCursorPosition(W, H);
@@ -618,8 +613,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Failed.");
                 Console.ReadKey();
             }
-            Console.SetCursorPosition(0, 0);
-            Map.GetInstance().PrintMap(); //actualiza el mapa
+            UpdateMap();
 
         }
 
@@ -664,10 +658,51 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Operator {operatorId} not found.");
             }
             Console.ReadKey();
-            Console.SetCursorPosition(0, 0);
-            Map.GetInstance().PrintMap(); //actualiza el mapa
+            UpdateMap();
         }
 
+
+
+
+
+        private string GetValidHQSelection()
+        {
+            int maxHQ = Map.GetInstance().HeadquarterCounter;
+            string input = "Error.";
+            bool isRunning = true;
+            int selected;
+
+
+            Console.SetCursorPosition(W, H);
+            Console.Write($"     Pick an HQ (1-{maxHQ}): ");
+            while (!int.TryParse(Console.ReadLine(), out selected) || selected < 1 || selected > maxHQ)
+            {
+                Console.SetCursorPosition(W, H);
+                Console.Write($"Invalid selection. Please enter a number between 1 and {maxHQ}: ");
+            }
+
+            return selected.ToString();
+        }
+
+        public bool AskForSafety()
+        {
+            bool safety = false;
+            int search;
+            ClearMenuRemains();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            
+            Console.Write("Enter 1 for safe or 2 for optimal pathfinding: ");
+            while (!int.TryParse(Console.ReadLine(), out search) || (search != 1 && search != 2))
+            {
+                Console.Write("Invalid input. Please enter 1 for safe or 2 for optimal pathfinding:");
+            }
+            if (search == 1) safety = true;
+            return safety;
+        }
+
+
+        //GUI Related functions
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
@@ -679,21 +714,10 @@ namespace SkyNet.Menu
             }
         }
 
-        public bool AskForSafety()
+        private void UpdateMap()
         {
-            bool safety = false;
-            int search;
-            ClearMenuRemains();
-            GetConsoleSizeAfterMap();
-            Console.SetCursorPosition(W, H);
-            
-            Console.Write("Enter 1 for safe or 2 for optimal pathfinding:");
-            while (!int.TryParse(Console.ReadLine(), out search) || (search != 1 && search != 2))
-            {
-                Console.Write("Invalid input. Please enter 1 for safe or 2 for optimal pathfinding:");
-            }
-            if (search == 1) safety = true;
-            return safety;
+            Console.SetCursorPosition(0, 0);
+            Map.GetInstance().PrintMap(); 
         }
     }
 }
