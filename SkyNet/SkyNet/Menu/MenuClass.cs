@@ -144,7 +144,7 @@ namespace SkyNet.Menu
             {
                 H++;
                 Console.SetCursorPosition(W, H);
-                Console.Write($"Id: {oper.Id}, Status: {oper.Status}, " + oper.ToString());
+                Console.Write($"Id: {oper.Id}, Status: {oper.Status}, X: {oper.LocationP.LocationX}, Y: {oper.LocationP.LocationY}, " + oper.ToString());
 
             }
             H++;
@@ -203,7 +203,7 @@ namespace SkyNet.Menu
 
 
                     Console.SetCursorPosition(W, H);
-                    Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}, " + oper.ToString());
+                    Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status},  X: {oper.LocationP.LocationX}, Y: {oper.LocationP.LocationY}, " + oper.ToString());
                     H++;
 
                 }
@@ -260,7 +260,7 @@ namespace SkyNet.Menu
             foreach (MechanicalOperator op in operators)
             {
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine(op.Id);
+                Console.WriteLine($"{op.Id} -  X: {op.LocationP.LocationX}, Y: {op.LocationP.LocationY} ");
                 H++;
             }
             Console.SetCursorPosition(W, H);
@@ -435,9 +435,10 @@ namespace SkyNet.Menu
             Location location = new Location(Xinput, Yinput);
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
-            H++;
             Console.SetCursorPosition(W, H);
             safety = AskForSafety();
+            H++;
+            Console.SetCursorPosition(W, H);
             int indexer = Convert.ToInt32(selectedHQ);
             selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id);
             H++;
@@ -464,7 +465,7 @@ namespace SkyNet.Menu
 
                 foreach (MechanicalOperator op in operators)
                 {
-                    Console.WriteLine(op.Id + " - " + op.Battery.CurrentChargePercentage);
+                    Console.WriteLine($"{op.Id} -  X: {op.LocationP.LocationX}, Y: {op.LocationP.LocationY} - {op.Battery.CurrentChargePercentage}");
                 }
             }
 
@@ -519,7 +520,7 @@ namespace SkyNet.Menu
 
                 foreach (MechanicalOperator op in operators)
                 {
-                    Console.WriteLine(op.Id + " - " + op.Battery.CurrentChargePercentage);
+                    Console.WriteLine(op.Id + $" -  X: {op.LocationP.LocationX}, Y: {op.LocationP.LocationY} - " + op.Battery.CurrentChargePercentage);
                 }
             }
 
@@ -629,7 +630,7 @@ namespace SkyNet.Menu
             foreach (MechanicalOperator op in operators)
             {
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine(op.Id);
+                Console.WriteLine(op.Id + $" -  X: {op.LocationP.LocationX}, Y: {op.LocationP.LocationY}");
                 H++;
             }
             Console.SetCursorPosition(W, H);
