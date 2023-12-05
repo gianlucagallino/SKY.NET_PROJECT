@@ -60,7 +60,7 @@ namespace SkyNet.Menu
             }
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine(" ------------------------------");
+            Console.WriteLine(" -------------------------------");
 
 
             // Read and set the selected HQ
@@ -215,22 +215,26 @@ namespace SkyNet.Menu
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
             Console.WriteLine($"Operator Status at those coordinates:");
+            H++;
             int indexer = Convert.ToInt32(selectedHQ);
+            ClearMenuRemains();
             if (Map.Grid[Xinput, Yinput].OperatorsInNode.Count == 0)
             {
-                ClearMenuRemains();
+
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("No operators here!");
             }
             else
             {
+                GetConsoleSizeAfterMap();
                 foreach (MechanicalOperator oper in Map.Grid[Xinput, Yinput].OperatorsInNode)
                 {
-                    ClearMenuRemains();
-                    GetConsoleSizeAfterMap();
+
+                    
                     Console.SetCursorPosition(W, H);
                     Console.WriteLine($"Operator Name: {oper.Id}, Status: {oper.Status}, " + oper.ToString());
+                    H++;
 
                 }
             }
@@ -566,7 +570,7 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("Enter type number (1: M8, 2: K9, 3: UAV): ");
+            Console.Write("Enter type number (1: M8, 2: K9, 3: UAV): ");
             int indexer = Convert.ToInt32(selectedHQ);
             int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; //Index out of range ????? al crear hq
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
@@ -616,6 +620,7 @@ namespace SkyNet.Menu
                 Console.WriteLine("Failed.");
                 Console.ReadKey();
             }
+            Console.SetCursorPosition(0, 0);
             Map.GetInstance().PrintMap(); //actualiza el mapa
 
         }
@@ -651,16 +656,17 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Operator {operatorId} not found.");
             }
             Console.ReadKey();
+            Console.SetCursorPosition(0, 0);
             Map.GetInstance().PrintMap(); //actualiza el mapa
         }
 
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 25; i++)
             {
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("                                                                                            ");
+                Console.WriteLine("                                                                                                 ");
                 H++;
             }
         }

@@ -62,8 +62,20 @@ namespace SkyNet.Entidades.Mapa
 
         public int SetNonLimitedTerrainType()
         {
-            int n = rng.Next(0, 4);
-            return n;
+            int n = rng.Next(0, 100); // Adjust the range based on bias
+            
+            if (n < 75)  // 73% chance of getting 0
+            {
+                return 0;
+            }
+            else if (n < 87)  // 12% chance of getting 1
+            {
+                return 1;
+            }
+            else  // 13% chance of getting 2
+            {
+                return 2;
+            }
         }
 
         public int SetHeadquarterTerrainType()
