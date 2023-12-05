@@ -52,19 +52,19 @@ namespace SkyNet.Entidades.Mapa
             }
         }
 
-        public int SetNonLimitedTerrainType()
+        public int SetNonLimitedTerrainType() 
         {
-            int n = rng.Next(0, 100); // Adjust the range based on bias
+            int n = rng.Next(0, 100); // This applies terrain appearance frequences
             
-            if (n < 75)  // 73% chance of getting 0
+            if (n < 60)  // 60% chance of getting 0
             {
                 return 0;
             }
-            else if (n < 87)  // 12% chance of getting 1
+            else if (n < 80)  // 20% chance of getting 1
             {
                 return 1;
             }
-            else  // 13% chance of getting 2
+            else  // 20% chance of getting 2
             {
                 return 2;
             }
