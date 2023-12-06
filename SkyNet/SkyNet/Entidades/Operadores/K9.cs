@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Mapa;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -17,7 +18,7 @@ namespace SkyNet.Entidades.Operadores
             battery.Type = 1;
             Id = Convert.ToString("K9-" + Map.K9Counter);
         }
-
+        [JsonConstructor]
         public K9(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 250;

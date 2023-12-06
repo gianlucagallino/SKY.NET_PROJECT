@@ -69,6 +69,33 @@ namespace SkyNet.Menu
             }
         }
 
+        public Map LoadSpecificGame(string gameName)
+        {
+            string filePath = Path.Combine(SaveFolderPath, $"{gameName}.json");
+
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"The saved game '{gameName}' does not exist.");
+                return null;
+            }
+
+            Map loadedMap = null;
+
+            try
+            {
+                string gameJson = File.ReadAllText(filePath);
+                //Console.WriteLine($"Contenido de gameJson: {gameJson}");
+                loadedMap = JsonSerializer.Deserialize<Map>(gameJson);
+                Console.WriteLine($"Game '{gameName}' loaded successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading the game '{gameName}': {ex.Message}");
+            }
+
+            return loadedMap;
+        }
+
         public void ShowSavedGames()
         {
             if (Directory.Exists(SaveFolderPath))

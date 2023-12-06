@@ -740,6 +740,7 @@ namespace SkyNet.Menu
         }
         private void ShowSavedGames()
         {
+            SaveOrLoadGame saver = new SaveOrLoadGame();
             List<string> savedGames = saver.GetSavedGames();
 
             if (savedGames.Count > 0)
@@ -755,8 +756,22 @@ namespace SkyNet.Menu
 
                 if (int.TryParse(input, out int selectedIndex) && selectedIndex >= 1 && selectedIndex <= savedGames.Count)
                 {
-                    // Usuario seleccionó un juego válido, puedes realizar la carga o deserialización aquí
-                    Console.WriteLine($"Loading saved game: {savedGames[selectedIndex - 1]}");
+                    // Usuario seleccionó un juego válido, ahora carguemos el juego
+                    string selectedGameName = savedGames[selectedIndex - 1];
+                    Map loadedMap = saver.LoadSpecificGame(selectedGameName);
+
+                    if (loadedMap != null)
+                    {
+                        Console.WriteLine($"Loaded saved game: {selectedGameName}");
+
+                        // Ahora puedes hacer lo que necesites con el objeto 'loadedMap'
+                        // Por ejemplo, imprimir el mapa actual
+                        loadedMap.PrintMap();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to load saved game: {selectedGameName}");
+                    }
                 }
                 else
                 {

@@ -19,21 +19,34 @@ namespace SkyNet.Entidades.Mapa
 
         public static Node[,] Grid { get; set; }
         public int HeadquarterCounter { get; set; }
+        [JsonPropertyName("HQList")]
         public List<HeadQuarters> HQList { get; set; }
-        public double RecyclingCounter { get; set; }
+        public int RecyclingCounter { get; set; }
+        [JsonPropertyName("MapSize")]
         public static int MapSize { get; set; }
+        [JsonPropertyName("M8Counter")]
         public static int M8Counter { get; set; }
+        [JsonPropertyName("K9Counter")]
         public static int K9Counter { get; set; }
+        [JsonPropertyName("UAVCounter")]
         public static int UAVCounter { get; set; }
+
+        [JsonPropertyName("SizeOffset")]
         public int SizeOffset { get; set; }
 
         [JsonConstructor]
-        public Map(int mapSize, int sizeOffset)
+        public Map(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, int recyclingCounter)
         {
+
             MapSize = mapSize;
+            M8Counter = m8Counter;
+            K9Counter = k9Counter;
+            UAVCounter = uAVCounter;
             SizeOffset = sizeOffset;
-            Grid = new Node[mapSize, mapSize];
-            
+            HQList = hQList;
+            RecyclingCounter = recyclingCounter;
+            Grid = new Node[MapSize, MapSize];
+            FillGrid();
         }
 
         private Map()
@@ -317,29 +330,42 @@ namespace SkyNet.Entidades.Mapa
                 SizeOffset = SizeOffset,
                 HQList = HQList,
                 RecyclingCounter = RecyclingCounter,
-              //  Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
+                //  Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
             };
 
             return JsonSerializer.Serialize(serializationModel, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        private string[,] SerializeNodes(Node[,] nodes)
+        public static Map BuildMapFromJson(string json)
         {
-            int rows = nodes.GetLength(0);
-            int columns = nodes.GetLength(1);
-            string[,] serializedNodes = new string[rows, columns];
+            MapSerializationModel serializationModel = JsonSerializer.Deserialize<MapSerializationModel>(json);
 
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    serializedNodes[i, j] = JsonSerializer.Serialize(nodes[i, j], new JsonSerializerOptions { WriteIndented = true });
-                }
-            }
+            Map map = new Map(
+             serializationModel.MapSize,
+             serializationModel.M8Counter,
+             serializationModel.K9Counter,
+             serializationModel.UAVCounter,
+             serializationModel.SizeOffset,
+             serializationModel.HQList,
+             (int)serializationModel.RecyclingCounter
+         );
 
-            return serializedNodes;
+            Map.MapSize = serializationModel.MapSize;
+            // Asigna las propiedades de instancia
+            Map.M8Counter = serializationModel.M8Counter;
+            Map.K9Counter = serializationModel.K9Counter;
+            Map.UAVCounter = serializationModel.UAVCounter;
+            map.SizeOffset = serializationModel.SizeOffset;
+            // Asigna las propiedades de instancia
+            map.HQList = serializationModel.HQList;
+            map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
+            
+
+            return map;
         }
-        
+
+
+
     }
 }
 
