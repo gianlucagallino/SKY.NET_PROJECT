@@ -1,4 +1,5 @@
-﻿using SkyNet.Entidades;
+﻿using SkyNet.Data;
+using SkyNet.Entidades;
 using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
 using System;
@@ -158,6 +159,10 @@ namespace SkyNet.Menu
 
             if (response == 1)
             {
+                foreach (var oper in Map.GetInstance().GetAllOperators())
+                {
+                    HelperDB.ObtenerInstancia().InsertOperator(oper);
+                }
                 saver.SaveGame();
                 Environment.Exit(0);
             }

@@ -12,6 +12,7 @@ namespace SkyNet.Entidades
         private bool paintScratch;
         private bool electronicLandfill;
 
+
         public bool DamagedEngine { get; set; }
         public bool StuckServo { get; set; }
         public bool PerforatedBattery { get; set; }
@@ -48,6 +49,7 @@ namespace SkyNet.Entidades
             {
                 int randomIndex = random.Next(damageActions.Count);
                 damageActions[randomIndex](oper);
+
             }
         }
 
