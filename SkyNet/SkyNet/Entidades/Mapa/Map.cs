@@ -1,9 +1,10 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace SkyNet.Entidades.Mapa
 {
-    internal class Map
+    public class Map
     {
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
@@ -26,7 +27,14 @@ namespace SkyNet.Entidades.Mapa
         public static int UAVCounter { get; set; }
         public int SizeOffset { get; set; }
 
-
+        [JsonConstructor]
+        public Map(int mapSize, int sizeOffset)
+        {
+            MapSize = mapSize;
+            SizeOffset = sizeOffset;
+            Grid = new Node[mapSize, mapSize];
+            
+        }
 
         private Map()
         {
@@ -58,7 +66,7 @@ namespace SkyNet.Entidades.Mapa
 
                 if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Necessary for TryParse.
                 {
-                    if (tempNum >= 30 && tempNum <= 100)
+                    if (tempNum >= 10 && tempNum <= 100)
                     {
                         // Valid input, set the flag to true to exit the loop
                         isValidInput = true;
@@ -300,12 +308,38 @@ namespace SkyNet.Entidades.Mapa
         //esto permitiria serializar el mapa 
         public string SerializeToJson()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            MapSerializationModel serializationModel = new MapSerializationModel
+            {
+                MapSize = MapSize,
+                M8Counter = M8Counter,
+                K9Counter = K9Counter,
+                UAVCounter = UAVCounter,
+                SizeOffset = SizeOffset,
+                HQList = HQList,
+                RecyclingCounter = RecyclingCounter,
+              //  Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
+            };
+
+            return JsonSerializer.Serialize(serializationModel, new JsonSerializerOptions { WriteIndented = true });
         }
-        public static Map DeserializeFromJson(string jsonString)
+
+        private string[,] SerializeNodes(Node[,] nodes)
         {
-            return JsonSerializer.Deserialize<Map>(jsonString);
+            int rows = nodes.GetLength(0);
+            int columns = nodes.GetLength(1);
+            string[,] serializedNodes = new string[rows, columns];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    serializedNodes[i, j] = JsonSerializer.Serialize(nodes[i, j], new JsonSerializerOptions { WriteIndented = true });
+                }
+            }
+
+            return serializedNodes;
         }
+        
     }
 }
 

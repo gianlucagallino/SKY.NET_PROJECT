@@ -1,30 +1,44 @@
 using SkyNet.Entidades.Mapa;
+using System;
+using System.IO;
+using System.Text.Json;
 
 namespace SkyNet.Menu
 {
     public class SaveOrLoadGame
     {
-        public static void SaveGame()
+        private const string SaveFolderPath = "SavedGames"; // Cambiar a la ruta real
+
+        public void SaveGame()
         {
             bool ok = true;
             while (ok)
             {
                 try
                 {
-                    //De esta manera el usuario elige el nombre del archivo a guardar
+                    // De esta manera, el usuario elige el nombre del archivo a guardar
                     Console.WriteLine("Enter the name for the saved game:");
                     string gameName = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(gameName))
                     {
                         Console.WriteLine("Invalid game name. The game was not saved.");
-
                     }
-                    string gameJson = Map.GetInstance().SerializeToJson();
-                    File.WriteAllText($"{gameName}.json", gameJson);
-                    Console.WriteLine("Game saved successfully");
-                    Console.WriteLine($"File saved in: {Environment.CurrentDirectory}");
-                    ok=false;
+                    else
+                    {
+                        // Crear la carpeta si no existe
+                        Directory.CreateDirectory(SaveFolderPath);
+
+                        // Ruta completa del archivo
+                        string filePath = Path.Combine(SaveFolderPath, $"{gameName}.json");
+
+                        Map gameMap = Map.GetInstance();
+                        string gameJson = JsonSerializer.Serialize(gameMap);
+                        File.WriteAllText(filePath, gameJson);
+                        Console.WriteLine("Game saved successfully");
+                        Console.WriteLine($"File saved in: {Path.GetFullPath(filePath)}");
+                        ok = false;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -33,101 +47,157 @@ namespace SkyNet.Menu
             }
         }
 
-        //De esta manera nueva de hacer LoadGame no retorna nada en medio del bucle.
-        public static void LoadGame()
+        public Map LoadGame(string filePath)
         {
-            bool isValidSelection = true;
-            List<Map> loadedGames = new List<Map>();
-
-            while (isValidSelection)
+            if (!File.Exists(filePath))
             {
-                try
-                {
-                    string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.json");
-                    LoadGamesFromFiles(files, loadedGames);
+                Console.WriteLine("The selected file does not exist.");
+                return null;
+            }
 
-                    if (loadedGames.Count == 0)
-                    {
-                        Console.WriteLine("No saved games available.");
-                        continue;
-                    }
-
-                    DisplaySavedGames(loadedGames);
-
-                    Console.WriteLine("Enter the number of the game you want to load");
-                    if (TryGetSelectedGameIndex(Console.ReadLine(), loadedGames.Count, out int selectedGameIndex) && selectedGameIndex > 0)
-                    {
-
-                        Map selectedGame = loadedGames[selectedGameIndex - 1];
-
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
-                        continue;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error loading the game: {ex.Message}");
-                    Console.WriteLine("An error occurred while loading the game. Please try again.");
-                }
-                finally
-                {
-                    isValidSelection = false; // Esto evita que el bucle continúe indefinidamente
-                }
+            try
+            {
+                string gameJson = File.ReadAllText(filePath);
+                Map loadedMap = JsonSerializer.Deserialize<Map>(gameJson);
+                Console.WriteLine("Game loaded successfully");
+                return loadedMap;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading the game: {ex.Message}");
+                return null;
             }
         }
 
-        /*static Map LoadGame()
+        public void ShowSavedGames()
         {
-            bool isValidSelection = true;
-            List<Map> loadedGames = new List<Map>();
-
-            while (isValidSelection)
+            if (Directory.Exists(SaveFolderPath))
             {
-                try
+                string[] files = Directory.GetFiles(SaveFolderPath, "*.json");
+                Console.WriteLine("Saved game files:");
+
+                foreach (var file in files)
                 {
-                    string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.json");
-                    LoadGamesFromFiles(files, loadedGames);
-
-                    if (loadedGames.Count == 0)
-                    {
-                        Console.WriteLine("No saved games avilable.");
-                        continue; //en teoria con esto vuelve al princiio del bucle para q el usuario pueda seleccionar otro numero
-                    }
-                    DisplaySavedGames(loadedGames);
-
-                    Console.WriteLine("Enter the number of the game you wanto to load");
-                    if (TryGetSelectedGameIndex(Console.ReadLine(), loadedGames.Count, out int selectedGameIndex) && selectedGameIndex > 0)
-                    {
-                        return loadedGames[selectedGameIndex - 1];
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
-                        continue;
-                    }
+                    Console.WriteLine(file);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error loading the game: {ex.Message}");
-                    Console.WriteLine("An error occurred while loading the game. Please try again.");
-                }
-
             }
-            return null;
-        }*/
+            else
+            {
+                Console.WriteLine("The saved games folder does not exist.");
+            }
+        }
+        public List<string> GetSavedGames()
+        {
+            string folderPath = "SavedGames";
 
-        static void LoadGamesFromFiles(string[] files, List<Map> loadedGames)
+            if (Directory.Exists(folderPath))
+            {
+                return Directory.GetFiles(folderPath, "*.json")
+                                .Select(Path.GetFileNameWithoutExtension)
+                                .ToList();
+            }
+            else
+            {
+                Console.WriteLine("No saved games folder found.");
+                return new List<string>();
+            }
+        }
+
+        //De esta manera nueva de hacer LoadGame no retorna nada en medio del bucle.
+        /* public static void LoadGame()
+         {
+             bool isValidSelection = true;
+             List<Map> loadedGames = new List<Map>();
+
+             while (isValidSelection)
+             {
+                 try
+                 {
+                     string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.json");
+                     LoadGamesFromFiles(files, loadedGames);
+
+                     if (loadedGames.Count == 0)
+                     {
+                         Console.WriteLine("No saved games available.");
+                         continue;
+                     }
+
+                     DisplaySavedGames(loadedGames);
+
+                     Console.WriteLine("Enter the number of the game you want to load");
+                     if (TryGetSelectedGameIndex(Console.ReadLine(), loadedGames.Count, out int selectedGameIndex) && selectedGameIndex > 0)
+                     {
+
+                         Map selectedGame = loadedGames[selectedGameIndex - 1];
+
+                     }
+                     else
+                     {
+                         Console.WriteLine("Invalid input. Please enter a valid number.");
+                         continue;
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                     Console.WriteLine($"Error loading the game: {ex.Message}");
+                     Console.WriteLine("An error occurred while loading the game. Please try again.");
+                 }
+                 finally
+                 {
+                     isValidSelection = false; // Esto evita que el bucle continúe indefinidamente
+                 }
+             }
+         }
+
+         /*static Map LoadGame()
+         {
+             bool isValidSelection = true;
+             List<Map> loadedGames = new List<Map>();
+
+             while (isValidSelection)
+             {
+                 try
+                 {
+                     string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.json");
+                     LoadGamesFromFiles(files, loadedGames);
+
+                     if (loadedGames.Count == 0)
+                     {
+                         Console.WriteLine("No saved games avilable.");
+                         continue; //en teoria con esto vuelve al princiio del bucle para q el usuario pueda seleccionar otro numero
+                     }
+                     DisplaySavedGames(loadedGames);
+
+                     Console.WriteLine("Enter the number of the game you wanto to load");
+                     if (TryGetSelectedGameIndex(Console.ReadLine(), loadedGames.Count, out int selectedGameIndex) && selectedGameIndex > 0)
+                     {
+                         return loadedGames[selectedGameIndex - 1];
+                     }
+                     else
+                     {
+                         Console.WriteLine("Invalid input. Please enter a valid number.");
+                         continue;
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                     Console.WriteLine($"Error loading the game: {ex.Message}");
+                     Console.WriteLine("An error occurred while loading the game. Please try again.");
+                 }
+
+             }
+             return null;
+         }*/
+
+        /*static void LoadGamesFromFiles(string[] files, List<Map> loadedGames)
         {
             foreach (string file in files)
             {
                 if (File.Exists(file))
                 {
                     string content = File.ReadAllText(file);
-                    Map loadedGame = Map.DeserializeFromJson(content);
-                    loadedGames.Add(loadedGame);
+                  //  Map loadedGame = Map.DeserializeFromJson(content);
+               //     loadedGames.Add(loadedGame);
                     Console.WriteLine($"Game: {loadedGames.Count}, loaded successfully");
                 }
                 else
@@ -150,7 +220,7 @@ namespace SkyNet.Menu
             {
                 Console.WriteLine($"{i + 1}. Game {i + 1}");
             }
-        }
+        }*/
     }
 
 }

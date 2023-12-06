@@ -2,6 +2,7 @@
 
 namespace SkyNet.Entidades.Mapa
 {
+    [Serializable]
     public class Node
     {
 

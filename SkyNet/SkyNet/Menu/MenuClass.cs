@@ -8,12 +8,14 @@ namespace SkyNet.Menu
     {
         private bool menuOptionsFlag;
         private string selectedHQ;
+        SaveOrLoadGame saver;
         public int W { set; get; }
         public int H { set; get; }
 
         public MenuClass()
         {
             menuOptionsFlag = false;
+            saver = new SaveOrLoadGame();
         }
 
         public void GetConsoleSizeAfterMap()
@@ -94,7 +96,10 @@ namespace SkyNet.Menu
             Console.WriteLine("6. Destroy Operator               ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("7. Exit               ");
+            Console.WriteLine("7. Exit                           ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("8. Show saved Games               ");
             Console.SetCursorPosition(W, H);
             H++;
             Console.WriteLine(" -------------------------------");
@@ -158,6 +163,9 @@ namespace SkyNet.Menu
                 case "7":
                     Exit();
                     break;
+                case "8":
+                    ShowSavedGames();
+                    break;
                 default:
                     ClearMenuRemains();
                     GetConsoleSizeAfterMap();
@@ -178,7 +186,8 @@ namespace SkyNet.Menu
 
             if (response == 1)
             {
-                SaveOrLoadGame.SaveGame();
+                saver.SaveGame();
+                Environment.Exit(0);
             }
             else if(response == 2)
             {
@@ -705,7 +714,7 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("                                                                                                 ");
@@ -729,5 +738,39 @@ namespace SkyNet.Menu
             if (search == 1) safety = true;
             return safety;
         }
+        private void ShowSavedGames()
+        {
+            List<string> savedGames = saver.GetSavedGames();
+
+            if (savedGames.Count > 0)
+            {
+                Console.WriteLine("Saved Games:");
+                for (int i = 0; i < savedGames.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {savedGames[i]}");
+                }
+
+                Console.WriteLine("Enter the number of the saved game to load (or any other key to cancel):");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int selectedIndex) && selectedIndex >= 1 && selectedIndex <= savedGames.Count)
+                {
+                    // Usuario seleccionó un juego válido, puedes realizar la carga o deserialización aquí
+                    Console.WriteLine($"Loading saved game: {savedGames[selectedIndex - 1]}");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Cancelling operation.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No saved games found.");
+            }
+
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
+
     }
 }
