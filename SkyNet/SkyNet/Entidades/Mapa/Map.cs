@@ -1,9 +1,10 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace SkyNet.Entidades.Mapa
 {
-    internal class Map
+    public class Map
     {
 
         /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
@@ -18,15 +19,35 @@ namespace SkyNet.Entidades.Mapa
 
         public static Node[,] Grid { get; set; }
         public int HeadquarterCounter { get; set; }
+        [JsonPropertyName("HQList")]
         public List<HeadQuarters> HQList { get; set; }
-        public double RecyclingCounter { get; set; }
+        public int RecyclingCounter { get; set; }
+        [JsonPropertyName("MapSize")]
         public static int MapSize { get; set; }
+        [JsonPropertyName("M8Counter")]
         public static int M8Counter { get; set; }
+        [JsonPropertyName("K9Counter")]
         public static int K9Counter { get; set; }
+        [JsonPropertyName("UAVCounter")]
         public static int UAVCounter { get; set; }
+
+        [JsonPropertyName("SizeOffset")]
         public int SizeOffset { get; set; }
 
+        [JsonConstructor]
+        public Map(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, int recyclingCounter)
+        {
 
+            MapSize = mapSize;
+            M8Counter = m8Counter;
+            K9Counter = k9Counter;
+            UAVCounter = uAVCounter;
+            SizeOffset = sizeOffset;
+            HQList = hQList;
+            RecyclingCounter = recyclingCounter;
+            Grid = new Node[MapSize, MapSize];
+            FillGrid();
+        }
 
         private Map()
         {
@@ -58,7 +79,7 @@ namespace SkyNet.Entidades.Mapa
 
                 if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Necessary for TryParse.
                 {
-                    if (tempNum >= 30 && tempNum <= 100)
+                    if (tempNum >= 10 && tempNum <= 100)
                     {
                         // Valid input, set the flag to true to exit the loop
                         isValidInput = true;
@@ -300,12 +321,51 @@ namespace SkyNet.Entidades.Mapa
         //esto permitiria serializar el mapa 
         public string SerializeToJson()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            MapSerializationModel serializationModel = new MapSerializationModel
+            {
+                MapSize = MapSize,
+                M8Counter = M8Counter,
+                K9Counter = K9Counter,
+                UAVCounter = UAVCounter,
+                SizeOffset = SizeOffset,
+                HQList = HQList,
+                RecyclingCounter = RecyclingCounter,
+                //  Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
+            };
+
+            return JsonSerializer.Serialize(serializationModel, new JsonSerializerOptions { WriteIndented = true });
         }
-        public static Map DeserializeFromJson(string jsonString)
+
+        public static Map BuildMapFromJson(string json)
         {
-            return JsonSerializer.Deserialize<Map>(jsonString);
+            MapSerializationModel serializationModel = JsonSerializer.Deserialize<MapSerializationModel>(json);
+
+            Map map = new Map(
+             serializationModel.MapSize,
+             serializationModel.M8Counter,
+             serializationModel.K9Counter,
+             serializationModel.UAVCounter,
+             serializationModel.SizeOffset,
+             serializationModel.HQList,
+             (int)serializationModel.RecyclingCounter
+         );
+
+            Map.MapSize = serializationModel.MapSize;
+            // Asigna las propiedades de instancia
+            Map.M8Counter = serializationModel.M8Counter;
+            Map.K9Counter = serializationModel.K9Counter;
+            Map.UAVCounter = serializationModel.UAVCounter;
+            map.SizeOffset = serializationModel.SizeOffset;
+            // Asigna las propiedades de instancia
+            map.HQList = serializationModel.HQList;
+            map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
+            
+
+            return map;
         }
+
+
+
     }
 }
 

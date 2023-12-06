@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Mapa;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -16,7 +17,7 @@ namespace SkyNet.Entidades.Operadores
             battery.Type = 3;
             Id = Convert.ToString("UAV-" + Map.UAVCounter);
         }
-
+        [JsonConstructor]
         public UAV(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 5;

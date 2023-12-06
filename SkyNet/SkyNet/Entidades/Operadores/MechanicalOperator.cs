@@ -1,5 +1,6 @@
 ﻿using SkyNet.Entidades.Mapa;
 using System;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -23,6 +24,7 @@ namespace SkyNet.Entidades.Operadores
 
         public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
 
+        [JsonConstructor]
         public MechanicalOperator()
         {
             BusyStatus = false;

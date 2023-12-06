@@ -9,12 +9,14 @@ namespace SkyNet.Menu
     {
         private bool menuOptionsFlag;
         private string selectedHQ;
+        SaveOrLoadGame saver;
         public int W { set; get; }
         public int H { set; get; }
 
         public MenuClass()
         {
             menuOptionsFlag = false;
+            saver = new SaveOrLoadGame();
         }
 
         public void GetConsoleSizeAfterMap()
@@ -95,7 +97,13 @@ namespace SkyNet.Menu
             Console.WriteLine("6. Destroy Operator               ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine(" --------------------------------  ");
+            Console.WriteLine("7. Exit                           ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("8. Show saved Games               ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" -------------------------------");
             Console.SetCursorPosition(W, H);
             H++;
             Console.Write("     Pick an option: ");
@@ -124,6 +132,12 @@ namespace SkyNet.Menu
                 case "6":
                     RemoveOperator();
                     break;
+                case "7":
+                    Exit();
+                    break;
+                case "8":
+                    ShowSavedGames();
+                    break;
                 default:
                     ClearMenuRemains();
                     GetConsoleSizeAfterMap();
@@ -133,6 +147,35 @@ namespace SkyNet.Menu
                     break;
             }
         }
+
+        private void Exit()
+        {
+            Console.WriteLine("Are you sure you want to exit? " +
+                "\n Press 1 if you want to exit and save the game" +
+                "\n Press 2 if you want to exit and don't save the game " +
+                "\n Press any other key to cancel");
+            int response = Convert.ToInt32(Console.ReadLine());
+
+            if (response == 1)
+            {
+                saver.SaveGame();
+                Environment.Exit(0);
+            }
+            else if(response == 2)
+            {
+                Console.WriteLine("Thank you for playing!");
+                Environment.Exit(0);
+                
+            }
+            else
+            {
+                Console.ReadKey();
+
+            }
+
+          
+        }
+
         private void ShowOperatorStatus()
         {
             ClearMenuRemains();
@@ -715,7 +758,7 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("                                                                                                 ");
@@ -728,5 +771,54 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(0, 0);
             Map.GetInstance().PrintMap(); 
         }
+        private void ShowSavedGames()
+        {
+            SaveOrLoadGame saver = new SaveOrLoadGame();
+            List<string> savedGames = saver.GetSavedGames();
+
+            if (savedGames.Count > 0)
+            {
+                Console.WriteLine("Saved Games:");
+                for (int i = 0; i < savedGames.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {savedGames[i]}");
+                }
+
+                Console.WriteLine("Enter the number of the saved game to load (or any other key to cancel):");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int selectedIndex) && selectedIndex >= 1 && selectedIndex <= savedGames.Count)
+                {
+                    // Usuario seleccionó un juego válido, ahora carguemos el juego
+                    string selectedGameName = savedGames[selectedIndex - 1];
+                    Map loadedMap = saver.LoadSpecificGame(selectedGameName);
+
+                    if (loadedMap != null)
+                    {
+                        Console.WriteLine($"Loaded saved game: {selectedGameName}");
+
+                        // Ahora puedes hacer lo que necesites con el objeto 'loadedMap'
+                        // Por ejemplo, imprimir el mapa actual
+                        loadedMap.PrintMap();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to load saved game: {selectedGameName}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Cancelling operation.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No saved games found.");
+            }
+
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
+
     }
 }

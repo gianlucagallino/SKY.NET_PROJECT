@@ -2,7 +2,7 @@
 
 namespace SkyNet.Entidades.Mapa
 {
-    internal class HeadQuarters
+    public class HeadQuarters
     {
         // Random number generator for operator generation
         private Random rng;
