@@ -181,7 +181,7 @@ namespace SkyNet.Entidades.Operadores
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
-            KilometersTraveled += CalculateDistance(path);
+            KilometersTraveled += distance;
             EnergyConsumed += CalculateBatteryConsumption(distance);
             ExecutedInstructions++;
 
@@ -497,17 +497,7 @@ namespace SkyNet.Entidades.Operadores
         }
         public void GeneralOrderHeal(Node[,] grid, string opId, int whatHq, bool safety)
         {
-
-
-            if (!BusyStatus)
-            {
-
-                HandleOrderHeal(grid, 5, MaxLoad, safety, whatHq, opId);
-
-                ExecutedInstructions++;
-
-            }
-            else if (IsDamaged())
+            if (IsDamaged())
             {
                 Location nearestHeadquarters = FindHeadquartersLocation(grid);
                 MoveTo(nearestHeadquarters, safety, whatHq, opId);
@@ -521,15 +511,10 @@ namespace SkyNet.Entidades.Operadores
 
         public void GeneralOrderWeight(Node[,] grid, string opId, int whatHq, bool safety)
         {
-
-
             if (!BusyStatus)
             {
-
                 HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId);
                 ExecutedInstructions++;
-
-
             }
         }
 
