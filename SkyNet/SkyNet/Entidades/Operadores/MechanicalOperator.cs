@@ -1,4 +1,8 @@
 ﻿using SkyNet.Entidades.Mapa;
+﻿using SkyNet.Data;
+using SkyNet.Entidades.Mapa;
+using System;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -21,7 +25,13 @@ namespace SkyNet.Entidades.Operadores
         public int TimeSpent { get; private set; }
 
         public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
+        public double KilometersTraveled { get; private set; }
+        public double EnergyConsumed { get; private set; } 
+        public double TotalCarriedLoad { get; private set; }
+        public int ExecutedInstructions { get; private set; }
+        public int DamagesReceived { get; private set; }
 
+        [JsonConstructor]
         public MechanicalOperator()
         {
             BusyStatus = false;
@@ -39,7 +49,11 @@ namespace SkyNet.Entidades.Operadores
                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
               { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
             };
-
+            KilometersTraveled = 0;
+            EnergyConsumed = 0;
+            TotalCarriedLoad = 0;
+            ExecutedInstructions = 0;
+            DamagesReceived = 0;
         }
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
@@ -50,11 +64,16 @@ namespace SkyNet.Entidades.Operadores
             LocationP = location;
             Status = status;
             Id = id;
-
+            KilometersTraveled = 0;
+            EnergyConsumed = 0;
+            TotalCarriedLoad = 0;
+            ExecutedInstructions = 0;
+            DamagesReceived = 0;
         }
 
         protected MechanicalOperator(int xposition, int yposition)
         {
+            Id = this.Id;
             LocationP = new Location(xposition, yposition);
             Battery = new Battery();
             Status = StatusString(BusyStatus);
@@ -66,7 +85,11 @@ namespace SkyNet.Entidades.Operadores
                 { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
               { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
             };
-
+            KilometersTraveled = 0;
+            EnergyConsumed = 0;
+            TotalCarriedLoad = 0;
+            ExecutedInstructions = 0;
+            DamagesReceived = 0;
         }
 
         public string StatusString(bool busy)
@@ -158,6 +181,10 @@ namespace SkyNet.Entidades.Operadores
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
+            KilometersTraveled += CalculateDistance(path);
+            EnergyConsumed += CalculateBatteryConsumption(distance);
+            ExecutedInstructions++;
+
         }
         private double CalculateBatteryConsumption(double distance)
         {
@@ -169,8 +196,9 @@ namespace SkyNet.Entidades.Operadores
             if (amountKG > 0 && DamageSimulatorP.StuckServo == false)
             {
                 CurrentLoad = amountKG;
+                TotalCarriedLoad += amountKG;
+                ExecutedInstructions++;
             }
-
         }
         public void TransferBattery(MechanicalOperator destination, double amountPercentage, bool safety, int whatHq, string opId)
         {
@@ -190,6 +218,8 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
+                    EnergyConsumed += CalculateBatteryConsumption(amountPercentage);
+                    ExecutedInstructions++;
                 }
                 else
                 {
@@ -216,8 +246,11 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
+                    EnergyConsumed += CalculateBatteryConsumption(distance);
+                    ExecutedInstructions++;
                 }
             }
+
         }
         public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
         {
@@ -241,6 +274,7 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferLoad);
+                    ExecutedInstructions++;
                 }
                 else
                 {
@@ -268,6 +302,8 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferLoad);
+                    EnergyConsumed += CalculateBatteryConsumption(distance);
+                    ExecutedInstructions++;
                 }
                 else
                 {
@@ -284,7 +320,6 @@ namespace SkyNet.Entidades.Operadores
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
-
                 totalDistance += distance;
             }
 
@@ -391,6 +426,7 @@ namespace SkyNet.Entidades.Operadores
                 || DamageSimulatorP.DisconnectedBatteryPort || DamageSimulatorP.PaintScratch)
             {
                 return true;
+                DamagesReceived++;
             }
             else
             { return false; }
@@ -456,6 +492,7 @@ namespace SkyNet.Entidades.Operadores
                 MoveTo(nearestHeadquarters, safety, whatHq, opId);
                 DamageSimulatorP.RepairBatteryOnly(this);
                 SimulateTime(TimeSimulator.BatteryChange);
+                ExecutedInstructions++;
             }
         }
         public void GeneralOrderHeal(Node[,] grid, string opId, int whatHq, bool safety)
@@ -467,6 +504,8 @@ namespace SkyNet.Entidades.Operadores
 
                 HandleOrderHeal(grid, 5, MaxLoad, safety, whatHq, opId);
 
+                ExecutedInstructions++;
+
             }
             else if (IsDamaged())
             {
@@ -475,6 +514,7 @@ namespace SkyNet.Entidades.Operadores
 
                 DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
+                ExecutedInstructions++;
             }
             DamageSimulatorP.Repair(this);
         }
@@ -487,8 +527,11 @@ namespace SkyNet.Entidades.Operadores
             {
 
                 HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId);
+                ExecutedInstructions++;
+
 
             }
         }
+
     }
 }

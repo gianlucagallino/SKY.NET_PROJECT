@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Mapa;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -14,7 +15,7 @@ namespace SkyNet.Entidades.Operadores
             battery.Type = 2;
             Id = Convert.ToString("M8-" + Map.M8Counter);
         }
-
+        [JsonConstructor]
         public M8(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 40;
