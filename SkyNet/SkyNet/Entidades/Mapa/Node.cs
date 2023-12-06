@@ -60,14 +60,15 @@ namespace SkyNet.Entidades.Mapa
             {
                 return 0;
             }
-            else if (n < 80)  // 20% chance of getting 1
+            else if (n < 73)  // 20% chance of getting 1
             {
                 return 1;
             }
-            else  // 20% chance of getting 2
+            else if (n < 86)  // 20% chance of getting 2
             {
                 return 2;
             }
+            else { return 3; }
         }
 
         public int SetHeadquarterTerrainType()

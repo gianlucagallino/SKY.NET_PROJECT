@@ -140,6 +140,13 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Operator Status:");
             int indexer = Convert.ToInt32(selectedHQ);
+            if (Map.GetInstance().HQList[indexer - 1].Operators.Count == 0)
+            {
+
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("No operators belong to this HQ.");
+            }
             foreach (MechanicalOperator oper in Map.GetInstance().HQList[indexer - 1].Operators)
             {
                 H++;
@@ -442,10 +449,11 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
             selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id);
             H++;
+            UpdateMap();
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-            UpdateMap();
+            
         }
         private void TransferBatteryMenu(MechanicalOperator selectedOperator)
         {

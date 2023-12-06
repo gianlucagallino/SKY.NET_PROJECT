@@ -5,19 +5,8 @@ namespace SkyNet.Entidades.Operadores
 {
     public abstract class MechanicalOperator
     {
-        /*
-        protected string id;
-        protected bool busyStatus;
-        protected Battery battery;
-        protected string status;
-        protected double maxLoad;
-        protected double maxLoadOriginal;
-        protected double currentLoad;
-        protected float optimalSpeed;
-        private DamageSimulator damageSimulator;
-        private Node[,] grid;*/
+
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
-        //protected int timeSpent;
 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
@@ -324,20 +313,43 @@ namespace SkyNet.Entidades.Operadores
                 return false;
             }
         }
-        public List<Node> GetLocal(Location A, int terrainType, Node[,] grilla)
+        public List<Node> GetLocal(Location A, int terrainType) //Renombrar
         {
             List<Node> nodeList = new List<Node>();
-
-            foreach (var square in grilla)
+            /*
+            foreach (Node square in Map.Grid)
             {
-                if (square != null && square.NodeLocation.Equals(A) && square.TerrainType == terrainType)
+                if (/*square != null && square.NodeLocation.Equals(A) && square.TerrainType == terrainType)
                 {
                     nodeList.Add(square);
                 }
             }
-
+            */
+            for (int i = 0; i < Map.MapSize; i++)
+            {
+                for (int x = 0; x < Map.MapSize; x++)
+                {
+                    if (/*Map.Grid[i,x] != null /*&& square.NodeLocation.Equals(A) *//*&&*/ Map.Grid[x, i].TerrainType == terrainType)
+                    {
+                        nodeList.Add(Map.Grid[x, i]);
+                    }
+                }
+            }
             return nodeList;
         }
+
+        private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
+        {
+            MoveTo(destination.NodeLocation, safety, whatHq, opId);
+            CurrentLoad = loadAmount;
+        }
+        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
+        {
+            List<Node> closestNodes = GetLocal(LocationP, terrainType);
+            Node mostClosestNode = FindClosestNode(closestNodes);
+            MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
+        }
+
         private Node FindClosestNode(List<Node> nodes)
         {
             if (nodes.Count == 0)
@@ -360,17 +372,9 @@ namespace SkyNet.Entidades.Operadores
 
             return closestNode;
         }
-        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
-        {
-            List<Node> closestNodes = GetLocal(LocationP, terrainType, grid);
-            Node mostClosestNode = FindClosestNode(closestNodes);
-            MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
-        }
-        private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
-        {
-            MoveTo(destination.NodeLocation, safety, whatHq, opId);
-            CurrentLoad = loadAmount;
-        }
+        
+
+
         private bool IsDamaged()
         {
             if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
