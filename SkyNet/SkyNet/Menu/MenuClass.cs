@@ -298,10 +298,13 @@ namespace SkyNet.Menu
                 Console.WriteLine("3. Transfer Load");
                 H++;
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("4. General Order (Repair damages at HQ)");
+                Console.WriteLine("4. General Order (Go to nearest recycler & pick up all possible weight)");
                 H++;
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("5. Battery Change");
+                Console.WriteLine("5. General Order (Go to nearest HQ and heal)");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("6. Battery Change");
                 H++;
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Select option: ");
@@ -334,8 +337,9 @@ namespace SkyNet.Menu
                 {"1",()=>MoveToMenu(selectedOperator) },
                 {"2",()=> TransferBatteryMenu(selectedOperator) },
                 {"3",()=>TransferLoadMenu(selectedOperator) },
-                {"4",()=>GeneralOrderMenu(selectedOperator) },
-                {"5",()=>ChangeBatteryMenu(selectedOperator) }
+                {"4",()=>GeneralOrderWeightMenu(selectedOperator) },
+                {"4",()=>GeneralOrderHealMenu(selectedOperator) },
+                {"6",()=>ChangeBatteryMenu(selectedOperator) }
             };
 
             if (subOptions.ContainsKey(subOption))
@@ -383,7 +387,7 @@ namespace SkyNet.Menu
             UpdateMap();
         }
 
-        private void GeneralOrderMenu(MechanicalOperator selectedOperator)
+        private void GeneralOrderWeightMenu(MechanicalOperator selectedOperator)
         {
             string operatorId = selectedOperator.Id;
             int whatHeadquarter = Convert.ToInt32(selectedHQ) - 1;
@@ -396,7 +400,40 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Executing General Order...");
                 Thread.Sleep(2000);
-                selectedOperator.GeneralOrder(Map.Grid, operatorId, whatHeadquarter, safety);
+                selectedOperator.GeneralOrderWeight(Map.Grid, operatorId, whatHeadquarter, safety);
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("General Order executed successfully.");
+            }
+            else
+            {
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Operator is busy. Execution failed.");
+            }
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+            UpdateMap();
+        }
+
+        private void GeneralOrderHealMenu(MechanicalOperator selectedOperator)
+        {
+            string operatorId = selectedOperator.Id;
+            int whatHeadquarter = Convert.ToInt32(selectedHQ) - 1;
+            bool safety = AskForSafety();
+
+            if (selectedOperator.BusyStatus == false)
+            {
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                Console.WriteLine("Executing General Order...");
+                Thread.Sleep(2000);
+                selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);

@@ -1,5 +1,4 @@
 ﻿using SkyNet.Entidades.Mapa;
-using System;
 
 namespace SkyNet.Entidades.Operadores
 {
@@ -104,7 +103,7 @@ namespace SkyNet.Entidades.Operadores
             //double finalSpeed = CalculateMovementSpeed();
             // OptimalSpeed = finalSpeed;
 
-            int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType; //ERROR: Object reference not set to an instance of an object
+            int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
             Node start = new Node(LocationP.LocationX, LocationP.LocationY);
             Node goal = new Node(loc.LocationX, loc.LocationY);
@@ -123,7 +122,7 @@ namespace SkyNet.Entidades.Operadores
             if (path.Count == 0)
             {
                 Console.WriteLine("No path found for this unit.");
-            } 
+            }
 
             if (path != null)
             {
@@ -132,7 +131,7 @@ namespace SkyNet.Entidades.Operadores
                     Location TempLocation = node.NodeLocation;
 
                     //aca actualiza la posicion del operador
-                    if (TempLocation.LocationX==loc.LocationX && TempLocation.LocationY==loc.LocationY)
+                    if (TempLocation.LocationX == loc.LocationX && TempLocation.LocationY == loc.LocationY)
                     {
                         Console.WriteLine("Destination reached!");
 
@@ -156,7 +155,7 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
 
-            double distance = CalculateDistance(path);
+            double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
         }
@@ -200,12 +199,14 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP, safety, whatHq, opId); 
+                MoveTo(destination.LocationP, safety, whatHq, opId);
 
 
-                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
-                new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
-
+                AStarAlgorithm astar = new AStarAlgorithm();
+                Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
+                Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
+                List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
+                double distance = CalculatePathDistance(path);
 
                 if (ValidateBatteryTransfer(amountPercentage))
                 {
@@ -252,9 +253,11 @@ namespace SkyNet.Entidades.Operadores
             {
 
                 MoveTo(destination.LocationP, safety, whatHq, opId);
-
-                double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
-                new Node(destination.LocationP.LocationX, destination.LocationP.LocationY) });
+                AStarAlgorithm astar = new AStarAlgorithm();
+                Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
+                Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
+                List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
+                double distance = CalculatePathDistance(path);
 
 
                 if (destination.CurrentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
@@ -274,18 +277,23 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
-        private double CalculateDistance(List<Node> nodes)
+        private double CalculatePathDistance(List<Node> nodes)
         {
             double totalDistance = 0;
             double distance = 10;
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
-                
+
                 totalDistance += distance;
             }
 
             return totalDistance;
+        }
+
+        private double CalculateDistanceToNode(Location loc, Node node) //Returns Manhattan distance (distance estimate)
+        {
+            return Math.Abs(node.NodeLocation.LocationX - loc.LocationX) + Math.Abs(node.NodeLocation.LocationY - loc.LocationY);
         }
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
@@ -313,42 +321,44 @@ namespace SkyNet.Entidades.Operadores
                 return false;
             }
         }
-        public List<Node> GetLocal(Location A, int terrainType) //Renombrar
+        public List<Node> GetLocal(Location A, int terrainType)
         {
             List<Node> nodeList = new List<Node>();
-            /*
-            foreach (Node square in Map.Grid)
-            {
-                if (/*square != null && square.NodeLocation.Equals(A) && square.TerrainType == terrainType)
-                {
-                    nodeList.Add(square);
-                }
-            }
-            */
+
             for (int i = 0; i < Map.MapSize; i++)
             {
                 for (int x = 0; x < Map.MapSize; x++)
                 {
-                    if (/*Map.Grid[i,x] != null /*&& square.NodeLocation.Equals(A) *//*&&*/ Map.Grid[x, i].TerrainType == terrainType)
+                    // Check if the terrain type matches
+                    if (Map.Grid[i, x] != null && Map.Grid[x, i].TerrainType == terrainType)
                     {
+                        // Add the node to the list
                         nodeList.Add(Map.Grid[x, i]);
                     }
                 }
             }
+
             return nodeList;
         }
-
         private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
         {
             MoveTo(destination.NodeLocation, safety, whatHq, opId);
             CurrentLoad = loadAmount;
         }
-        private void HandleOrder(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
+        private void HandleOrderWeight(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
         {
             List<Node> closestNodes = GetLocal(LocationP, terrainType);
             Node mostClosestNode = FindClosestNode(closestNodes);
             MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
         }
+        private void HandleOrderHeal(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
+        {
+            List<Node> closestNodes = GetLocal(LocationP, terrainType);
+            Node mostClosestNode = FindClosestNode(closestNodes);
+            MoveTo(mostClosestNode.NodeLocation, safety, whatHq, opId);
+        }
+
+
 
         private Node FindClosestNode(List<Node> nodes)
         {
@@ -357,12 +367,12 @@ namespace SkyNet.Entidades.Operadores
                 Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
             }
 
-            Node closestNode = nodes[0];//tira OUT OF RANGE para el general order
-            double minDistance = double.MaxValue;
+            Node closestNode = nodes[0];
+            double minDistance = CalculateDistanceToNode(LocationP, nodes[0]);
 
             foreach (var node in nodes)
             {
-                double distance = CalculateDistance(nodes);
+                double distance = CalculateDistanceToNode(LocationP, node);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -372,7 +382,7 @@ namespace SkyNet.Entidades.Operadores
 
             return closestNode;
         }
-        
+
 
 
         private bool IsDamaged()
@@ -398,8 +408,34 @@ namespace SkyNet.Entidades.Operadores
                     if (grid[i, j] != null && grid[i, j].TerrainType == 5)
                     {
                         Location headquartersLocation = grid[i, j].NodeLocation;
-                        double distance = CalculateDistance(new List<Node> { new Node(LocationP.LocationX, LocationP.LocationY),
-                          new Node(headquartersLocation.LocationX, headquartersLocation.LocationY) });
+                        double distance = CalculateDistanceToNode(new Location(LocationP.LocationX, LocationP.LocationY),
+                          new Node(headquartersLocation.LocationX, headquartersLocation.LocationY));
+
+                        if (distance < minDistance)
+                        {
+                            minDistance = distance;
+                            nearestHeadquarters = headquartersLocation;
+                        }
+                    }
+                }
+            }
+            return nearestHeadquarters;
+        }
+
+        public Location FindDumpsterLocation(Node[,] grid)
+        {
+            Location nearestHeadquarters = null;
+            double minDistance = double.MaxValue;
+
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] != null && grid[i, j].TerrainType == 1)
+                    {
+                        Location headquartersLocation = grid[i, j].NodeLocation;
+                        double distance = CalculateDistanceToNode(new Location(LocationP.LocationX, LocationP.LocationY),
+                          new Node(headquartersLocation.LocationX, headquartersLocation.LocationY));
 
                         if (distance < minDistance)
                         {
@@ -422,16 +458,15 @@ namespace SkyNet.Entidades.Operadores
                 SimulateTime(TimeSimulator.BatteryChange);
             }
         }
-        public void GeneralOrder(Node[,] grid, string opId, int whatHq, bool safety)
+        public void GeneralOrderHeal(Node[,] grid, string opId, int whatHq, bool safety)
         {
-            
+
 
             if (!BusyStatus)
             {
 
-                HandleOrder(grid, 3, MaxLoad, safety, whatHq, opId);
+                HandleOrderHeal(grid, 5, MaxLoad, safety, whatHq, opId);
 
-                HandleOrder(grid, 4, 0, safety, whatHq, opId);
             }
             else if (IsDamaged())
             {
@@ -442,6 +477,18 @@ namespace SkyNet.Entidades.Operadores
                 SimulateTime(TimeSimulator.DamageRepair);
             }
             DamageSimulatorP.Repair(this);
+        }
+
+        public void GeneralOrderWeight(Node[,] grid, string opId, int whatHq, bool safety)
+        {
+
+
+            if (!BusyStatus)
+            {
+
+                HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId);
+
+            }
         }
     }
 }
