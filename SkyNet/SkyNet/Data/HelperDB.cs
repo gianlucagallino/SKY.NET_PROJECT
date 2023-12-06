@@ -71,20 +71,20 @@ namespace SkyNet.Data
             {
                 OpenConnection();
 
-                using (SqlCommand command = new SqlCommand("Only", connection))
+                using (SqlCommand command = new SqlCommand("InsertOperator", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Nombre", oper.Id);
-                   /* command.Parameters.AddWithValue("@KilometrosRecorridos", oper.KilometersTraveled);
+                    command.Parameters.AddWithValue("@KilometrosRecorridos", oper.KilometersTraveled);
                     command.Parameters.AddWithValue("@EnergiaConsumida", oper.EnergyConsumed);
-                    command.Parameters.AddWithValue("@CargaTransportada", oper.TransferBattery);
+                    command.Parameters.AddWithValue("@CargaTransportada", oper.TotalCarriedLoad);
                     command.Parameters.AddWithValue("@InstruccionesEjecutadas", oper.ExecutedInstructions);
                     command.Parameters.AddWithValue("@DaniosRecibidos", oper.DamagesReceived);
                     command.Parameters.AddWithValue("@UltimoLugar1", 0);
                     command.Parameters.AddWithValue("@UltimoLugar2", 0);
                     command.Parameters.AddWithValue("@UltimoLugar3", 0);
 
-                    SqlParameter outputParameter = new SqlParameter("@OperatorID", SqlDbType.Int)
+                   /* SqlParameter outputParameter = new SqlParameter("@OperatorID", SqlDbType.Int)
                     {
                         Direction = ParameterDirection.Output
                     };
