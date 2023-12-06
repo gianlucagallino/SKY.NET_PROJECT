@@ -1,3 +1,4 @@
+using SkyNet.Entidades.Operadores;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -364,7 +365,20 @@ namespace SkyNet.Entidades.Mapa
             return map;
         }
 
+        public List<MechanicalOperator> GetAllOperators()
+        {
+            List<MechanicalOperator> allOperators = new List<MechanicalOperator>();
 
+            for (int i = 0; i < MapSize; i++)
+            {
+                for (int j = 0; j < MapSize; j++)
+                {
+                    allOperators.AddRange(Grid[i, j].OperatorsInNode);
+                }
+            }
+
+            return allOperators;
+        }
 
     }
 }
