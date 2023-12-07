@@ -29,7 +29,6 @@ namespace SkyNet.Entidades.Mapa
             M8 m8 = new M8(xPosition, yPosition);
             Map.Grid[xPosition, yPosition].OperatorsInNode.Add(m8);
             Map.M8Counter++;
-            // Console.WriteLine(m8.ToString()); // Uncomment for testing
             return m8;
         }
 
@@ -38,7 +37,6 @@ namespace SkyNet.Entidades.Mapa
             K9 k9 = new K9(xPosition, yPosition);
             Map.Grid[xPosition, yPosition].OperatorsInNode.Add(k9);
             Map.K9Counter++;
-            // Console.WriteLine(k9.ToString()); // Uncomment for testing
             return k9;
         }
 
@@ -47,7 +45,6 @@ namespace SkyNet.Entidades.Mapa
             UAV uav = new UAV(xPosition, yPosition);
             Map.Grid[xPosition, yPosition].OperatorsInNode.Add(uav);
             Map.UAVCounter++;
-            // Console.WriteLine(uav.ToString()); // Uncomment for testing
             return uav;
         }
 
