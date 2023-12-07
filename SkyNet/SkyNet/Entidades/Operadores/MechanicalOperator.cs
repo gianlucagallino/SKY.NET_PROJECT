@@ -25,9 +25,9 @@ namespace SkyNet.Entidades.Operadores
         public int TimeSpent { get; private set; }
 
         public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
-        public double KilometersTraveled { get; private set; }
-        public double EnergyConsumed { get; private set; } 
-        public double TotalCarriedLoad { get; private set; }
+        public float KilometersTraveled { get; private set; }
+        public float EnergyConsumed { get; private set; } 
+        public float TotalCarriedLoad { get; private set; }
         public int ExecutedInstructions { get; private set; }
         public int DamagesReceived { get; private set; }
 
@@ -181,8 +181,8 @@ namespace SkyNet.Entidades.Operadores
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
-            KilometersTraveled += distance;
-            EnergyConsumed += CalculateBatteryConsumption(distance);
+            KilometersTraveled +=(float) distance;
+            EnergyConsumed += (float)CalculateBatteryConsumption(distance);
             ExecutedInstructions++;
 
         }
@@ -196,7 +196,7 @@ namespace SkyNet.Entidades.Operadores
             if (amountKG > 0 && DamageSimulatorP.StuckServo == false)
             {
                 CurrentLoad = amountKG;
-                TotalCarriedLoad += amountKG;
+                TotalCarriedLoad += (float)amountKG;
                 ExecutedInstructions++;
             }
         }
@@ -218,7 +218,7 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
-                    EnergyConsumed += CalculateBatteryConsumption(amountPercentage);
+                    EnergyConsumed += (float) CalculateBatteryConsumption(amountPercentage);
                     ExecutedInstructions++;
                 }
                 else
@@ -246,7 +246,7 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
-                    EnergyConsumed += CalculateBatteryConsumption(distance);
+                    EnergyConsumed += (float)CalculateBatteryConsumption(distance);
                     ExecutedInstructions++;
                 }
             }
@@ -302,7 +302,7 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferLoad);
-                    EnergyConsumed += CalculateBatteryConsumption(distance);
+                    EnergyConsumed += (float)CalculateBatteryConsumption(distance);
                     ExecutedInstructions++;
                 }
                 else
@@ -425,8 +425,8 @@ namespace SkyNet.Entidades.Operadores
             if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
                 || DamageSimulatorP.DisconnectedBatteryPort || DamageSimulatorP.PaintScratch)
             {
-                return true;
                 DamagesReceived++;
+                return true;
             }
             else
             { return false; }
