@@ -21,7 +21,7 @@ namespace SkyNet.Entidades.Operadores
             MaxLoad = 5;
             MaxLoadOriginal = 5;
             OptimalSpeed = 150;
-            battery=new Battery();
+            battery = new Battery();
             battery.MAHCapacity = 4000;
             battery.CurrentChargePercentage = 100;
             battery.Type = 3;

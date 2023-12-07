@@ -36,7 +36,7 @@ namespace SkyNet.Entidades
         [JsonConstructor]
         public Battery()
         {
-  
+
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {

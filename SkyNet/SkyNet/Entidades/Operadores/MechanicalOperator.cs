@@ -1,7 +1,4 @@
 ﻿using SkyNet.Entidades.Mapa;
-﻿using SkyNet.Data;
-using SkyNet.Entidades.Mapa;
-using System;
 using System.Text.Json.Serialization;
 
 /*
@@ -35,7 +32,7 @@ namespace SkyNet.Entidades.Operadores
 
         public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
         public float KilometersTraveled { get; private set; }
-        public float EnergyConsumed { get; private set; } 
+        public float EnergyConsumed { get; private set; }
         public float TotalCarriedLoad { get; private set; }
         public int ExecutedInstructions { get; private set; }
         public int DamagesReceived { get; private set; }
@@ -193,10 +190,10 @@ namespace SkyNet.Entidades.Operadores
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
             Battery.DecreaseBattery(batteryConsumption);
-            KilometersTraveled +=(float) distance;
+            KilometersTraveled += (float)distance;
             EnergyConsumed += (float)CalculateBatteryConsumption(distance);
             ExecutedInstructions++;
-            
+
 
         }
         private double CalculateBatteryConsumption(double distance)
@@ -232,7 +229,7 @@ namespace SkyNet.Entidades.Operadores
                     destination.BusyStatus = false;
                     BusyStatus = false;
                     SimulateTime(TimeSimulator.TransferBattery);
-                    EnergyConsumed += (float) CalculateBatteryConsumption(amountPercentage);
+                    EnergyConsumed += (float)CalculateBatteryConsumption(amountPercentage);
                     ExecutedInstructions++;
                 }
                 else
@@ -520,7 +517,10 @@ namespace SkyNet.Entidades.Operadores
                 SimulateTime(TimeSimulator.DamageRepair);
                 ExecutedInstructions++;
             }
-            DamageSimulatorP.Repair(this);
+            else
+            {
+                Console.WriteLine("This operator is not damaged.");
+            }
         }
 
         public void GeneralOrderWeight(Node[,] grid, string opId, int whatHq, bool safety)

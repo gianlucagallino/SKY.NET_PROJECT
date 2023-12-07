@@ -65,114 +65,10 @@ namespace SkyNet.Entidades.Mapa
             FillGrid();
         }
 
-        private int AskForMapSize()
-        {
-            int XCenter = Console.WindowWidth / 4;
-            int YCenter = Console.WindowHeight / 3;
-            int tempNum = 0;
-            bool isValidInput = false;
-
-            while (!isValidInput)
-            {
-                Console.SetCursorPosition(XCenter, YCenter);
-                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 30): ");
-
-
-                if (int.TryParse(Console.ReadLine(), out tempNum)) //"out" makes sure the variable stores the number thats input. Necessary for TryParse.
-                {
-                    if (tempNum >= 10 && tempNum <= 100)
-                    {
-                        // Valid input, set the flag to true to exit the loop
-                        isValidInput = true;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.SetCursorPosition(XCenter, YCenter);
-                        Console.WriteLine("Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
-                        Thread.Sleep(1500);
-                        Console.Clear();
-                    }
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.SetCursorPosition(XCenter, YCenter);
-                    Console.WriteLine("Invalid input. Please enter a valid integer. Try again.");
-                    Thread.Sleep(1500);
-                    Console.Clear();
-                }
-            }
-            Console.Clear();
-            return tempNum;
-        }
-        private void FillGrid()
-        {
-
-            for (int j = 0; j < MapSize; j++)
-            {
-                for (int k = 0; k < MapSize; k++)
-                {
-                    if (Grid[j, k] == null)
-                    {
-                        Grid[j, k] = new Node(j, k);
-                    }
-                }
-
-            }
-            AddLimitedTerrainTypes();
-        }
-
-        private void AddLimitedTerrainTypes()
-        {
-
-            Random rng = new Random();
-            HeadquarterCounter = rng.Next(1, 4);
-            RecyclingCounter = rng.Next(1, 6);
-            List<Node> pickedNodes = new List<Node>();  //Saves the limited terrains in a list, so they dont get overwritten by accident. Low chance of that happening, but makes for a more secure system. 
-            LoopTerrainSelection(pickedNodes, HeadquarterCounter, RecyclingCounter);
-        }
-
-        private void LoopTerrainSelection(List<Node> list, double HQC, double RC)
-        {
-            Random rng = new Random();
-
-            for (int i = 0; i < HQC; i++)
-            {
-                bool inLoop = true;
-                while (inLoop)
-                {
-                    int RandomX = rng.Next(0, MapSize);
-                    int RandomY = rng.Next(0, MapSize);
-                    if (!list.Contains(Grid[RandomX, RandomY]))
-                    {
-                        Grid[RandomX, RandomY].TerrainType = 5;
-                        HQList.Add(new HeadQuarters(RandomX, RandomY));
-                        list.Add(Grid[RandomX, RandomY]);  // Add the selected node to the list
-                        inLoop = false;
-                    }
-                }
-            }
-
-            for (int i = 0; i < RC; i++)
-            {
-                bool inLoop = true;
-                while (inLoop)
-                {
-                    int RandomX = rng.Next(0, MapSize);
-                    int RandomY = rng.Next(0, MapSize);
-                    if (!list.Contains(Grid[RandomX, RandomY]))
-                    {
-                        Grid[RandomX, RandomY].TerrainType = 4;
-                        list.Add(Grid[RandomX, RandomY]);  // Add the selected node to the list
-                        inLoop = false;
-                    }
-                }
-            }
-        }
-
         // Singleton instance
         private static Map _instance;
+
+        //Singleton Get method
         public static Map GetInstance()
         {
             if (_instance == null)
@@ -182,36 +78,149 @@ namespace SkyNet.Entidades.Mapa
             return _instance;
         }
 
+
+        //Map size input method
+        private static int AskForMapSize()
+        {
+            // Calculate the center of the console window for display
+            int XCenter = Console.WindowWidth / 4;
+            int YCenter = Console.WindowHeight / 3;
+
+            int tempNum = 0;
+            bool isValidInput = false;
+
+            // Keep asking for input until a valid map size is entered
+            while (!isValidInput)
+            {
+                Console.SetCursorPosition(XCenter, YCenter);
+                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 30): ");
+
+                // Check if the input is a valid integer
+                if (int.TryParse(Console.ReadLine(), out tempNum))
+                {
+                    // Check if the entered map size is within the valid range
+                    if (tempNum >= 30 && tempNum <= 100)
+                    {
+                        isValidInput = true;
+                    }
+                    else
+                    {
+                        // Invalid input range, display error message
+                        DisplayErrorMessage(XCenter, YCenter, "Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
+                    }
+                }
+                else
+                {
+                    // Invalid integer input, display error message
+                    DisplayErrorMessage(XCenter, YCenter, "Invalid input. Please enter a valid integer. Try again.");
+                }
+            }
+
+            // Clear the console and return the valid map size
+            Console.Clear();
+            return tempNum;
+        }
+
+        // Function to fill the grid with nodes and add limited terrain types
+        private void FillGrid()
+        {
+            for (int row = 0; row < MapSize; row++)
+            {
+                for (int col = 0; col < MapSize; col++)
+                {
+                    // Check if the cell is empty (null) and create a new node if so
+                    if (Grid[row, col] == null)
+                    {
+                        Grid[row, col] = new Node(row, col);
+                    }
+                }
+            }
+            // Add limited terrain types after filling the grid with nodes
+            AddLimitedTerrainTypes();
+        }
+
+        // Function to add limited terrain types to the grid
+        private void AddLimitedTerrainTypes()
+        {
+            Random rng = new Random();
+
+            // Set random counts for limited terrain types
+            HeadquarterCounter = rng.Next(1, 4);
+            RecyclingCounter = rng.Next(1, 6);
+
+            // List to store nodes with limited terrains to avoid overwriting
+            List<Node> pickedNodes = new List<Node>();
+
+            LoopTerrainSelection(pickedNodes, HeadquarterCounter, RecyclingCounter);
+        }
+
+        public void LoopTerrainSelection(List<Node> list, double HQC, double RC)
+        {
+            Random rng = new Random();
+
+            // Loop for selecting HQ (HeadQuarters) nodes
+            for (int i = 0; i < HQC; i++)
+            {
+                SelectTerrainNode(list, rng, 5);
+                HQList.Add(new HeadQuarters(list.Last().NodeLocation.LocationX, list.Last().NodeLocation.LocationY));
+            }
+
+            // Loop for selecting RC (Resource Centers) nodes
+            for (int i = 0; i < RC; i++)
+            {
+                SelectTerrainNode(list, rng, 4);
+            }
+        }
+
+        // Method to select a terrain node and update the list
+        private void SelectTerrainNode(List<Node> list, Random rng, int terrainType)
+        {
+            bool inLoop = true;
+
+            while (inLoop)
+            {
+                int randomX = rng.Next(0, MapSize);
+                int randomY = rng.Next(0, MapSize);
+
+                // Check if the selected node is not already in the list
+                if (!list.Contains(Grid[randomX, randomY]))
+                {
+                    Grid[randomX, randomY].TerrainType = terrainType;
+                    list.Add(Grid[randomX, randomY]);  // Add the selected node to the list
+                    inLoop = false;
+                }
+            }
+        }
+
+        // Function to print the map to the console
         public void PrintMap()
         {
-
             PrintColumnIndicators();
             PrintLineIndicators();
             int modifier = 0;
             Console.ForegroundColor = ConsoleColor.Red;
+
             for (int i = 0; i < MapSize; i++)
             {
-
-
                 for (int j = 0; j < MapSize; j++)
                 {
-                    // Initialize each node in the grid
                     int consoleX = Math.Min(Grid[i, j].NodeLocation.LocationX + 2, Console.BufferWidth - 1);
                     int consoleY = Math.Min(Grid[i, j].NodeLocation.LocationY + 1, Console.BufferHeight - 1);
 
-
                     Console.SetCursorPosition(consoleX + modifier, consoleY);
-                    Console.BackgroundColor = ReadPositionColor(Grid[i, j]);
+                    ColorMapper colors = new ColorMapper();
+                    Console.BackgroundColor = colors.GetColorForTerrainType(Grid[i, j].TerrainType);
+
                     string unitInNode = EvaluateUnitInNode(Grid[i, j]);
                     Console.Write(unitInNode);
-
                 }
                 modifier++;
             }
 
-            Console.BackgroundColor = ConsoleColor.Black; // vuelve al negro, para que no se quede "pegado" el ultimo color.
+            Console.BackgroundColor = ConsoleColor.Black; // Reset to black to avoid problems
         }
 
+        // Helper method to evaluate the unit in a node and return a string representation
         private string EvaluateUnitInNode(Node input)
         {
             string printType;
@@ -227,23 +236,24 @@ namespace SkyNet.Entidades.Mapa
             }
             else
             {
-                if (input.OperatorsInNode[0].GetType().Name == "M8")
+                switch (input.OperatorsInNode[0].GetType().Name)
                 {
-                    printType = " M";
-                }
-                else if (input.OperatorsInNode[0].GetType().Name == "K9")
-                {
-                    printType = " K";
-                }
-                else
-                {
-                    printType = " U";
+                    case "M8":
+                        printType = " M";
+                        break;
+                    case "K9":
+                        printType = " K";
+                        break;
+                    default:
+                        printType = " U";
+                        break;
                 }
             }
 
             return printType;
         }
 
+        // Helper method to print column indicators
         private void PrintColumnIndicators()
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -252,71 +262,25 @@ namespace SkyNet.Entidades.Mapa
 
             for (int i = 0; i < MapSize; i++)
             {
-                if (i % 2 == 0)
-                {
-                    Console.BackgroundColor = ConsoleColor.DarkRed;
-                }
-                else { Console.BackgroundColor = ConsoleColor.Red; }
-                if (i < 10)
-                {
-                    Console.Write(i + " ");
-                }
-                else Console.Write(i);
-                Console.BackgroundColor = ConsoleColor.Black;//necesario por prolijidad visual
+                Console.BackgroundColor = (i % 2 == 0) ? ConsoleColor.DarkRed : ConsoleColor.Red;
+                Console.Write((i < 10) ? $"{i} " : $"{i}");
+                Console.BackgroundColor = ConsoleColor.Black; // Reset background color for visual clarity
             }
+
             Console.Write("\n");
         }
+
+        // Helper method to print line indicators
         private void PrintLineIndicators()
         {
             Console.ForegroundColor = ConsoleColor.White;
 
             for (int i = 0; i < MapSize; i++)
             {
-                if (i % 2 == 0)
-                {
-                    Console.BackgroundColor = ConsoleColor.DarkRed;
-                }
-                else { Console.BackgroundColor = ConsoleColor.Red; }
-                if (i < 10)
-                {
-                    Console.WriteLine(i + " ");
-                }
-                else Console.WriteLine(i);
-                Console.BackgroundColor = ConsoleColor.Black;//necesario por prolijidad visual
-
+                Console.BackgroundColor = (i % 2 == 0) ? ConsoleColor.DarkRed : ConsoleColor.Red;
+                Console.WriteLine((i < 10) ? $"{i} " : $"{i}");
+                Console.BackgroundColor = ConsoleColor.Black; // Reset background color for visual clarity
             }
-        }
-
-
-        //Aca podria ir un switch, la verdad. pero fuck switch statements, all my homies hate switch statements
-        private ConsoleColor ReadPositionColor(Node input)
-        {
-            int type = input.TerrainType;
-            if (type == 0)
-            {
-                return ConsoleColor.White;
-            }
-            else if (type == 1)
-            {
-                return ConsoleColor.Green;
-            }
-            else if (type == 2)
-            {
-                return ConsoleColor.Blue;
-            }
-            else if (type == 3)
-            {
-                return ConsoleColor.Yellow;
-            }
-            else if (type == 4)
-            {
-                return ConsoleColor.DarkYellow;
-            }
-            else if (type == 5)
-            {
-                return ConsoleColor.Magenta;
-            }
-            else return ConsoleColor.White;
         }
 
         //esto permitiria serializar el mapa 
@@ -331,7 +295,7 @@ namespace SkyNet.Entidades.Mapa
                 SizeOffset = SizeOffset,
                 HQList = HQList,
                 RecyclingCounter = RecyclingCounter,
-                //Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
+                //Grid = SerializeNodes(Grid)  // Llamada a un mÃ©todo para serializar los nodos
 
             };
 
@@ -359,6 +323,7 @@ namespace SkyNet.Entidades.Mapa
 
         public static Map BuildMapFromJson(string json)
         {
+
             Console.WriteLine("Starting BuildMapFromJson method...");
 
             try
@@ -404,6 +369,7 @@ namespace SkyNet.Entidades.Mapa
             {
                 Console.WriteLine("BuildMapFromJson method finished.");
             }
+
         }
 
         public List<MechanicalOperator> GetAllOperators()
@@ -421,6 +387,16 @@ namespace SkyNet.Entidades.Mapa
             return allOperators;
         }
 
+
+        // Helper method to display error messages
+        private static void DisplayErrorMessage(int xPosition, int yPosition, string message)
+        {
+            Console.Clear();
+            Console.SetCursorPosition(xPosition, yPosition);
+            Console.WriteLine(message);
+            Thread.Sleep(1500);
+            Console.Clear();
+        }
     }
 }
 

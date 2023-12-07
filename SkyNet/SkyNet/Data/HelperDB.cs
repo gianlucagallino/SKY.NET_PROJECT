@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using SkyNet.Entidades.Operadores;
+using System.Data;
 
 /*
     La clase HelperDB es el puente de conexión entre la aplicación y la base de datos.
@@ -32,7 +27,7 @@ namespace SkyNet.Data
 {
     public class HelperDB
     {
-        
+
         private static HelperDB instance;
         private SqlConnection connection;
         public HelperDB()

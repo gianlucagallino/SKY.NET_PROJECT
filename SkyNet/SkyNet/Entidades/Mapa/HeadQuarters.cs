@@ -34,48 +34,84 @@ namespace SkyNet.Entidades.Mapa
             GenerateRandomAmountOfOperators();
         }
 
+        // Individual creator functions
+        private MechanicalOperator CreateM8(int xPosition, int yPosition)
+        {
+            M8 m8 = new M8(xPosition, yPosition);
+            Map.Grid[xPosition, yPosition].OperatorsInNode.Add(m8);
+            Map.M8Counter++;
+            return m8;
+        }
+
+        private MechanicalOperator CreateK9(int xPosition, int yPosition)
+        {
+            K9 k9 = new K9(xPosition, yPosition);
+            Map.Grid[xPosition, yPosition].OperatorsInNode.Add(k9);
+            Map.K9Counter++;
+            return k9;
+        }
+
+        private MechanicalOperator CreateUAV(int xPosition, int yPosition)
+        {
+            UAV uav = new UAV(xPosition, yPosition);
+            Map.Grid[xPosition, yPosition].OperatorsInNode.Add(uav);
+            Map.UAVCounter++;
+            return uav;
+        }
+
+
+        //Valid position check
+        private bool IsValidPosition(int xPosition, int yPosition)
+        {
+            return xPosition >= 0 && xPosition < Map.MapSize && yPosition >= 0 && yPosition < Map.MapSize;
+        }
+
+        // Generates a type for a generated operator
+        private MechanicalOperator GenerateRandomOperator(int xPosition, int yPosition, int generatedType)
+        {
+            switch (generatedType)
+            {
+                case 1:
+                    if (!CheckWater(xPosition, yPosition))
+                        return CreateM8(xPosition, yPosition);
+                    break;
+
+                case 2:
+                    if (!CheckWater(xPosition, yPosition))
+                        return CreateK9(xPosition, yPosition);
+                    break;
+
+                case 3:
+                    return CreateUAV(xPosition, yPosition);
+            }
+
+            return null; // Invalid operator type or water position
+        }
+
         // Generates a random number of operators and adds them to the list
         private void GenerateRandomAmountOfOperators()
         {
-            int OpAmount = rng.Next(1, 15);
+            int opAmount = rng.Next(1, 15);
 
-            for (int i = 0; i < OpAmount; i++)
+            for (int i = 0; i < opAmount; i++)
             {
                 bool inLoop = true;
 
                 while (inLoop)
                 {
                     int generatedType = rng.Next(1, 4);
-                    int Xposition = rng.Next(0, Map.MapSize);
-                    int Yposition = rng.Next(0, Map.MapSize);
+                    int xPosition = rng.Next(0, Map.MapSize);
+                    int yPosition = rng.Next(0, Map.MapSize);
 
-                    // Checks the type of operator and terrain type before adding to the list
-                    if (generatedType == 1 && !CheckWater(Xposition, Yposition))
+                    if (IsValidPosition(xPosition, yPosition))
                     {
-                        M8 m8 = new M8(Xposition, Yposition);
-                        Operators.Add(m8);
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(m8);
-                        inLoop = false;
-                        Map.M8Counter++;
-                       // Console.WriteLine(m8.ToString()); para testear
-                    }
-                    else if (generatedType == 2 && !CheckWater(Xposition, Yposition))
-                    {
-                        K9 k9 = new K9(Xposition, Yposition);
-                        Operators.Add(k9);
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(k9);
-                        inLoop = false;
-                        Map.K9Counter++;
-                        //Console.WriteLine(k9.ToString());
-                    }
-                    else if (generatedType == 3)
-                    {
-                        UAV uav = new UAV(Xposition, Yposition);
-                        Operators.Add(uav);
-                        Map.Grid[Xposition, Yposition].OperatorsInNode.Add(uav);
-                        inLoop = false;
-                        Map.UAVCounter++;
-                       // Console.WriteLine(uav.ToString()); para testear
+                        MechanicalOperator newOperator = GenerateRandomOperator(xPosition, yPosition, generatedType);
+
+                        if (newOperator != null)
+                        {
+                            Operators.Add(newOperator);
+                            inLoop = false;
+                        }
                     }
                 }
             }
@@ -87,49 +123,5 @@ namespace SkyNet.Entidades.Mapa
             if (Map.Grid[x, y].TerrainType == 2) return true;
             return false;
         }
-
-        /* esto deberia ir en codigo? menu? no se. 
-
-        // Displays the status of all operators
-        public void ShowOperatorStatus()
-        {
-            foreach (MechanicalOperator op in Operators)
-            {
-                Console.WriteLine(op.Status);
-            }
-        }
-
-        // Displays the status of operators at a specific location
-        public void ShowOperatorStatusAtLocation(Location loc)
-        {
-            foreach (MechanicalOperator op in Operators)
-            {
-                if (op.LocationP == loc)
-                {
-                    Console.WriteLine(op.Status);
-                }
-            }
-        }
-
-        // Commands all operators to move back to headquarters
-        public void TotalRecall()
-        {
-            foreach (MechanicalOperator op in Operators)
-            {
-                op.MoveTo(LocationHeadQuarters);
-            }
-        }
-
-        // Adds a reserve operator to the list
-        public void AddReserveOperator(MechanicalOperator oper)
-        {
-            Operators.Add(oper);
-        }
-
-        // Removes a reserve operator from the list
-        public void RemoveReserveOperator(MechanicalOperator oper)
-        {
-            Operators.Remove(oper);
-        }*/
     }
 }

@@ -38,50 +38,24 @@ namespace SkyNet.Entidades.Mapa
             NodeLocation = new Location(horizontal, vertical);
             OperatorsInNode = new List<MechanicalOperator>();
             TerrainType = SetNonLimitedTerrainType();
-            TerrainTypeMethod();
+            SetDangerousFlag();
         }
 
-        public void TerrainTypeMethod()
+        public void SetDangerousFlag()
         {
-            if (TerrainType == 1 || TerrainType == 3)
-            {
-                IsDangerous = true;
-            }
-            else
-            {
-                IsDangerous = false;
-            }
+            IsDangerous = (TerrainType == 1 || TerrainType == 3);
         }
 
-        public int SetNonLimitedTerrainType() 
+        //This function sets terrain generation odds. It predominantly generates normal terrain (type 0)
+        public int SetNonLimitedTerrainType()
         {
-            int n = rng.Next(0, 100); // This applies terrain appearance frequences
-            
-            if (n < 60)  // 60% chance of getting 0
-            {
-                return 0;
-            }
-            else if (n < 73)  // 20% chance of getting 1
-            {
-                return 1;
-            }
-            else if (n < 86)  // 20% chance of getting 2
-            {
-                return 2;
-            }
-            else { return 3; }
-        }
+            int n = rng.Next(0, 100);
 
-        public int SetHeadquarterTerrainType()
-        {
-            int n = 5;
-            return n;
-        }
+            if (n < 60) return 0;    // 60% chance of getting 0
+            if (n < 73) return 1;    // 13% chance of getting 1 
+            if (n < 86) return 2;    // 13% chance of getting 2 
 
-        public int SetRecyclingTerrainType()
-        {
-            int n = 4;
-            return n;
+            return 3;                // 14% chance of getting 3
         }
 
     }

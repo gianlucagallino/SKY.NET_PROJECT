@@ -465,7 +465,6 @@ namespace SkyNet.Menu
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("General Order executed successfully.");
             }
             else
             {
@@ -474,7 +473,7 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Operator is busy. Execution failed.");
             }
-            H++;
+            H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
@@ -492,13 +491,15 @@ namespace SkyNet.Menu
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
+                H++;
                 Console.WriteLine("Executing General Order...");
                 Thread.Sleep(2000);
-                selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("General Order executed successfully.");
+                H++;
+                selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
+                Console.SetCursorPosition(W, H);
             }
             else
             {
@@ -507,7 +508,7 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("Operator is busy. Execution failed.");
             }
-            H++;
+            H += 2;
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
