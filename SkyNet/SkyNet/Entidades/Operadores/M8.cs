@@ -21,6 +21,10 @@ namespace SkyNet.Entidades.Operadores
             Id = Convert.ToString("M8-" + Map.M8Counter);
         }
         [JsonConstructor]
+        public M8()
+        {
+
+        }
         public M8(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 40;

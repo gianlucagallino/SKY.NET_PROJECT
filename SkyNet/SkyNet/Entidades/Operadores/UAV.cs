@@ -10,6 +10,11 @@ namespace SkyNet.Entidades.Operadores
 {
     class UAV : MechanicalOperator
     {
+        [JsonConstructor]
+        public UAV()
+        {
+
+        }
         public UAV(string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status)
             : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {

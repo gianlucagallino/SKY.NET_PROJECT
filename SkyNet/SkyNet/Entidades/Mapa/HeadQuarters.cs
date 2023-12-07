@@ -1,20 +1,31 @@
 ﻿using SkyNet.Entidades.Operadores;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
 {
+    [Serializable]
     public class HeadQuarters
     {
         // Random number generator for operator generation
         private Random rng;
 
         // List to store MechanicalOperators
+        [JsonPropertyName("Operators")]
         public List<MechanicalOperator> Operators { get; set; }
 
         // Location of the headquarters on the map
+        [JsonPropertyName("LocationHeadQuarters")]
         public Location LocationHeadQuarters { get; set; }
 
 
         // Constructor initializes the headquarters and generates operators
+        [JsonConstructor]
+        public HeadQuarters(List<MechanicalOperator> operators, Location locationHeadQuarters)
+        {
+            Operators = operators;
+            LocationHeadQuarters = locationHeadQuarters;
+        }
+
         public HeadQuarters(int x, int y)
         {
             Operators = new List<MechanicalOperator>();

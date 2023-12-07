@@ -1,4 +1,5 @@
 using SkyNet.Entidades.Operadores;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -62,7 +63,6 @@ namespace SkyNet.Entidades.Mapa
             RecyclingCounter = 0;
             HQList = new List<HeadQuarters>();
             FillGrid();
-
         }
 
         // Singleton instance
@@ -284,9 +284,9 @@ namespace SkyNet.Entidades.Mapa
         }
 
         //esto permitiria serializar el mapa 
-        public string SerializeToJson()
+          public string SerializeToJson()
         {
-            MapSerializationModel serializationModel = new MapSerializationModel
+            MapSerializationModel serializationModel = new MapSerializationModel()
             {
                 MapSize = MapSize,
                 M8Counter = M8Counter,
@@ -295,38 +295,81 @@ namespace SkyNet.Entidades.Mapa
                 SizeOffset = SizeOffset,
                 HQList = HQList,
                 RecyclingCounter = RecyclingCounter,
-                //  Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
+                //Grid = SerializeNodes(Grid)  // Llamada a un mÃ©todo para serializar los nodos
+
             };
 
             return JsonSerializer.Serialize(serializationModel, new JsonSerializerOptions { WriteIndented = true });
         }
 
+       /* private static NodeSerializationModel[,] SerializeNodes(Node[,] grid)
+        {
+            NodeSerializationModel[,] serializedNodes = new NodeSerializationModel[MapSize, MapSize];
+
+            for (int i = 0; i < MapSize; i++)
+            {
+                for (int j = 0; j < MapSize; j++)
+                {
+                    serializedNodes[i, j] = new NodeSerializationModel
+                    {
+                        TerrainType = grid[i, j].TerrainType
+ 
+                    };
+                }
+            }
+
+            return serializedNodes;
+        }*/
+
         public static Map BuildMapFromJson(string json)
         {
-            MapSerializationModel serializationModel = JsonSerializer.Deserialize<MapSerializationModel>(json);
 
-            Map map = new Map(
-             serializationModel.MapSize,
-             serializationModel.M8Counter,
-             serializationModel.K9Counter,
-             serializationModel.UAVCounter,
-             serializationModel.SizeOffset,
-             serializationModel.HQList,
-             (int)serializationModel.RecyclingCounter
-         );
+            Console.WriteLine("Starting BuildMapFromJson method...");
 
-            Map.MapSize = serializationModel.MapSize;
-            // Asigna las propiedades de instancia
-            Map.M8Counter = serializationModel.M8Counter;
-            Map.K9Counter = serializationModel.K9Counter;
-            Map.UAVCounter = serializationModel.UAVCounter;
-            map.SizeOffset = serializationModel.SizeOffset;
-            // Asigna las propiedades de instancia
-            map.HQList = serializationModel.HQList;
-            map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
+            try
+            {
+                MapSerializationModel serializationModel = JsonSerializer.Deserialize<MapSerializationModel>(json);
 
+                Console.WriteLine("Serialization model deserialized successfully.");
 
-            return map;
+                Map map = new Map(
+                    serializationModel.MapSize,
+                    serializationModel.M8Counter,
+                    serializationModel.K9Counter,
+                    serializationModel.UAVCounter,
+                    serializationModel.SizeOffset,
+                    serializationModel.HQList,
+                    (int)serializationModel.RecyclingCounter
+                );
+
+                Console.WriteLine("Map object created successfully.");
+
+                Map.MapSize = serializationModel.MapSize;
+                Map.M8Counter = serializationModel.M8Counter;
+                Map.K9Counter = serializationModel.K9Counter;
+                Map.UAVCounter = serializationModel.UAVCounter;
+                map.SizeOffset = serializationModel.SizeOffset;
+                map.HQList = serializationModel.HQList.Select(hq =>
+                     new HeadQuarters(
+                                     hq.Operators,
+                                     hq.LocationHeadQuarters
+                                        )).ToList();
+                map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
+
+                Console.WriteLine("Map properties set successfully.");
+
+                return map;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BuildMapFromJson method: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                Console.WriteLine("BuildMapFromJson method finished.");
+            }
+
         }
 
         public List<MechanicalOperator> GetAllOperators()
