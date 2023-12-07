@@ -39,6 +39,7 @@ namespace SkyNet.Entidades.Operadores
         public float TotalCarriedLoad { get; private set; }
         public int ExecutedInstructions { get; private set; }
         public int DamagesReceived { get; private set; }
+        public bool DistanceFlag { get; private set; }
 
         [JsonConstructor]
         public MechanicalOperator()
@@ -134,7 +135,7 @@ namespace SkyNet.Entidades.Operadores
         {
             //double finalSpeed = CalculateMovementSpeed();
             // OptimalSpeed = finalSpeed;
-
+            DistanceFlag = true;
             int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
             Node start = new Node(LocationP.LocationX, LocationP.LocationY);
@@ -154,6 +155,7 @@ namespace SkyNet.Entidades.Operadores
             if (path.Count == 0)
             {
                 Console.WriteLine("No path found for this unit.");
+                DistanceFlag = false;
             }
 
             if (path != null)
@@ -193,6 +195,7 @@ namespace SkyNet.Entidades.Operadores
             KilometersTraveled +=(float) distance;
             EnergyConsumed += (float)CalculateBatteryConsumption(distance);
             ExecutedInstructions++;
+            
 
         }
         private double CalculateBatteryConsumption(double distance)
@@ -523,7 +526,11 @@ namespace SkyNet.Entidades.Operadores
             if (!BusyStatus)
             {
                 HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId);
-                ExecutedInstructions++;
+                if (DistanceFlag)
+                {
+                    ExecutedInstructions++;
+                    TotalCarriedLoad += (float)MaxLoad;
+                }
             }
         }
 

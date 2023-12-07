@@ -25,6 +25,7 @@ using SkyNet.Entidades.Operadores;
 
     *Cambie la cadena de conexión ubicada en el constructor por la de su ordenador para que funcione.
     *Recuerde que en los parámetros del SqlConnection primero debe iniciar con @ y luego "cadena de conexión"
+    *IMPORTANTE: SOLO SE GUARDARA EN BASE DE DATOS SI EL JUEGO DESEA SER GUARDADO (SAVEGAME).
  */
 
 namespace SkyNet.Data
