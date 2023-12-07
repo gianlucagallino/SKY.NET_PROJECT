@@ -25,52 +25,57 @@ namespace SkyNet.Data
                 instance = new HelperDB();
             return instance;
         }
-        public int ObtenerProximaPartidaId()
+        public int GetNextGame()
         {
-            int nextGameId = 0;
+            string sp_nombre = "GetGame";
+            string nombreOutput = "@next";
+            return GetNext(sp_nombre, nombreOutput);
+        }
 
+        public int GetNext(string sp_nombre, string nombreOutPut)
+        {
+            connection.Open();
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = connection;
+            cmd.CommandText = sp_nombre;
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlParameter OutPut = new SqlParameter();
+            OutPut.ParameterName = nombreOutPut;
+            OutPut.DbType = DbType.Int32;
+            OutPut.Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(OutPut);
+            cmd.ExecuteNonQuery();
+            connection.Close();
+            return (int)OutPut.Value;
+        }
+        public void InsertPartida(int partidaID)
+        {
             try
             {
                 OpenConnection();
-
-                using (SqlCommand command = new SqlCommand("GetNextGame", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    var result = command.ExecuteScalar();
-
-                    if (result != null && result != DBNull.Value)
-                    {
-                        nextGameId = Convert.ToInt32(result);
-                    }
-                }
+                SqlCommand command = new SqlCommand("InsertPartida", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el próximo juego: {ex.Message}");
+                Console.WriteLine($"Error al insertar partida: {ex.Message}");
             }
             finally
             {
-
                 CloseConnection();
             }
-
-            return nextGameId;
-        }
-
-        public void InsertPartida(int number)
-        {
-            number = ObtenerProximaPartidaId();
-            OpenConnection();
-            SqlCommand command = new SqlCommand("InsertPartida");
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@PartidaID", number);
         }
         public void InsertOperator(MechanicalOperator oper)
         {
             try
             {
-                OpenConnection();
+                int nextGame = GetNextGame();
+                // Insertar en la tabla Partidas solo si no existe
+                InsertPartida(nextGame);
 
+                // Insertar en la tabla Operators
+                OpenConnection();
                 using (SqlCommand command = new SqlCommand("InsertOperator", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -83,12 +88,7 @@ namespace SkyNet.Data
                     command.Parameters.AddWithValue("@UltimoLugar1", 0);
                     command.Parameters.AddWithValue("@UltimoLugar2", 0);
                     command.Parameters.AddWithValue("@UltimoLugar3", 0);
-
-                   /* SqlParameter outputParameter = new SqlParameter("@OperatorID", SqlDbType.Int)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(outputParameter);*/
+                    command.Parameters.AddWithValue("@PartidaID", nextGame);
 
                     command.ExecuteNonQuery();
                 }
