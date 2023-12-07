@@ -360,7 +360,7 @@ namespace SkyNet.Entidades.Mapa
             // Asigna las propiedades de instancia
             map.HQList = serializationModel.HQList;
             map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
-            
+
 
             return map;
         }

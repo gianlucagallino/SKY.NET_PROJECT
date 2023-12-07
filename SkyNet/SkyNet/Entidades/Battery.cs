@@ -34,7 +34,7 @@
 
         public Battery()
         {
-  
+
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {

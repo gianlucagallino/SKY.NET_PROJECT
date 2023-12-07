@@ -1,6 +1,4 @@
 using SkyNet.Entidades.Mapa;
-using System;
-using System.IO;
 using System.Text.Json;
 
 namespace SkyNet.Menu

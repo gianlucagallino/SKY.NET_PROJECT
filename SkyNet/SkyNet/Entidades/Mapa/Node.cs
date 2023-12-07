@@ -53,10 +53,10 @@ namespace SkyNet.Entidades.Mapa
             }
         }
 
-        public int SetNonLimitedTerrainType() 
+        public int SetNonLimitedTerrainType()
         {
             int n = rng.Next(0, 100); // This applies terrain appearance frequences
-            
+
             if (n < 60)  // 60% chance of getting 0
             {
                 return 0;
