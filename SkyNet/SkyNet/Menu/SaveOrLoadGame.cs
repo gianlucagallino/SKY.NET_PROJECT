@@ -33,7 +33,7 @@ namespace SkyNet.Menu
                         string filePath = Path.Combine(SaveFolderPath, $"{gameName}.json");
 
                         Map gameMap = Map.GetInstance();
-                        string gameJson = JsonSerializer.Serialize(gameMap);
+                        string gameJson = Map.GetInstance().SerializeToJson();
                         File.WriteAllText(filePath, gameJson);
                         Console.WriteLine("Game saved successfully");
                         Console.WriteLine($"File saved in: {Path.GetFullPath(filePath)}");
@@ -85,7 +85,7 @@ namespace SkyNet.Menu
             {
                 string gameJson = File.ReadAllText(filePath);
                 //Console.WriteLine($"Contenido de gameJson: {gameJson}");
-                loadedMap = JsonSerializer.Deserialize<Map>(gameJson);
+                loadedMap = Map.BuildMapFromJson(gameJson);
                 Console.WriteLine($"Game '{gameName}' loaded successfully");
             }
             catch (Exception ex)
@@ -95,6 +95,7 @@ namespace SkyNet.Menu
 
             return loadedMap;
         }
+
 
         public void ShowSavedGames()
         {

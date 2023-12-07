@@ -64,6 +64,7 @@ namespace SkyNet.Entidades.Operadores
             TotalCarriedLoad = 0;
             ExecutedInstructions = 0;
             DamagesReceived = 0;
+            LocationP = new Location(0, 0);
         }
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)

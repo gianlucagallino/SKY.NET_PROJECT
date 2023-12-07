@@ -10,7 +10,11 @@ namespace SkyNet.Entidades.Operadores
 {
     class K9 : MechanicalOperator
     {
+        [JsonConstructor]
+        public K9()
+        {
 
+        }
         public K9(string id, double maxLoad, double maxLoadOriginal, Battery battery, Location location, string status)
             : base(maxLoad, maxLoadOriginal, battery, location, status, id)
         {

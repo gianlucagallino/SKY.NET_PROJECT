@@ -1,4 +1,6 @@
-﻿namespace SkyNet.Entidades
+﻿using System.Text.Json.Serialization;
+
+namespace SkyNet.Entidades
 {
     /*
     La clase Battery representa la fuente de energía para los operadores mecánicos.
@@ -31,7 +33,7 @@
             DamageSimulatorP = damageSimulator;
 
         }
-
+        [JsonConstructor]
         public Battery()
         {
   

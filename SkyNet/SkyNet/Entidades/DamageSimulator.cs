@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Operadores;
+using System.Text.Json.Serialization;
 
 /*
     La clase DamageSimulator simula daños potenciales en operadores mecánicos. Sus atributos representan diferentes tipos de daños
@@ -25,6 +26,8 @@ namespace SkyNet.Entidades
         public bool PaintScratch { get; set; }
 
         public bool ElectronicLandfill { get; set; }
+
+        [JsonConstructor]
         public DamageSimulator()
         {
             DamagedEngine = false;

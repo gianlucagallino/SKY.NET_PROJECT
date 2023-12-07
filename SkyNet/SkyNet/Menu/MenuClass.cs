@@ -176,13 +176,13 @@ namespace SkyNet.Menu
 
             if (response == 1)
             {
-                int nextGame = HelperDB.ObtenerInstancia().GetNextGame();
+                //int nextGame = HelperDB.ObtenerInstancia().GetNextGame();
                 // Insertar en la tabla Partidas solo si no existe
-                HelperDB.ObtenerInstancia().InsertPartida(nextGame);
+                /*HelperDB.ObtenerInstancia().InsertPartida(nextGame);
                 foreach (var oper in Map.GetInstance().GetAllOperators())
                 {
                     HelperDB.ObtenerInstancia().InsertOperator(oper, nextGame);
-                }
+                }*/
                 saver.SaveGame();
                 Environment.Exit(0);
             }
@@ -828,7 +828,7 @@ namespace SkyNet.Menu
                 {
                     Exit();
                 }
-                else if (selected == 300)
+                else if (selected == 200)
                 {
                     ShowSavedGames();
                 }
@@ -898,7 +898,6 @@ namespace SkyNet.Menu
                 {
                     Console.WriteLine($"{i + 1}. {savedGames[i]}");
                 }
-
                 Console.WriteLine("Enter the number of the saved game to load (or any other key to cancel):");
                 string input = Console.ReadLine();
 
@@ -912,8 +911,6 @@ namespace SkyNet.Menu
                     {
                         Console.WriteLine($"Loaded saved game: {selectedGameName}");
 
-                        // Ahora puedes hacer lo que necesites con el objeto 'loadedMap'
-                        // Por ejemplo, imprimir el mapa actual
                         loadedMap.PrintMap();
                     }
                     else
@@ -930,9 +927,9 @@ namespace SkyNet.Menu
             {
                 Console.WriteLine("No saved games found.");
             }
-
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+        
         }
 
     }
