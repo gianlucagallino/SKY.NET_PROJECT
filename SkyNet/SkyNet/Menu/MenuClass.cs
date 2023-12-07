@@ -43,6 +43,34 @@ namespace SkyNet.Menu
             Console.WriteLine(" _______________________________");
             Console.SetCursorPosition(W, H);
             H++;
+            Console.WriteLine("|          General Menu         | ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" ------------------------------- ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("1. Management Menu                ");
+
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("100. Exit                           ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("200. Show saved Games               ");
+            Console.SetCursorPosition(W, H);
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" -------------------------------");
+            string pickedOption = GetValidOptionSelection();
+
+
+            ClearMenuRemains();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine(" _______________________________");
+            Console.SetCursorPosition(W, H);
+            H++;
             Console.WriteLine("|        Management Menu        | ");
             Console.SetCursorPosition(W, H);
             H++;
@@ -57,13 +85,6 @@ namespace SkyNet.Menu
                 conta++;
 
             }
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("100. Exit                           ");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("200. Show saved Games               ");
-            Console.SetCursorPosition(W, H);
             Console.SetCursorPosition(W, H);
             H++;
             Console.WriteLine(" -------------------------------");
@@ -146,13 +167,11 @@ namespace SkyNet.Menu
         {
             Console.WriteLine("Are you sure you want to exit? " +
                 "\n Press 1 if you want to exit and save the game" +
-                "\n Press 2 if you want to exit and don't save the game " +
-                "\n Press any other key to cancel");
+                "\n Press 2 if you want to exit without saving ");
             int response;
-            if (!int.TryParse(Console.ReadLine(), out response) || (response != 1 && response != 2))
+            while (!int.TryParse(Console.ReadLine(), out response) || (response != 1 && response != 2))
             {
-                Console.ReadKey();
-                ClearMenuRemains();
+                Console.WriteLine("Invalid input. Try again.");
             }
 
             if (response == 1)
@@ -770,16 +789,6 @@ namespace SkyNet.Menu
                     Console.SetCursorPosition(W, H);
                     Console.Write($"Invalid input. Please enter a valid number: ");
                 }
-                else if (selected == 100)
-                {
-                    Exit();
-                    continueLoop = false;
-                }
-                else if (selected == 200)
-                {
-                    ShowSavedGames();
-                    continueLoop = false;
-                }
                 else if (selected >= 1 && selected <= maxHQ)
                 {
                     continueLoop = false;
@@ -788,6 +797,45 @@ namespace SkyNet.Menu
                 {
                     Console.SetCursorPosition(W, H);
                     Console.Write($"Invalid selection. Please enter a number between 1 and {maxHQ}: ");
+                }
+            }
+
+            return selected.ToString();
+        }
+
+
+        private string GetValidOptionSelection()
+        {
+            int selected = 0;
+
+            Console.SetCursorPosition(W, H);
+            Console.Write($"     Pick an Option ");
+
+            bool continueLoop = true;
+
+            while (continueLoop)
+            {
+                if (!int.TryParse(Console.ReadLine(), out selected))
+                {
+                    Console.SetCursorPosition(W, H);
+                    Console.Write($"Invalid input. Please enter a valid number: ");
+                }
+                else if (selected == 1)
+                {
+                    continueLoop = false;
+                }
+                else if (selected == 100)
+                {
+                    Exit();
+                }
+                else if (selected == 300)
+                {
+                    ShowSavedGames();
+                }
+                else
+                {
+                    Console.SetCursorPosition(W, H);
+                    Console.Write($"Invalid selection. ");
                 }
             }
 
