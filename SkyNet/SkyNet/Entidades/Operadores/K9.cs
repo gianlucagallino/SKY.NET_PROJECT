@@ -1,6 +1,11 @@
 ﻿using SkyNet.Entidades.Mapa;
 using System.Text.Json.Serialization;
 
+/*
+    Esta clase representa a un operador mecánico específico, hereda las características generales de la clase MechanicalOperator. 
+    Se distingue por sus atributos predefinidos y la inicialización y representación de las características de los operadores K9
+ */
+
 namespace SkyNet.Entidades.Operadores
 {
     class K9 : MechanicalOperator

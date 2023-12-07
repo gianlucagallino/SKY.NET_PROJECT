@@ -7,12 +7,31 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using SkyNet.Entidades.Operadores;
 
+/*
+    La clase HelperDB es el puente de conexión entre la aplicación y la base de datos.
+    Proporciona métodos para realizar operaciones como obtener el siguiente juego, insertar información de partida y operador.
+    Utiliza procedimientos almacenados y patrones de diseño, como Singleton, para gestionar eficientemente la conexión
+    y ejecución de comandos en la base de datos.
+    
+    Pasos a tener en cuenta: 
+    *Primero ejecute el Script de la Base de Datos en SQL Server.
+    *Luego realice la conexión en visual studio ingresando en ver-->Explorador de servicios
+    *Presione en el icono q posee una Base de Datos con un enchufe seleccione Microsoft SQL Server
+    *En nombre de servidor rellene con el nombre del servidor con el que se conecta su SQL Server
+    *En el campo de Seleccion de Base de Datos seleccione la base de SKYNET 
+    *Pruebe Conexión, y si funciona dirijase hacia AVANZADAS.
+    *Allí encontrara la cadena de conexión similar a la siguiente pero con los datos de su ordenador:
+    Data Source=MARTIN\SQLEXPRESS;Initial Catalog=SKYNET;Integrated Security=True;Trust Server Certificate=True
+
+    *Cambie la cadena de conexión ubicada en el constructor por la de su ordenador para que funcione.
+    *Recuerde que en los parámetros del SqlConnection primero debe iniciar con @ y luego "cadena de conexión"
+ */
 
 namespace SkyNet.Data
 {
     public class HelperDB
     {
-        //Data Source=MARTIN\SQLEXPRESS;Initial Catalog=SKYNET;Integrated Security=True;Trust Server Certificate=True
+        
         private static HelperDB instance;
         private SqlConnection connection;
         public HelperDB()

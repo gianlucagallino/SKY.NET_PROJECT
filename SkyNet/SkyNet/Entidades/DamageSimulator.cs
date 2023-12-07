@@ -1,5 +1,10 @@
 ﻿using SkyNet.Entidades.Operadores;
 
+/*
+    La clase DamageSimulator simula daños potenciales en operadores mecánicos. Sus atributos representan diferentes tipos de daños
+    y proporciona métodos para simular daños aleatorios, reparar los daños y realizar reparaciones específicas en la batería. 
+ */
+
 namespace SkyNet.Entidades
 {
     public class DamageSimulator
