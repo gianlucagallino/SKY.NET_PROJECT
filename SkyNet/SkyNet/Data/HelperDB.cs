@@ -66,14 +66,10 @@ namespace SkyNet.Data
                 CloseConnection();
             }
         }
-        public void InsertOperator(MechanicalOperator oper)
+        public void InsertOperator(MechanicalOperator oper, int nextGame)
         {
             try
             {
-                int nextGame = GetNextGame();
-                // Insertar en la tabla Partidas solo si no existe
-                InsertPartida(nextGame);
-
                 // Insertar en la tabla Operators
                 OpenConnection();
                 using (SqlCommand command = new SqlCommand("InsertOperator", connection))
