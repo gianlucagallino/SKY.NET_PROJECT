@@ -3,7 +3,7 @@
     internal class Introduction
     {
 
-        //Todo esto es codigo grafico. 
+        //This class contains GUI code related to introduction.
 
         public int W { get; set; }
         public int H { get; set; }

@@ -2,10 +2,11 @@
 using SkyNet.Entidades;
 using SkyNet.Entidades.Mapa;
 using SkyNet.Entidades.Operadores;
-using System;
 
 namespace SkyNet.Menu
 {
+
+    //This class is responsable for menu graphics & input handling.
     internal class MenuClass
     {
         private bool menuOptionsFlag;
@@ -20,11 +21,7 @@ namespace SkyNet.Menu
             saver = new SaveOrLoadGame();
         }
 
-        public void GetConsoleSizeAfterMap()
-        {
-            W = 3;
-            H = Map.MapSize + 5;
-        }
+
         public void RunMenu()
         {
             bool isRunning = true;
@@ -60,6 +57,13 @@ namespace SkyNet.Menu
                 conta++;
 
             }
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("100. Exit                           ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("200. Show saved Games               ");
+            Console.SetCursorPosition(W, H);
             Console.SetCursorPosition(W, H);
             H++;
             Console.WriteLine(" -------------------------------");
@@ -98,12 +102,6 @@ namespace SkyNet.Menu
             Console.WriteLine("6. Destroy Operator               ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("7. Exit                           ");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("8. Show saved Games               ");
-            Console.SetCursorPosition(W, H);
-            H++;
             Console.WriteLine(" -------------------------------");
             Console.SetCursorPosition(W, H);
             H++;
@@ -133,12 +131,7 @@ namespace SkyNet.Menu
                 case "6":
                     RemoveOperator();
                     break;
-                case "7":
-                    Exit();
-                    break;
-                case "8":
-                    ShowSavedGames();
-                    break;
+
                 default:
                     ClearMenuRemains();
                     GetConsoleSizeAfterMap();
@@ -155,7 +148,12 @@ namespace SkyNet.Menu
                 "\n Press 1 if you want to exit and save the game" +
                 "\n Press 2 if you want to exit and don't save the game " +
                 "\n Press any other key to cancel");
-            int response = Convert.ToInt32(Console.ReadLine());
+            int response;
+            if (!int.TryParse(Console.ReadLine(), out response) || (response != 1 && response != 2))
+            {
+                Console.ReadKey();
+                ClearMenuRemains();
+            }
 
             if (response == 1)
             {
@@ -169,19 +167,12 @@ namespace SkyNet.Menu
                 saver.SaveGame();
                 Environment.Exit(0);
             }
-            else if(response == 2)
+            else if (response == 2)
             {
                 Console.WriteLine("Thank you for playing!");
                 Environment.Exit(0);
-                
-            }
-            else
-            {
-                Console.ReadKey();
 
             }
-
-          
         }
 
         private void ShowOperatorStatus()
@@ -311,7 +302,7 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            
+
             H++;
             //Trae una lista del cuartel seleccionado
             List<MechanicalOperator> operators = Map.GetInstance().HQList[indexer - 1].Operators;
@@ -326,7 +317,7 @@ namespace SkyNet.Menu
 
             Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
             Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
-            operatorId = Console.ReadLine().ToUpper(); 
+            operatorId = Console.ReadLine().ToUpper();
             var selectedOperator = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id.Equals(operatorId));
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
@@ -337,7 +328,7 @@ namespace SkyNet.Menu
                 Console.WriteLine($"Selected Operator {selectedOperator.Id}, Status: {selectedOperator.Status}");
                 H++;
                 Console.SetCursorPosition(W, H);
-                    Console.WriteLine("Choose an option: ");
+                Console.WriteLine("Choose an option: ");
                 H++;
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("1. Move To");
@@ -519,7 +510,7 @@ namespace SkyNet.Menu
                 Console.Write($"Invalid input. Enter an integer between 0 and {Map.MapSize - 1}: ");
             }
             H++;
-       
+
             Console.SetCursorPosition(W, H);
             Console.Write($"Enter a Y location from 0 to {Map.MapSize - 1}: ");
             while (!int.TryParse(Console.ReadLine(), out Yinput) || Yinput < 0 || Yinput >= Map.MapSize)
@@ -541,7 +532,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-            
+
         }
         private void TransferBatteryMenu(MechanicalOperator selectedOperator)
         {
@@ -655,7 +646,7 @@ namespace SkyNet.Menu
             GetConsoleSizeAfterMap();
 
             int indexer = Convert.ToInt32(selectedHQ);
-            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; 
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             int operatorType;
             Console.SetCursorPosition(W, H);
@@ -733,7 +724,7 @@ namespace SkyNet.Menu
             Console.Write("Enter Operator Id to remove: ");
             string operatorId = Console.ReadLine();
 
-            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX; 
+            int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
             int Yposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationY;
             //verificar que exista
             MechanicalOperator removeOp = Map.GetInstance().HQList[indexer - 1].Operators.FirstOrDefault(op => op.Id == operatorId);
@@ -765,17 +756,39 @@ namespace SkyNet.Menu
         private string GetValidHQSelection()
         {
             int maxHQ = Map.GetInstance().HeadquarterCounter;
-            string input = "Error.";
-            bool isRunning = true;
-            int selected;
-
+            int selected = 0;
 
             Console.SetCursorPosition(W, H);
             Console.Write($"     Pick an HQ (1-{maxHQ}): ");
-            while (!int.TryParse(Console.ReadLine(), out selected) || selected < 1 || selected > maxHQ)
+
+            bool continueLoop = true;
+
+            while (continueLoop)
             {
-                Console.SetCursorPosition(W, H);
-                Console.Write($"Invalid selection. Please enter a number between 1 and {maxHQ}: ");
+                if (!int.TryParse(Console.ReadLine(), out selected))
+                {
+                    Console.SetCursorPosition(W, H);
+                    Console.Write($"Invalid input. Please enter a valid number: ");
+                }
+                else if (selected == 100)
+                {
+                    Exit();
+                    continueLoop = false;
+                }
+                else if (selected == 200)
+                {
+                    ShowSavedGames();
+                    continueLoop = false;
+                }
+                else if (selected >= 1 && selected <= maxHQ)
+                {
+                    continueLoop = false;
+                }
+                else
+                {
+                    Console.SetCursorPosition(W, H);
+                    Console.Write($"Invalid selection. Please enter a number between 1 and {maxHQ}: ");
+                }
             }
 
             return selected.ToString();
@@ -788,7 +801,7 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
-            
+
             Console.Write("Enter 1 for safe or 2 for optimal pathfinding: ");
             while (!int.TryParse(Console.ReadLine(), out search) || (search != 1 && search != 2))
             {
@@ -803,7 +816,7 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 10; i++)  //CAMBIAR A 30 PRE ENTREGA+
+            for (int i = 0; i < 20; i++)  //CAMBIAR A 30 PRE ENTREGA+
             {
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("                                                                                                 ");
@@ -814,8 +827,17 @@ namespace SkyNet.Menu
         private void UpdateMap()
         {
             Console.SetCursorPosition(0, 0);
-            Map.GetInstance().PrintMap(); 
+            Map.GetInstance().PrintMap();
         }
+
+        public void GetConsoleSizeAfterMap()
+        {
+            W = 3;
+            H = Map.MapSize + 5;
+        }
+
+
+        //SQL Related functions
         private void ShowSavedGames()
         {
             SaveOrLoadGame saver = new SaveOrLoadGame();

@@ -209,6 +209,7 @@ namespace SkyNet.Entidades.Operadores
                 ExecutedInstructions++;
             }
         }
+
         public void TransferBattery(MechanicalOperator destination, double amountPercentage, bool safety, int whatHq, string opId)
         {
             destination.BusyStatus = true;
