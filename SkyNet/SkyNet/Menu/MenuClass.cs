@@ -359,11 +359,11 @@ namespace SkyNet.Menu
                 H++;
                 Console.SetCursorPosition(W, H);
                 Console.Write("Enter an integer from 1 to 5:");
-                while (!int.TryParse(Console.ReadLine(), out subOption) || subOption < 1 || subOption > 5)
+                while (!int.TryParse(Console.ReadLine(), out subOption) || subOption < 1 || subOption > 6)
                 {
-
+                    ClearMenuRemains();
                     Console.SetCursorPosition(W, H);
-                    Console.Write("Invalid input. Please enter an integer from 1 to 5:");
+                    Console.Write("Invalid input. Please enter an integer from 1 to 6:");
                 }
 
                 HandleSubOption(subOption.ToString(), selectedOperator);
@@ -386,7 +386,7 @@ namespace SkyNet.Menu
                 {"2",()=> TransferBatteryMenu(selectedOperator) },
                 {"3",()=>TransferLoadMenu(selectedOperator) },
                 {"4",()=>GeneralOrderWeightMenu(selectedOperator) },
-                {"4",()=>GeneralOrderHealMenu(selectedOperator) },
+                {"5",()=>GeneralOrderHealMenu(selectedOperator) },
                 {"6",()=>ChangeBatteryMenu(selectedOperator) }
             };
 
@@ -800,7 +800,7 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)  //CAMBIAR A 30 PRE ENTREGA+
             {
                 Console.SetCursorPosition(W, H);
                 Console.WriteLine("                                                                                                 ");
