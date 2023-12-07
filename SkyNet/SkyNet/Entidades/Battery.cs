@@ -1,5 +1,10 @@
 ﻿namespace SkyNet.Entidades
 {
+    /*
+    La clase Battery representa la fuente de energía para los operadores mecánicos.
+    Su función principal es gestionar la carga y descarga de la batería, considerando simulaciones de daño proporcionadas
+    por el DamageSimulator.
+    */
     public class Battery
     {
         private double mAhCapacity;

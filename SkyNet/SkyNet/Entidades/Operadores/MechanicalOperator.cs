@@ -4,6 +4,15 @@ using SkyNet.Entidades.Mapa;
 using System;
 using System.Text.Json.Serialization;
 
+/*
+    La clase MechanicalOperator representa un operador mecánico en el sistema SkyNet.
+    Sus funcionalidades clave incluyen el movimiento a ubicaciones específicas, la transferencia de carga y batería,
+    la simulación de daños, y la ejecución de órdenes generales.
+    Dentro de sus métodos principales se encuentran el MoveTo, TransferBattery, TransferLoad, GeneralOrder. Otros métodos
+    como el calculateDistancie, CalculateBatteryConsumption, IsDamaged, sirven de apoyo para modularizar y refactorizar
+    el código.
+ */
+
 namespace SkyNet.Entidades.Operadores
 {
     public abstract class MechanicalOperator
