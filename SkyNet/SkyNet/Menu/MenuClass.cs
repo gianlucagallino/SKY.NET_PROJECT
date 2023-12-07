@@ -494,9 +494,11 @@ namespace SkyNet.Menu
                 H++;
                 Console.WriteLine("Executing General Order...");
                 Thread.Sleep(2000);
-                selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
                 ClearMenuRemains();
                 GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                H++;
+                selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
                 Console.SetCursorPosition(W, H);
             }
             else

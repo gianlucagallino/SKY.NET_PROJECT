@@ -516,7 +516,10 @@ namespace SkyNet.Entidades.Operadores
                 SimulateTime(TimeSimulator.DamageRepair);
                 ExecutedInstructions++;
             }
-            DamageSimulatorP.Repair(this);
+            else
+            {
+                Console.WriteLine("This operator is not damaged.");
+            }
         }
 
         public void GeneralOrderWeight(Node[,] grid, string opId, int whatHq, bool safety)
