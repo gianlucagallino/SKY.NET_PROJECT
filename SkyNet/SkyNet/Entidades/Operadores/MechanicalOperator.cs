@@ -104,6 +104,7 @@ namespace SkyNet.Entidades.Operadores
             ExecutedInstructions = 0;
             DamagesReceived = 0;
             LastVisitedLocations = new List<int>();
+            CurrentLoad = 0;
         }
 
         //Returns the status via a ternary operator
@@ -340,6 +341,7 @@ namespace SkyNet.Entidades.Operadores
 
                     // Validate and perform load transfer with battery consumption
                     PerformLoadTransferWithBatteryConsumption(destination, amountKG, distance);
+                    
                 }
             }
             catch (Exception ex)

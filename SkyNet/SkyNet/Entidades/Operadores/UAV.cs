@@ -31,6 +31,7 @@ namespace SkyNet.Entidades.Operadores
         public UAV(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 5;
+            CurrentLoad = 0;
             MaxLoadOriginal = 5;
             OptimalSpeed = 150;
             Battery = new Battery();
@@ -46,7 +47,7 @@ namespace SkyNet.Entidades.Operadores
 
         public override string ToString()
         {
-            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%";
+            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%, Current Load:{CurrentLoad}KG";
         }
     }
 }
