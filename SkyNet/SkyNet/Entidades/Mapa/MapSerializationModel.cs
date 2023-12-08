@@ -7,6 +7,15 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
+/*
+    La clase MapSerializationModel es un modelo de serialización diseñado para almacenar información relevante sobre el estado del juego, 
+    especialmente para serializar y deserializar el mapa. Contiene propiedades para almacenar el tamaño del mapa, contadores de diferentes
+    tipos de operadores, un offset de tamaño, una lista de cuarteles generales, un contador de reciclaje y una lista de nodos 
+    que representan el mapa.
+    Se realiza en una clase separada a la de Map, ya que puedes gestionar de manera más flexible la serialización y
+    deserialización del estado del juego sin depender directamente de la implementación estática de la clase Map
+ */
+
 namespace SkyNet.Entidades.Mapa
 
 {

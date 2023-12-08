@@ -4,7 +4,8 @@ using System.Text.Json.Serialization;
 
 /*
     La clase DamageSimulator simula daños potenciales en operadores mecánicos. Sus atributos representan diferentes tipos de daños
-    y proporciona métodos para simular daños aleatorios, reparar los daños y realizar reparaciones específicas en la batería. 
+    y proporciona métodos para simular daños aleatorios, reparar los daños y realizar reparaciones específicas en la batería:
+    SimulateRandomDamage(), Repair(), entre otros.
  */
 
 namespace SkyNet.Entidades
@@ -107,9 +108,5 @@ namespace SkyNet.Entidades
             oper.MaxLoad = oper.MaxLoadOriginal;
         }
 
-        private void LogMessage(string message)
-        {
-            Console.WriteLine(message);
-        }
     }
 }
