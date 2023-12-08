@@ -32,7 +32,8 @@
             BlinkTitle(6, 90);
             TerrainTutorial();
             OperatorTutorial();
-            SelectSaveFile();
+            HeadquarterTutorial();
+            SaveGameTutorial();
             Console.Clear();
         }
 
@@ -65,16 +66,16 @@
             Console.ReadKey();
         }
 
-        private void BlinkTitle(double amount, int time)
+        private void BlinkTitle(double blinkCount, int blinkDelay)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i < blinkCount; i++)
             {
                 Console.CursorVisible = false;
                 GetConsoleSizeCenter();
-                Thread.Sleep(time);
+                Thread.Sleep(blinkDelay);
                 Console.Clear();
-                Thread.Sleep(time);
+                Thread.Sleep(blinkDelay);
                 Console.SetCursorPosition(W, H);
                 H++;
                 Console.WriteLine("\t    )                                              )                                          ____            ");
@@ -209,48 +210,80 @@
             Console.SetCursorPosition(W, H);
             H += 2;
             Console.SetCursorPosition(W, H);
-            Console.WriteLine("\t               Have fun! Press any key to continue.                ");
+            Console.WriteLine("\t                   Press any key to continue.                ");
             Console.ReadKey();
             Console.Clear();
         }
 
-        private void SelectSaveFile()
+
+        private void HeadquarterTutorial()
         {
             Console.ForegroundColor = ConsoleColor.White;
             GetConsoleSizeCenter();
             Console.CursorVisible = false;
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t                              Select an option:                    ");
+            Console.WriteLine("\t ________________________________________________________________ ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t---------------------------------------------------------------------------");
-            Console.SetCursorPosition(W, H);
-
-            H++;
-            Console.WriteLine("\t 1 - Start new game. (WARNING: DELETES ALL SAVED DATA, IF ANY IS PRESENT)");
+            Console.WriteLine("\t|                    Headquarter Tutorial:                        |");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t 2 - Try Continue saved game.");
+            Console.WriteLine("\t|                                                                |");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t---------------------------------------------------------------------------");
+            Console.WriteLine("\t| Each headquarter owns certain operators.                       |");
             Console.SetCursorPosition(W, H);
-
+            H++;
+            Console.WriteLine("\t| Headquarters can only give out orders to its own operators.    |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| To figure out ownership, go to your desired HQ and press on    |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| show operator status.                                          |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|________________________________________________________________|");
+            Console.SetCursorPosition(W, H);
             H += 2;
             Console.SetCursorPosition(W, H);
-            Console.Write("\t               Enter option: ");
-            string pick = Console.ReadLine();
+            Console.WriteLine("\t                   Press any key to continue.                ");
+            Console.ReadKey();
             Console.Clear();
-            string mensaje = pick.ToLower() switch
-            {
-                "1" => "Enjoy your new game! ",
-                "2" => "Attempting to load game... (Illusion of free choice, this isnt connected to anything yet)",
-                _ => "Can you even type? That was not an option. Im getting rid of your game data and starting a new game. Sucks to be you.",
-            };
+        }
+
+        private void SaveGameTutorial()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            GetConsoleSizeCenter();
+            Console.CursorVisible = false;
             Console.SetCursorPosition(W, H);
-            Console.WriteLine(mensaje);
-            Thread.Sleep(5000);
+            H++;
+            Console.WriteLine("\t ________________________________________________________________ ");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|                     Game save Tutorial:                        |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|                                                                |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| To save your game to a file, press on the corresponding        |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| option in the menu. To load a file, choose your desired file.  |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t| Your ongoing match will be overwritten with the loaded data.   |");
+            Console.SetCursorPosition(W, H);
+            H++;
+            Console.WriteLine("\t|________________________________________________________________|");
+            Console.SetCursorPosition(W, H);
+            H += 2;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("\t                   Press any key to continue.                ");
+            Console.ReadKey();
             Console.Clear();
         }
     }
