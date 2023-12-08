@@ -36,32 +36,38 @@ namespace SkyNet.Menu
 
         private void PrintMenu()
         {
-            ClearMenuRemains();
-            GetConsoleSizeAfterMap();
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine(" _______________________________");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("|          General Menu         | ");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine(" ------------------------------- ");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("1. Management Menu                ");
 
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("100. Exit                           ");
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine("200. Show saved Games               ");
-            Console.SetCursorPosition(W, H);
-            Console.SetCursorPosition(W, H);
-            H++;
-            Console.WriteLine(" -------------------------------");
-            string pickedOption = GetValidOptionSelection();
+            string pickedOption = "0";
+            while (pickedOption != "1")
+            {
+                ClearMenuRemains();
+                GetConsoleSizeAfterMap();
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine(" _______________________________");
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine("|          General Menu         | ");
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine(" ------------------------------- ");
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine("1. Management Menu                ");
+
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine("100. Exit                           ");
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine("200. Show saved Games               ");
+                Console.SetCursorPosition(W, H);
+                Console.SetCursorPosition(W, H);
+                H++;
+                Console.WriteLine(" -------------------------------");
+
+                pickedOption = GetValidOptionSelection();
+            }
 
 
             ClearMenuRemains();
@@ -221,6 +227,8 @@ namespace SkyNet.Menu
         // Exit without saving
         private void ExitWithoutSaving()
         {
+            H++;
+            Console.SetCursorPosition(W, H);
             Console.WriteLine("Thank you for playing!");
             Environment.Exit(0);
         }
@@ -921,13 +929,14 @@ namespace SkyNet.Menu
 
 
             int indexer = Convert.ToInt32(selectedHQ);
-      
+
             // Display a list of operators corresponding to the selected headquarters
             DisplayOperatorsInHeadquarters(indexer);
 
             Console.SetCursorPosition(W, H);
             Console.Write("Enter Operator Id to remove: ");
             string operatorId = Console.ReadLine();
+            operatorId = operatorId.ToUpper();
 
             // Get headquarters location
             int Xposition = Map.GetInstance().HQList[indexer - 1].LocationHeadQuarters.LocationX;
@@ -942,7 +951,7 @@ namespace SkyNet.Menu
 
         // Display a list of operators corresponding to the selected headquarters
         private void DisplayOperatorsInHeadquarters(int indexer)
-        { 
+        {
             List<MechanicalOperator> operators = Map.GetInstance().HQList[indexer - 1].Operators;
             foreach (MechanicalOperator op in operators)
             {
@@ -1030,6 +1039,7 @@ namespace SkyNet.Menu
                 else if (selected == 1)
                 {
                     continueLoop = false;
+                    
                 }
                 else if (selected == 100)
                 {
@@ -1038,6 +1048,7 @@ namespace SkyNet.Menu
                 else if (selected == 200)
                 {
                     ShowSavedGames();
+                    continueLoop = false;
                 }
                 else
                 {
@@ -1057,10 +1068,12 @@ namespace SkyNet.Menu
             ClearMenuRemains();
             GetConsoleSizeAfterMap();
             Console.SetCursorPosition(W, H);
+            H++;
 
             Console.Write("Enter 1 for safe or 2 for optimal pathfinding: ");
             while (!int.TryParse(Console.ReadLine(), out search) || (search != 1 && search != 2))
             {
+                Console.SetCursorPosition(W, H);
                 Console.Write("Invalid input. Please enter 1 for safe or 2 for optimal pathfinding:");
             }
             if (search == 1) safety = true;
@@ -1097,16 +1110,26 @@ namespace SkyNet.Menu
         //SQL Related functions
         private void ShowSavedGames()
         {
+            ClearMenuRemains();
+            GetConsoleSizeAfterMap();
+            Console.SetCursorPosition(W, H);
+            H++;
+
             SaveOrLoadGame saver = new SaveOrLoadGame();
             List<string> savedGames = saver.GetSavedGames();
 
             if (savedGames.Count > 0)
             {
+                Console.SetCursorPosition(W, H);
                 Console.WriteLine("Saved Games:");
                 for (int i = 0; i < savedGames.Count; i++)
                 {
+                    H++;
+                    Console.SetCursorPosition(W, H);
                     Console.WriteLine($"{i + 1}. {savedGames[i]}");
                 }
+                H++;
+                Console.SetCursorPosition(W, H);
                 Console.WriteLine("Enter the number of the saved game to load (or any other key to cancel):");
                 string input = Console.ReadLine();
 
@@ -1118,28 +1141,36 @@ namespace SkyNet.Menu
 
                     if (loadedMap != null)
                     {
+                        H++;
+                        Console.SetCursorPosition(W, H);
                         Console.WriteLine($"Loaded saved game: {selectedGameName}");
 
                         loadedMap.PrintMap();
                     }
                     else
                     {
+                        H++;
+                        Console.SetCursorPosition(W, H);
                         Console.WriteLine($"Failed to load saved game: {selectedGameName}");
                     }
                 }
                 else
                 {
+                    H++;
+                    Console.SetCursorPosition(W, H);
                     Console.WriteLine("Invalid selection. Cancelling operation.");
                 }
             }
             else
             {
+                H++;
+                Console.SetCursorPosition(W, H);
                 Console.WriteLine("No saved games found.");
             }
+            H++;
+            Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-
         }
-
     }
 }
