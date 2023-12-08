@@ -3,17 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
 {
+    /*
+        HeadQuarters es una clase que representa un centro de operaciones en el juego. 
+        Tiene propiedades para almacenar operadores mecánicos asociados y la ubicación del cuartel general. 
+        Puede generar aleatoriamente una cantidad de operadores y asignarlos a posiciones válidas en el mapa
+     */
     [Serializable]
     public class HeadQuarters
     {
-        // Random number generator for operator generation
+
         private Random rng;
 
-        // List to store MechanicalOperators
         [JsonPropertyName("Operators")]
         public List<MechanicalOperator> Operators { get; set; }
 
-        // Location of the headquarters on the map
         [JsonPropertyName("LocationHeadQuarters")]
         public Location LocationHeadQuarters { get; set; }
 
@@ -63,14 +66,11 @@ namespace SkyNet.Entidades.Mapa
             return uav;
         }
 
-
-        //Valid position check
         private bool IsValidPosition(int xPosition, int yPosition)
         {
             return xPosition >= 0 && xPosition < Map.MapSize && yPosition >= 0 && yPosition < Map.MapSize;
         }
 
-        // Generates a type for a generated operator
         private MechanicalOperator GenerateRandomOperator(int xPosition, int yPosition, int generatedType)
         {
             switch (generatedType)
@@ -89,10 +89,9 @@ namespace SkyNet.Entidades.Mapa
                     return CreateUAV(xPosition, yPosition);
             }
 
-            return null; // Invalid operator type or water position
+            return null; 
         }
 
-        // Generates a random number of operators and adds them to the list
         private void GenerateRandomAmountOfOperators()
         {
             int opAmount = rng.Next(1, 15);

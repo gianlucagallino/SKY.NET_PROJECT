@@ -6,13 +6,13 @@ namespace SkyNet.Entidades
     La clase Battery representa la fuente de energía para los operadores mecánicos.
     Su función principal es gestionar la carga y descarga de la batería, considerando simulaciones de daño proporcionadas
     por el DamageSimulator.
+    Posee una relación de asociación con la clase DamageSimulator.
     */
     public class Battery
     {
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
         public double CurrentChargePercentage { get; set; }
-
         public double MaximumChargePercentage { get; set; }
         public double MaxCharge { get; set; }
         public DamageSimulator DamageSimulatorP { get; set; }
@@ -48,13 +48,11 @@ namespace SkyNet.Entidades
                 else
                 {
                     Message.BatteryMaxiumCharge();
-                    //LogMessage("The battery is at its maximum charge level");
                 }
             }
             else
             {
                 Message.InvalidBatteryPercentage();
-                //LogMessage("Invalid battery percentage");
             }
         }
 
@@ -76,7 +74,6 @@ namespace SkyNet.Entidades
                 else
                 {
                     Message.BatteryCannotNegative();
-                    //LogMessage("The battery level cannot go below 0; it is not possible to perform that task.");
                 }
             }
             else
@@ -96,9 +93,5 @@ namespace SkyNet.Entidades
              return ok ;
         }
 
-        /*private void LogMessage(string message)
-        {
-            Console.WriteLine(message);
-        }*/
     }
 }

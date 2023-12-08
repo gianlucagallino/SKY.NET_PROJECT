@@ -7,17 +7,23 @@ using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
 {
-    public class Map
-    {
+    /*
+     Map es una clase que representa el mapa del juego, con nodos, contadores de unidades y centros de operaciones. 
+     Tiene métodos para llenar y imprimir el mapa, seleccionar nodos específicos y serializar/deserializar el estado del juego. 
+     También gestiona la creación y recuperación del mapa como una instancia de Singleton. Además, maneja la generación aleatoria de
+     tipos de terreno limitados y su distribución en el mapa. 
 
-        /* Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
+     Referencias de TerrainType (CONSIDERAR MOVER SISTEMA A ENUM)
          * 0- Terreno Neutro (baldio, planicie, bosque, sector urbano)
          * 1- Vertedero
          * 2-Lago
          * 3-Vertedero electronico
          * 4-Sitio de reciclaje (Implementar maximo 5)
          * 5-Cuartel general(maximo 3)
-         */
+
+     */
+    public class Map
+    {
         [JsonPropertyName("Grid")]
         public List<Node> Nodes { get; set; }
         [JsonPropertyName("Node")]
@@ -61,8 +67,6 @@ namespace SkyNet.Entidades.Mapa
                 UpdateNodeParentReferences();
             }
         }
-
-
         private Map()
         {
             M8Counter = 0;
@@ -77,10 +81,9 @@ namespace SkyNet.Entidades.Mapa
             FillGrid();
         }
 
-        // Singleton instance
+
         private static Map _instance;
 
-        //Singleton Get method
         public static Map GetInstance()
         {
             if (_instance == null)
@@ -101,29 +104,24 @@ namespace SkyNet.Entidades.Mapa
             int tempNum = 0;
             bool isValidInput = false;
 
-            // Keep asking for input until a valid map size is entered
             while (!isValidInput)
             {
                 Console.SetCursorPosition(XCenter, YCenter);
                 Message.DesiredMapSize();
 
-                // Check if the input is a valid integer
                 if (int.TryParse(Console.ReadLine(), out tempNum))
                 {
-                    // Check if the entered map size is within the valid range
                     if (tempNum >= 10 && tempNum <= 100)
                     {
                         isValidInput = true;
                     }
                     else
                     {
-                        // Invalid input range, display error message
                         DisplayErrorMessage(XCenter, YCenter, "Invalid input. Map size must be between 30 and 100 (inclusive). Try again.");
                     }
                 }
                 else
                 {
-                    // Invalid integer input, display error message
                     DisplayErrorMessage(XCenter, YCenter, "Invalid input. Please enter a valid integer. Try again.");
                 }
             }
@@ -184,7 +182,6 @@ namespace SkyNet.Entidades.Mapa
             }
         }
 
-        // Method to select a terrain node and update the list
         private void SelectTerrainNode(List<Node> list, Random rng, int terrainType)
         {
             bool inLoop = true;
@@ -198,13 +195,12 @@ namespace SkyNet.Entidades.Mapa
                 if (!list.Contains(Grid[randomX, randomY]))
                 {
                     Grid[randomX, randomY].TerrainType = terrainType;
-                    list.Add(Grid[randomX, randomY]);  // Add the selected node to the list
+                    list.Add(Grid[randomX, randomY]);  
                     inLoop = false;
                 }
             }
         }
 
-        // Function to print the map to the console
         public void PrintMap()
         {
             PrintColumnIndicators();
@@ -232,7 +228,6 @@ namespace SkyNet.Entidades.Mapa
             Console.BackgroundColor = ConsoleColor.Black; // Reset to black to avoid problems
         }
 
-        // Helper method to evaluate the unit in a node and return a string representation
         private string EvaluateUnitInNode(Node input)
         {
             string printType;
@@ -265,7 +260,6 @@ namespace SkyNet.Entidades.Mapa
             return printType;
         }
 
-        // Helper method to print column indicators
         private void PrintColumnIndicators()
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -276,13 +270,12 @@ namespace SkyNet.Entidades.Mapa
             {
                 Console.BackgroundColor = (i % 2 == 0) ? ConsoleColor.DarkRed : ConsoleColor.Red;
                 Console.Write((i < 10) ? $"{i} " : $"{i}");
-                Console.BackgroundColor = ConsoleColor.Black; // Reset background color for visual clarity
+                Console.BackgroundColor = ConsoleColor.Black;
             }
 
             Console.Write("\n");
         }
 
-        // Helper method to print line indicators
         private void PrintLineIndicators()
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -291,11 +284,9 @@ namespace SkyNet.Entidades.Mapa
             {
                 Console.BackgroundColor = (i % 2 == 0) ? ConsoleColor.DarkRed : ConsoleColor.Red;
                 Console.WriteLine((i < 10) ? $"{i} " : $"{i}");
-                Console.BackgroundColor = ConsoleColor.Black; // Reset background color for visual clarity
+                Console.BackgroundColor = ConsoleColor.Black; 
             }
         }
-
-        //esto permitiria serializar el mapa 
         public string SerializeToJson()
         {
             MapSerializationModel serializationModel = new MapSerializationModel()
@@ -421,8 +412,6 @@ namespace SkyNet.Entidades.Mapa
             return allOperators;
         }
 
-
-        // Helper method to display error messages
         private static void DisplayErrorMessage(int xPosition, int yPosition, string message)
         {
             Console.Clear();
@@ -430,26 +419,6 @@ namespace SkyNet.Entidades.Mapa
             Console.WriteLine(message);
             Thread.Sleep(1500);
             Console.Clear();
-        }
-        private static int GetIndex(int x, int y)
-        {
-            return x * MapSize + y;
-        }
-        
-        private static Node[,] DeserializeNodes(List<Node> nodes, int mapSize)
-        {
-            Node[,] grid = new Node[mapSize, mapSize];
-
-            for (int i = 0; i < mapSize; i++)
-            {
-                for (int j = 0; j < mapSize; j++)
-                {
-                    int index = i * mapSize + j;
-                    grid[i, j] = nodes.Count > index ? nodes[index] : new Node();  // Maneja posibles elementos faltantes
-                }
-            }
-
-            return grid;
         }
         private void UpdateNodeParentReferences()
         {

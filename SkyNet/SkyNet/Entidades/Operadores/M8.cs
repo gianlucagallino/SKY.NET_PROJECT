@@ -2,8 +2,8 @@
 using System.Text.Json.Serialization;
 
 /*
-    Esta clase representa a un operador mecánico específico, hereda las características generales de la clase MechanicalOperator. 
-    Se distingue por sus atributos predefinidos y la inicialización y representación de las características de los operadores M8
+    Esta clase representa a un operador mecánico específico M8, hereda las características generales de la clase MechanicalOperator. 
+    Posee una relación de asociación con la clase Battery.
  */
 
 namespace SkyNet.Entidades.Operadores

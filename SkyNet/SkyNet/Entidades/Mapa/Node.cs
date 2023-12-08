@@ -4,14 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
 {
-    [Serializable]
-    public class Node
-    {
+    /*
+       Node es una clase que representa un nodo en el mapa del juego. Cada nodo tiene información sobre su tipo de terreno, 
+       peligrosidad, ubicación, costos estimados para algoritmos de búsqueda y una lista de operadores mecánicos presentes en ese nodo.
+       Además, cuenta con métodos para la generación aleatoria del tipo de terreno.
 
-        private static Random rng = new Random();
-
-
-        //REFERENCIAS DE NOTACION
+    //REFERENCIAS DE NOTACION
         //F = Total estimated cost (G + H)
         //G = Cost from the start node to the current node
         //H = Heuristic estimate from the current node to the goal node
@@ -24,7 +22,16 @@ namespace SkyNet.Entidades.Mapa
          * 3-Vertedero electronico
          * 4-Sitio de reciclaje (Implementar maximo 5)
          * 5-Cuartel general(maximo 3)
-         */
+      */
+         
+    [Serializable]
+    public class Node
+    {
+
+        private static Random rng = new Random();
+
+
+        
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
@@ -65,13 +72,7 @@ namespace SkyNet.Entidades.Mapa
 
             return 3;                // 14% chance of getting 3
         }
-        public string SerializeToJson()
-        {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-        }
+
     }
 }
 
