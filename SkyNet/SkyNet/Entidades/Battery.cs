@@ -47,12 +47,14 @@ namespace SkyNet.Entidades
                 }
                 else
                 {
-                    LogMessage("The battery is at its maximum charge level");
+                    Message.BatteryMaxiumCharge();
+                    //LogMessage("The battery is at its maximum charge level");
                 }
             }
             else
             {
-                LogMessage("Invalid battery percentage");
+                Message.InvalidBatteryPercentage();
+                //LogMessage("Invalid battery percentage");
             }
         }
 
@@ -73,12 +75,13 @@ namespace SkyNet.Entidades
                 }
                 else
                 {
-                    LogMessage("The battery level cannot go below 0; it is not possible to perform that task.");
+                    Message.BatteryCannotNegative();
+                    //LogMessage("The battery level cannot go below 0; it is not possible to perform that task.");
                 }
             }
             else
             {
-                LogMessage("Invalid battery percentage");
+                Message.InvalidBatteryPercentage();
             }
         }
 
@@ -93,9 +96,9 @@ namespace SkyNet.Entidades
              return ok ;
         }
 
-        private void LogMessage(string message)
+        /*private void LogMessage(string message)
         {
             Console.WriteLine(message);
-        }
+        }*/
     }
 }
