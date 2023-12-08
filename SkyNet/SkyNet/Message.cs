@@ -41,5 +41,34 @@ namespace SkyNet
         {
             Console.WriteLine("Press any key to continue");
         }
+        public static void AmontNonNegative()
+        {
+            Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+        }
+        public static void BatteryValidationFailure()
+        {
+            Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+        }
+        public static void AmontNonNegativeLoad()
+        {
+            Console.WriteLine("Amount must be non-negative for Transfer Load.");
+        }
+        public static void MuchLoad()
+        {
+            Console.WriteLine("Transfer Load failed. Destination operator cannot hold that much load.");
+        }
+        public static void BatteryCapacity()
+        {
+            Console.WriteLine("Battery validation failed. Not enough battery capacity for the transfer.");
+        }
+        public static void NodeListEmpty()
+        {
+            Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
+        }
+        public static void OperatorNotDamaged()
+        {
+            Console.WriteLine("This operator is not damaged.");
+            
+        }
     }
 }
