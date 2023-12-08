@@ -59,7 +59,7 @@ namespace SkyNet.Entidades.Operadores
             {
               { 1, (oper) => DamageSimulatorP.SimulateRandomDamage(oper) },
               { 2, (oper) => { if (oper is M8 || oper is K9)
-                { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+                { Message.OperatorsLakeProhibition(); } return; } },
               { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
             };
             KilometersTraveled = 0;
@@ -97,7 +97,7 @@ namespace SkyNet.Entidades.Operadores
             {
               { 1, (oper) => DamageSimulatorP.SimulateRandomDamage(oper) },
               { 2, (oper) => { if (oper is M8 || oper is K9)
-                { Console.WriteLine("M8 and K9 cannot enter the lake."); } return; } },
+                { Message.OperatorsLakeProhibition(); } return; } },
               { 3, (oper) => DamageSimulatorP.ElectronicLandfillSimulate(oper) }
             };
             KilometersTraveled = 0;
@@ -148,7 +148,7 @@ namespace SkyNet.Entidades.Operadores
 
             if (path.Count == 0)
             {
-                Console.WriteLine("No path found for this unit.");
+                Message.PathNotFound();
                 DistanceFlag = false;
                 return; // Early exit when no path is found
             }
@@ -175,7 +175,7 @@ namespace SkyNet.Entidades.Operadores
 
                 if (tempLocation.Equals(destination))
                 {
-                    Console.WriteLine("Destination reached!");
+                    Message.DestinationReached();
 
                     Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
                     Map.Grid[node.NodeLocation.LocationX, node.NodeLocation.LocationY].OperatorsInNode.Add(this);
