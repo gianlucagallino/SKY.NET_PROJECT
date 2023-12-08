@@ -230,7 +230,7 @@ namespace SkyNet.Entidades.Operadores
 
                 if (amountPercentage < 0)
                 {
-                    Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+                    Message.AmontNonNegative();
                     return;
                 }
 
@@ -280,7 +280,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+                Message.BatteryValidationFailure();
             }
         }
 
@@ -301,7 +301,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+                Message.BatteryValidationFailure();
             }
         }
 
@@ -316,7 +316,7 @@ namespace SkyNet.Entidades.Operadores
 
                 if (amountKG < 0)
                 {
-                    Console.WriteLine("Amount must be non-negative for TransferLoad.");
+                    Message.AmontNonNegativeLoad();
                     return;
                 }
 
@@ -367,7 +367,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                Message.MuchLoad();
             }
         }
 
@@ -389,7 +389,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+                Message.MuchLoad();
             }
         }
 
@@ -437,7 +437,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("Battery validation failed. Not enough battery capacity for the transfer.");
+                Message.BatteryCapacity();
                 return false;
             }
         }
@@ -490,7 +490,7 @@ namespace SkyNet.Entidades.Operadores
         {
             if (nodes.Count == 0)
             {
-                Console.WriteLine("The list of nodes is empty. Unable to find the closest node.");
+                Message.NodeListEmpty();
             }
 
             Node closestNode = nodes[0];
@@ -576,7 +576,7 @@ namespace SkyNet.Entidades.Operadores
             }
             else
             {
-                Console.WriteLine("This operator is not damaged.");
+                Message.OperatorNotDamaged();
             }
         }
 
