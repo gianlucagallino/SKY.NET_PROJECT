@@ -60,9 +60,7 @@ namespace SkyNet.Menu
             try
             {
                 string gameJson = File.ReadAllText(filePath);
-                //Console.WriteLine($"Contenido de gameJson: {gameJson}");
                 loadedMap = Map.BuildMapFromJson(gameJson);
-                //Console.WriteLine($"Game '{gameName}' loaded successfully");
                 Message.LoadGameSuccessfully(gameName);
             }
             catch (Exception ex)

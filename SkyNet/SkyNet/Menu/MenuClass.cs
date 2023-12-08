@@ -267,8 +267,6 @@ namespace SkyNet.Menu
             }
         }
 
-
-
         public void ShowOperatorStatusAtLocation()
         {
             int xInput;
