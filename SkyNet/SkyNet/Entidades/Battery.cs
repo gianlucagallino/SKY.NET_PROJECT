@@ -41,7 +41,7 @@ namespace SkyNet.Entidades
         {
             if (IsValidBatteryPercentage(amountBatteryPercentage))
             {
-                if (CurrentChargePercentage + amountBatteryPercentage <= MaximumChargePercentage)
+                if (CurrentChargePercentage + amountBatteryPercentage <= MaxCharge)
                 {
                     CurrentChargePercentage += amountBatteryPercentage;
                 }

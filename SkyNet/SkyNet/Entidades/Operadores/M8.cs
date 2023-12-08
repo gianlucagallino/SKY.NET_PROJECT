@@ -16,7 +16,7 @@ namespace SkyNet.Entidades.Operadores
             MaxLoadOriginal = 40;
             OptimalSpeed = 250;
             battery.MAHCapacity = 12250;
-            battery.CurrentChargePercentage = 100;
+            battery.CurrentChargePercentage = 80;
             battery.Type = 2;
             Id = Convert.ToString("M8-" + Map.M8Counter);
         }
@@ -33,6 +33,7 @@ namespace SkyNet.Entidades.Operadores
             Battery.MAHCapacity = 12250;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 2;
+            Battery.MaxCharge = 100;
             Battery.DamageSimulatorP = new DamageSimulator();
             Id = Convert.ToString("M8-" + Map.M8Counter);
             LocationP.LocationX = xposition;

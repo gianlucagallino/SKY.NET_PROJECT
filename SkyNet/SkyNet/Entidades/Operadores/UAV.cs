@@ -37,6 +37,7 @@ namespace SkyNet.Entidades.Operadores
             Battery.MAHCapacity = 4000;
             Battery.CurrentChargePercentage = 100;
             Battery.Type = 3;
+            Battery.MaxCharge = 100;
             Battery.DamageSimulatorP = new DamageSimulator();
             Id = Convert.ToString("UAV-" + Map.UAVCounter);
             LocationP.LocationX = xposition;
