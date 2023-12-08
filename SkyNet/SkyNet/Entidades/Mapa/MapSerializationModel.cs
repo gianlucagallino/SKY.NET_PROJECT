@@ -34,16 +34,16 @@ namespace SkyNet.Entidades.Mapa
             
         }
         [JsonConstructor]
-        public MapSerializationModel(int MapSize, int M8Counter, int K9Counter, int UAVCounter, int SizeOffset, List<HeadQuarters> HQList, 
-            int RecyclingCounter)
+        public MapSerializationModel(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, 
+            int recyclingCounter)
         {
-            MapSize = MapSize;
-            M8Counter = M8Counter;
-            K9Counter = K9Counter;
-            UAVCounter = UAVCounter;
-            SizeOffset = SizeOffset;
-            HQList = HQList;
-            RecyclingCounter =RecyclingCounter;
+            MapSize = mapSize;
+            M8Counter = m8Counter;
+            K9Counter = k9Counter;
+            UAVCounter = uAVCounter;
+            SizeOffset = sizeOffset;
+            HQList = hQList;
+            RecyclingCounter =recyclingCounter;
             //Grid = grid;
         }
 

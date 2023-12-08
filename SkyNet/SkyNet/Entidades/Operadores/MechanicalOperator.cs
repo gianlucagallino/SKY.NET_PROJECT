@@ -1,4 +1,6 @@
 ﻿using SkyNet.Entidades.Mapa;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /*
@@ -8,10 +10,14 @@ using System.Text.Json.Serialization;
     Dentro de sus métodos principales se encuentran el MoveTo, TransferBattery, TransferLoad, GeneralOrder. Otros métodos
     como el calculateDistancie, CalculateBatteryConsumption, IsDamaged, sirven de apoyo para modularizar y refactorizar
     el código.
+
  */
 
 namespace SkyNet.Entidades.Operadores
 {
+    [JsonDerivedType(typeof(UAV), typeDiscriminator: "UAV")]
+    [JsonDerivedType(typeof(K9), typeDiscriminator: "K9")]
+    [JsonDerivedType(typeof(M8), typeDiscriminator: "M8")]
     public abstract class MechanicalOperator
     {
 
@@ -39,6 +45,7 @@ namespace SkyNet.Entidades.Operadores
         public bool DistanceFlag { get; private set; }
 
         [JsonConstructor]
+ 
         public MechanicalOperator()
         {
             BusyStatus = false;

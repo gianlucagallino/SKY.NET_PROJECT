@@ -20,6 +20,10 @@ namespace SkyNet.Entidades.Mapa
 
         // Constructor initializes the headquarters and generates operators
         [JsonConstructor]
+        public HeadQuarters()
+        {
+                
+        }
         public HeadQuarters(List<MechanicalOperator> operators, Location locationHeadQuarters)
         {
             Operators = operators;
