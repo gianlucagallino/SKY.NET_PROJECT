@@ -22,7 +22,7 @@ namespace SkyNet.Entidades.Operadores
     {
 
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
-
+        private List<int> LastVisitedLocations { get; set; } 
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
         public Battery Battery { get; set; }
@@ -68,6 +68,7 @@ namespace SkyNet.Entidades.Operadores
             ExecutedInstructions = 0;
             DamagesReceived = 0;
             LocationP = new Location(0, 0);
+            
         }
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
@@ -104,6 +105,7 @@ namespace SkyNet.Entidades.Operadores
             TotalCarriedLoad = 0;
             ExecutedInstructions = 0;
             DamagesReceived = 0;
+            LastVisitedLocations = new List<int>();
         }
 
         //Returns the status via a ternary operator
@@ -160,6 +162,7 @@ namespace SkyNet.Entidades.Operadores
             KilometersTraveled += (float)distance;
             EnergyConsumed += (float)batteryConsumption;
             ExecutedInstructions++;
+            AddToLastVisitedLocations(loc);
         }
 
         private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType)
@@ -545,6 +548,30 @@ namespace SkyNet.Entidades.Operadores
                     TotalCarriedLoad += (float)MaxLoad;
                 }
             }
+        }
+
+        private void AddToLastVisitedLocations(Location location)
+        {
+            int loc = Convert.ToInt32(location.ToString());
+            if (loc != null) 
+            { 
+                LastVisitedLocations.Add(loc);
+            
+                if (LastVisitedLocations.Count > 3)
+                {
+                LastVisitedLocations.RemoveAt(0); 
+                }
+            }
+            else { loc = 0; }
+        }
+
+        public List<int> GetAndClearLastVisitedLocations()
+        {
+            List<int> lastVisited = new List<int>(LastVisitedLocations);
+
+            LastVisitedLocations.Clear();
+
+            return lastVisited;
         }
 
     }

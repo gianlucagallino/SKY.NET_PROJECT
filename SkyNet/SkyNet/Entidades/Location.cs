@@ -21,5 +21,10 @@ namespace SkyNet.Entidades
             LocationX = hor;
             LocationY = vert;
         }
+
+        public override string ToString()
+        {
+            return LocationX.ToString() + LocationY.ToString();
+        }
     }
 }
