@@ -96,9 +96,20 @@ namespace SkyNet.Data
                     command.Parameters.AddWithValue("@CargaTransportada", oper.TotalCarriedLoad);
                     command.Parameters.AddWithValue("@InstruccionesEjecutadas", oper.ExecutedInstructions);
                     command.Parameters.AddWithValue("@DaniosRecibidos", oper.DamagesReceived);
-                    command.Parameters.AddWithValue("@UltimoLugar1", 0);
-                    command.Parameters.AddWithValue("@UltimoLugar2", 0);
-                    command.Parameters.AddWithValue("@UltimoLugar3", 0);
+                    List<int> lastVisitedLocations = oper.GetAndClearLastVisitedLocations();
+
+                    // Asegurarse de que solo se obtengan las últimas tres ubicaciones
+                    if (lastVisitedLocations.Count > 3)
+                    {
+                        lastVisitedLocations = lastVisitedLocations.GetRange(lastVisitedLocations.Count - 3, 3);
+                    }
+
+                    // Pasar la lista de ubicaciones directamente como parámetro
+                    command.Parameters.AddWithValue("@UltimoLugar1", lastVisitedLocations.ElementAtOrDefault(0));
+                    command.Parameters.AddWithValue("@UltimoLugar2", lastVisitedLocations.ElementAtOrDefault(1));
+                    command.Parameters.AddWithValue("@UltimoLugar3", lastVisitedLocations.ElementAtOrDefault(2));
+
+
                     command.Parameters.AddWithValue("@PartidaID", nextGame);
 
                     command.ExecuteNonQuery();

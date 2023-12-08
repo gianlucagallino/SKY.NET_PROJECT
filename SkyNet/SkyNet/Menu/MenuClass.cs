@@ -176,13 +176,13 @@ namespace SkyNet.Menu
 
             if (response == 1)
             {
-                //int nextGame = HelperDB.ObtenerInstancia().GetNextGame();
-                // Insertar en la tabla Partidas solo si no existe
-                /*HelperDB.ObtenerInstancia().InsertPartida(nextGame);
+                int nextGame = HelperDB.ObtenerInstancia().GetNextGame();
+                
+                HelperDB.ObtenerInstancia().InsertPartida(nextGame);
                 foreach (var oper in Map.GetInstance().GetAllOperators())
                 {
                     HelperDB.ObtenerInstancia().InsertOperator(oper, nextGame);
-                }*/
+                }
                 saver.SaveGame();
                 Environment.Exit(0);
             }
