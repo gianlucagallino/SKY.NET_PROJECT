@@ -1,4 +1,5 @@
 ﻿using SkyNet.Entidades.Operadores;
+using System;
 using System.Text.Json.Serialization;
 
 /*
@@ -11,21 +12,14 @@ namespace SkyNet.Entidades
     public class DamageSimulator
     {
         private readonly List<Action<MechanicalOperator>> damageActions;
-        private bool damagedEngine;
-        private bool stuckServo;
-        private bool perforatedBattery;
-        private bool disconectedBatteryPort;
-        private bool paintScratch;
-        private bool electronicLandfill;
+        private readonly Random random = new Random();
 
-
-        public bool DamagedEngine { get; set; }
-        public bool StuckServo { get; set; }
-        public bool PerforatedBattery { get; set; }
-        public bool DisconnectedBatteryPort { get; set; }
-        public bool PaintScratch { get; set; }
-
-        public bool ElectronicLandfill { get; set; }
+        public bool DamagedEngine { get; private set; }
+        public bool StuckServo { get; private set; }
+        public bool PerforatedBattery { get; private set; }
+        public bool DisconnectedBatteryPort { get; private set; }
+        public bool PaintScratch { get; private set; }
+        public bool ElectronicLandfill { get; private set; }
 
         [JsonConstructor]
         public DamageSimulator()
@@ -37,27 +31,25 @@ namespace SkyNet.Entidades
             PaintScratch = false;
             ElectronicLandfill = false;
 
-
             damageActions = new List<Action<MechanicalOperator>>
-            {
-                CompromisedMotorSimulate,
-                StuckServoSimulate,
-                PerforatedBatterySimulate,
-                DisconnectedBatteryPortSimulate,
-                PaintScratchSimulate,
-                ElectronicLandfillSimulate
-            };
+        {
+            CompromisedMotorSimulate,
+            StuckServoSimulate,
+            PerforatedBatterySimulate,
+            DisconnectedBatteryPortSimulate,
+            PaintScratchSimulate,
+            ElectronicLandfillSimulate
+        };
         }
+
         public void SimulateRandomDamage(MechanicalOperator oper)
         {
-            Random random = new Random();
             int randomNumber = random.Next(1, 101);
 
             if (randomNumber >= 1 && randomNumber <= 5)
             {
-                int randomIndex = random.Next(damageActions.Count);
-                damageActions[randomIndex](oper);
-
+                DamageType damageType = (DamageType)random.Next(Enum.GetValues(typeof(DamageType)).Length);
+                damageActions[(int)damageType](oper);
             }
         }
 
@@ -94,7 +86,6 @@ namespace SkyNet.Entidades
         {
             oper.Battery.MaxCharge = 80;
         }
-
         public void Repair(MechanicalOperator oper)
         {
             DamagedEngine = false;
@@ -105,9 +96,7 @@ namespace SkyNet.Entidades
             oper.Battery.MaxCharge = 100;
             oper.Battery.CompleteBatteryLevel();
             oper.OptimalSpeed = 100;
-
         }
-
 
         public void RepairBatteryOnly(MechanicalOperator oper)
         {
@@ -118,5 +107,9 @@ namespace SkyNet.Entidades
             oper.MaxLoad = oper.MaxLoadOriginal;
         }
 
+        private void LogMessage(string message)
+        {
+            Console.WriteLine(message);
+        }
     }
 }

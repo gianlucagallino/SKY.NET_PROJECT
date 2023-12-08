@@ -9,13 +9,11 @@ namespace SkyNet.Entidades
     */
     public class Battery
     {
-        private double mAhCapacity;
-        private int type;
-        private double currentChargePercentage;
-        private DamageSimulator damageSimulator;
         public double MAHCapacity { get; set; }
         public int Type { get; set; }
         public double CurrentChargePercentage { get; set; }
+
+        public double MaximumChargePercentage { get; set; }
         public double MaxCharge { get; set; }
         public DamageSimulator DamageSimulatorP { get; set; }
 
@@ -29,6 +27,7 @@ namespace SkyNet.Entidades
             MAHCapacity = mahCapacity;
             Type = type;
             CurrentChargePercentage = currentChargePercentage;
+            MaximumChargePercentage = 100;
             MaxCharge = maxCharge;
             DamageSimulatorP = damageSimulator;
 
@@ -40,27 +39,57 @@ namespace SkyNet.Entidades
         }
         public void ChargeBattery(double amountBatteryPercentage)
         {
-            if (CurrentChargePercentage + amountBatteryPercentage <= 100)
+            if (IsValidBatteryPercentage(amountBatteryPercentage))
             {
-                CurrentChargePercentage += amountBatteryPercentage;
+                if (CurrentChargePercentage + amountBatteryPercentage <= MaximumChargePercentage)
+                {
+                    CurrentChargePercentage += amountBatteryPercentage;
+                }
+                else
+                {
+                    LogMessage("The battery is at its maximum charge level");
+                }
             }
-            else { Console.WriteLine("The battery is at its maximum charge level"); }
+            else
+            {
+                LogMessage("Invalid battery percentage");
+            }
         }
 
         public void CompleteBatteryLevel()
         {
-            CurrentChargePercentage = 100;
+            CurrentChargePercentage = MaximumChargePercentage;
         }
 
         public void DecreaseBattery(double amountBatteryPercentage)
         {
-            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage; //Por que Damage simulator devuelve null
+            double adjustedAmount = DamageSimulatorP.PerforatedBattery ? amountBatteryPercentage * 1.5 : amountBatteryPercentage;
 
-            if (CurrentChargePercentage - amountBatteryPercentage >= 0)
+            if (IsValidBatteryPercentage(adjustedAmount))
             {
-                CurrentChargePercentage -= amountBatteryPercentage;
+                if (CurrentChargePercentage - adjustedAmount >= 0)
+                {
+                    CurrentChargePercentage -= adjustedAmount;
+                }
+                else
+                {
+                    LogMessage("The battery level cannot go below 0; it is not possible to perform that task.");
+                }
             }
-            else { Console.WriteLine("The battery level cannot go below 0; it is not possible to perform that task."); }
+            else
+            {
+                LogMessage("Invalid battery percentage");
+            }
+        }
+
+        private bool IsValidBatteryPercentage(double amountBatteryPercentage)
+        {
+            return amountBatteryPercentage >= 0 && amountBatteryPercentage <= MaximumChargePercentage;
+        }
+
+        private void LogMessage(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

@@ -33,15 +33,14 @@ namespace SkyNet.Entidades.Operadores
         public double OptimalSpeed { get; set; }
         public Location LocationP { get; set; }
         public DamageSimulator DamageSimulatorP { get; set; }
-        //public Node[,] Grid { get; set; }
-        public int TimeSpent { get; private set; }
+        public double TimeSpent { get; private set; }
 
         public Dictionary<int, Action<MechanicalOperator>> TerrainDamages;
         public float KilometersTraveled { get; private set; }
         public float EnergyConsumed { get; private set; }
         public float TotalCarriedLoad { get; private set; }
-        public int ExecutedInstructions { get; private set; }
-        public int DamagesReceived { get; private set; }
+        public double ExecutedInstructions { get; private set; }
+        public double DamagesReceived { get; private set; }
         public bool DistanceFlag { get; private set; }
 
         [JsonConstructor]
@@ -107,27 +106,21 @@ namespace SkyNet.Entidades.Operadores
             DamagesReceived = 0;
         }
 
+        //Returns the status via a ternary operator
         public string StatusString(bool busy)
         {
-            string status = "";
-            if (busy)
-            {
-                status = "Operator is not available";
-            }
-            else
-            {
-                status = "Operator is available";
-            }
-            return status;
+            return busy ? "Operator is not available" : "Operator is available";
         }
 
-
+        //Adds task time to total time
         public int SimulateTime(TimeSimulator taskType)
         {
             int time = (int)taskType;
             TimeSpent += time;
             return time;
         }
+
+
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - Battery.CurrentChargePercentage / Battery.MAHCapacity * 100;
@@ -138,8 +131,8 @@ namespace SkyNet.Entidades.Operadores
 
         public void MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
-            //double finalSpeed = CalculateMovementSpeed();
-            // OptimalSpeed = finalSpeed;
+            double finalSpeed = CalculateMovementSpeed();
+            OptimalSpeed = finalSpeed;
             DistanceFlag = true;
             int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
@@ -148,76 +141,80 @@ namespace SkyNet.Entidades.Operadores
 
             AStarAlgorithm astar = new AStarAlgorithm();
 
-            bool isWalkingUnit = true;
-            if (Id.Contains("UAV"))
-            {
-                isWalkingUnit = false;
-            }
-
+            bool isWalkingUnit = !Id.Contains("UAV");
             List<Node> path = astar.FindPath(start, goal, Map.Grid, safety, isWalkingUnit);
-
 
             if (path.Count == 0)
             {
                 Console.WriteLine("No path found for this unit.");
                 DistanceFlag = false;
+                return; // Early exit when no path is found
             }
 
-            if (path != null)
-            {
-                foreach (Node node in path)
-                {
-                    Location TempLocation = node.NodeLocation;
-
-                    //aca actualiza la posicion del operador
-                    if (TempLocation.LocationX == loc.LocationX && TempLocation.LocationY == loc.LocationY)
-                    {
-                        Console.WriteLine("Destination reached!");
-
-                        Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
-                        Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationY].OperatorsInNode.Add(this);
-                        foreach (MechanicalOperator op in Map.GetInstance().HQList[hqNumber].Operators)
-                        {
-                            if (op.Id == opId) op.LocationP = goal.NodeLocation;
-                        }
-                    }
-
-                    // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
-                    if (TerrainDamages.TryGetValue(terrainType, out var action))
-                    {
-                        action.Invoke(this);
-                    }
-
-                    int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10;
-                    TimeSpent += timeSpentMoveToPerNode;
-
-                }
-            }
+            ProcessMovement(path, loc, hqNumber, opId, terrainType);
 
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
+
             Battery.DecreaseBattery(batteryConsumption);
             KilometersTraveled += (float)distance;
-            EnergyConsumed += (float)CalculateBatteryConsumption(distance);
+            EnergyConsumed += (float)batteryConsumption;
             ExecutedInstructions++;
-
-
         }
+
+        private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType)
+        {
+            foreach (Node node in path)
+            {
+                Location tempLocation = node.NodeLocation;
+
+                if (tempLocation.Equals(destination))
+                {
+                    Console.WriteLine("Destination reached!");
+
+                    Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
+                    Map.Grid[node.NodeLocation.LocationX, node.NodeLocation.LocationY].OperatorsInNode.Add(this);
+
+                    foreach (MechanicalOperator op in Map.GetInstance().HQList[hqNumber].Operators)
+                    {
+                        if (op.Id == opId) op.LocationP = node.NodeLocation;
+                    }
+                }
+
+                // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
+                if (TerrainDamages.TryGetValue(terrainType, out var action))
+                {
+                    action.Invoke(this);
+                }
+
+                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10; //deve ser la cant nodos movidos!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);
+            }
+        }
+
+        //Esto hay que aclarar bien. no se entiende???????
         private double CalculateBatteryConsumption(double distance)
         {
             return 0.05 * (distance / 10);
         }
 
-        public void LoadingLoad(double amountKG)
+        //esto no se usa, donde se deberia usar?????
+        public void LoadWeight(double amountKG)
         {
-            if (amountKG > 0 && DamageSimulatorP.StuckServo == false)
+            if (IsValidWeight(amountKG) && !DamageSimulatorP.StuckServo)
             {
                 CurrentLoad = amountKG;
-                TotalCarriedLoad += (float)amountKG;
+                TotalCarriedLoad += (int)amountKG;
                 ExecutedInstructions++;
             }
         }
 
+        private bool IsValidWeight(double amountKG)
+        {
+            return amountKG >= 0;
+        }
+
+        //a refactorizar
         public void TransferBattery(MechanicalOperator destination, double amountPercentage, bool safety, int whatHq, string opId)
         {
             destination.BusyStatus = true;
@@ -270,6 +267,8 @@ namespace SkyNet.Entidades.Operadores
             }
 
         }
+
+        //refactorizar
         public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
         {
             destination.BusyStatus = true;
@@ -331,23 +330,28 @@ namespace SkyNet.Entidades.Operadores
                 }
             }
         }
+
+        //refactorizar
         private double CalculatePathDistance(List<Node> nodes)
         {
             double totalDistance = 0;
-            double distance = 10;
+            const double distanceInterval = 10; //Distance interval between nodes. 
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
-                totalDistance += distance;
+                totalDistance += distanceInterval;
             }
 
             return totalDistance;
         }
 
-        private double CalculateDistanceToNode(Location loc, Node node) //Returns Manhattan distance (distance estimate)
+        //This function returns the Manhattan estimate between two node locations
+        private double CalculateDistanceToNode(Location loc, Node node)
         {
             return Math.Abs(node.NodeLocation.LocationX - loc.LocationX) + Math.Abs(node.NodeLocation.LocationY - loc.LocationY);
         }
+
+
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
             return LocationP == destination.LocationP;
