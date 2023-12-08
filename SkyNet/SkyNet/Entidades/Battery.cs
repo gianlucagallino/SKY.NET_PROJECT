@@ -84,7 +84,13 @@ namespace SkyNet.Entidades
 
         private bool IsValidBatteryPercentage(double amountBatteryPercentage)
         {
-            return amountBatteryPercentage >= 0 && amountBatteryPercentage <= MaximumChargePercentage;
+            bool ok = false;
+
+            if (amountBatteryPercentage >= 0 && amountBatteryPercentage <= CurrentChargePercentage)
+            { 
+                ok = true;
+            }
+             return ok ;
         }
 
         private void LogMessage(string message)
