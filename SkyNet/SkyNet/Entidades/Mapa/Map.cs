@@ -99,7 +99,7 @@ namespace SkyNet.Entidades.Mapa
                 if (int.TryParse(Console.ReadLine(), out tempNum))
                 {
                     // Check if the entered map size is within the valid range
-                    if (tempNum >= 30 && tempNum <= 100)
+                    if (tempNum >= 10 && tempNum <= 100)
                     {
                         isValidInput = true;
                     }
@@ -353,7 +353,7 @@ namespace SkyNet.Entidades.Mapa
                      new HeadQuarters(
                                      hq.Operators,
                                      hq.LocationHeadQuarters
-                                        )).ToList();
+                                        )).ToList() ?? new List<HeadQuarters>(); 
                 map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
 
                 Console.WriteLine("Map properties set successfully.");
