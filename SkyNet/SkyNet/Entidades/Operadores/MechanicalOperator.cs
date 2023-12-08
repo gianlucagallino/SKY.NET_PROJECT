@@ -133,9 +133,10 @@ namespace SkyNet.Entidades.Operadores
         //Movement function. 
         public bool MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
+            bool returnFlag = true;
             double finalSpeed = CalculateMovementSpeed();
             OptimalSpeed = finalSpeed;
-            DistanceFlag = true;
+            
             int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
             Node start = new Node(LocationP.LocationX, LocationP.LocationY);
@@ -150,22 +151,25 @@ namespace SkyNet.Entidades.Operadores
             {
                 Message.PathNotFound();
                 DistanceFlag = false;
-                return false; // Early return when no path is found
+                returnFlag= false; // Early return when no path is found
             }
+            else
+            {
+                ProcessMovement(path, loc, hqNumber, opId, terrainType, goal);
 
-            ProcessMovement(path, loc, hqNumber, opId, terrainType, goal);
+                double distance = CalculatePathDistance(path);
+                double batteryConsumption = CalculateBatteryConsumption(distance);
+                DistanceFlag = true;
+                Battery.DecreaseBattery(batteryConsumption);
+                KilometersTraveled += (float)distance;
+                EnergyConsumed += (float)batteryConsumption;
+                ExecutedInstructions++;
+                AddToLastVisitedLocations(loc);
 
-            double distance = CalculatePathDistance(path);
-            double batteryConsumption = CalculateBatteryConsumption(distance);
-
-            Battery.DecreaseBattery(batteryConsumption);
-            KilometersTraveled += (float)distance;
-            EnergyConsumed += (float)batteryConsumption;
-            ExecutedInstructions++;
-            AddToLastVisitedLocations(loc);
-
-            return true;                
+            }
+            return returnFlag;
         }
+    
 
         //Interacts with each node in the path and applies the corresponding debuffs. 
         private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType, Node goal)
@@ -478,6 +482,7 @@ namespace SkyNet.Entidades.Operadores
             List<Node> closestNodes = GetLocal(LocationP, terrainType);
             Node mostClosestNode = FindClosestNode(closestNodes);
             MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
+
         }
 
         //Handles general orders requiring healing 
@@ -594,6 +599,11 @@ namespace SkyNet.Entidades.Operadores
                 {
                     ExecutedInstructions++;
                     TotalCarriedLoad += (float)MaxLoad;
+                    if (DistanceFlag)
+                    {
+                        HandleOrderWeight(grid, 4, 0, safety, whatHq, opId);
+                    }
+
                 }
             }
         }
