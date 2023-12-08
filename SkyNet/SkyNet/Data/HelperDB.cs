@@ -85,7 +85,6 @@ namespace SkyNet.Data
         {
             try
             {
-                // Insertar en la tabla Operators
                 OpenConnection();
                 using (SqlCommand command = new SqlCommand("InsertOperator", connection))
                 {
@@ -98,13 +97,11 @@ namespace SkyNet.Data
                     command.Parameters.AddWithValue("@DaniosRecibidos", oper.DamagesReceived);
                     List<int> lastVisitedLocations = oper.GetAndClearLastVisitedLocations();
 
-                    // Asegurarse de que solo se obtengan las últimas tres ubicaciones
                     if (lastVisitedLocations.Count > 3)
                     {
                         lastVisitedLocations = lastVisitedLocations.GetRange(lastVisitedLocations.Count - 3, 3);
                     }
 
-                    // Pasar la lista de ubicaciones directamente como parámetro
                     command.Parameters.AddWithValue("@UltimoLugar1", lastVisitedLocations.ElementAtOrDefault(0));
                     command.Parameters.AddWithValue("@UltimoLugar2", lastVisitedLocations.ElementAtOrDefault(1));
                     command.Parameters.AddWithValue("@UltimoLugar3", lastVisitedLocations.ElementAtOrDefault(2));
@@ -117,7 +114,6 @@ namespace SkyNet.Data
             }
             catch (Exception ex)
             {
-                // Manejar la excepción (por ejemplo, registrarla o lanzarla nuevamente si es necesario)
                 Console.WriteLine($"Error al insertar operador: {ex.Message}");
             }
             finally
