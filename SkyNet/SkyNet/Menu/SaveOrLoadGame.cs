@@ -3,6 +3,13 @@ using System.Text.Json;
 
 namespace SkyNet.Menu
 {
+    /*
+       SaveOrLoadGame es una clase encargada de gestionar el guardado y carga de partidas en el juego. 
+       Permite al usuario guardar el estado actual del mapa en un archivo JSON, cargar partidas específicas y 
+       obtener la lista de partidas guardadas. La clase utiliza un directorio predefinido para almacenar los 
+       archivos de guardado y proporciona funciones para realizar estas operaciones de manera interactiva.
+
+     */
     public class SaveOrLoadGame
     {
         private const string SaveFolderPath = "SavedGames"; // Cambiar a la ruta real

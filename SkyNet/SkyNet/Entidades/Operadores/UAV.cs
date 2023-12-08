@@ -2,8 +2,8 @@
 using System.Text.Json.Serialization;
 
 /*
-    Esta clase representa a un operador mecánico específico, hereda las características generales de la clase MechanicalOperator. 
-    Se distingue por sus atributos predefinidos y la inicialización y representación de las características de los operadores UAV
+    Esta clase representa a un operador mecánico específico UAV, hereda las características generales de la clase MechanicalOperator. 
+    Posee una relación de asociación con la clase Battery.
  */
 
 namespace SkyNet.Entidades.Operadores

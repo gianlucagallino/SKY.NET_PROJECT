@@ -1,7 +1,6 @@
 ﻿namespace SkyNet.Entidades.Mapa
 {
 
-
     public class ColorMapper
     {
         // Define a dictionary to map TerrainType to ConsoleColor
