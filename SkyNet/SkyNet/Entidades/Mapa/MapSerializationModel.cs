@@ -27,15 +27,20 @@ namespace SkyNet.Entidades.Mapa
         public List<HeadQuarters> HQList { get; set; }
         [JsonPropertyName("RecyclingCounter")]
         public int RecyclingCounter { get; set; }
-        //public NodeSerializationModel[,] Grid { get; set; } 
+        
+
+        [JsonPropertyName("Grid")]
+        public List<Node> Grid { get; set; }
+
 
         public MapSerializationModel()
         {
-            
+
         }
+
         [JsonConstructor]
-        public MapSerializationModel(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, 
-            int recyclingCounter)
+        public MapSerializationModel(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList,
+             int recyclingCounter, List<Node> grid)
         {
             MapSize = mapSize;
             M8Counter = m8Counter;
@@ -43,9 +48,8 @@ namespace SkyNet.Entidades.Mapa
             UAVCounter = uAVCounter;
             SizeOffset = sizeOffset;
             HQList = hQList;
-            RecyclingCounter =recyclingCounter;
-            //Grid = grid;
+            RecyclingCounter = recyclingCounter;
+            Grid = grid;
         }
-
     }
 }

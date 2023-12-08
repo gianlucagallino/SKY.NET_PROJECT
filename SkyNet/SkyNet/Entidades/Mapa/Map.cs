@@ -1,6 +1,7 @@
 using SkyNet.Entidades.Operadores;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 
@@ -17,9 +18,11 @@ namespace SkyNet.Entidades.Mapa
          * 4-Sitio de reciclaje (Implementar maximo 5)
          * 5-Cuartel general(maximo 3)
          */
-
-
+        [JsonPropertyName("Grid")]
+        public List<Node> Nodes { get; set; }
+        [JsonPropertyName("Node")]
         public static Node[,] Grid { get; set; }
+
         public int HeadquarterCounter { get; set; }
         [JsonPropertyName("HQList")]
         public List<HeadQuarters> HQList { get; set; }
@@ -35,11 +38,9 @@ namespace SkyNet.Entidades.Mapa
 
         [JsonPropertyName("SizeOffset")]
         public int SizeOffset { get; set; }
-
         [JsonConstructor]
-        public Map(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, int recyclingCounter)
+        public Map(int mapSize, int m8Counter, int k9Counter, int uAVCounter, int sizeOffset, List<HeadQuarters> hQList, int recyclingCounter, Node[,] nodes)
         {
-
             MapSize = mapSize;
             M8Counter = m8Counter;
             K9Counter = k9Counter;
@@ -47,9 +48,20 @@ namespace SkyNet.Entidades.Mapa
             SizeOffset = sizeOffset;
             HQList = hQList;
             RecyclingCounter = recyclingCounter;
-            Grid = new Node[MapSize, MapSize];
-            FillGrid();
+
+            Grid = (nodes != null) ? nodes : new Node[mapSize, mapSize];
+
+            if (nodes == null)
+            {
+                FillGrid();
+                AddLimitedTerrainTypes();
+            }
+            else
+            {
+                UpdateNodeParentReferences();
+            }
         }
+
 
         private Map()
         {
@@ -284,7 +296,7 @@ namespace SkyNet.Entidades.Mapa
         }
 
         //esto permitiria serializar el mapa 
-          public string SerializeToJson()
+        public string SerializeToJson()
         {
             MapSerializationModel serializationModel = new MapSerializationModel()
             {
@@ -295,35 +307,56 @@ namespace SkyNet.Entidades.Mapa
                 SizeOffset = SizeOffset,
                 HQList = HQList,
                 RecyclingCounter = RecyclingCounter,
-                //Grid = SerializeNodes(Grid)  // Llamada a un método para serializar los nodos
-
+                Grid = SerializeNodesToList(Grid)
             };
 
             return JsonSerializer.Serialize(serializationModel, new JsonSerializerOptions { WriteIndented = true });
         }
 
-       /* private static NodeSerializationModel[,] SerializeNodes(Node[,] grid)
+        private List<Node> SerializeNodesToList(Node[,] grid)
         {
-            NodeSerializationModel[,] serializedNodes = new NodeSerializationModel[MapSize, MapSize];
+            List<Node> nodesList = new List<Node>();
 
             for (int i = 0; i < MapSize; i++)
             {
                 for (int j = 0; j < MapSize; j++)
                 {
-                    serializedNodes[i, j] = new NodeSerializationModel
+                    Node currentNode = grid[i, j];
+                    nodesList.Add(new Node
                     {
-                        TerrainType = grid[i, j].TerrainType
- 
-                    };
+                        TerrainType = currentNode.TerrainType,
+                        IsDangerous = currentNode.IsDangerous,
+                        NodeLocation = currentNode.NodeLocation,
+                        F = currentNode.F,
+                        G = currentNode.G,
+                        H = currentNode.H,
+                        Parent = (currentNode.Parent != null) ? new Node() { NodeLocation = currentNode.Parent.NodeLocation } : null,
+                        OperatorsInNode = currentNode.OperatorsInNode
+                    });
+                }
+            }
+
+            return nodesList;
+        }
+
+        public static Node[,] SerializeNodes(List<Node> nodes, int mapSize)
+        {
+            Node[,] serializedNodes = new Node[mapSize, mapSize];
+
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    int index = i * mapSize + j;
+                    serializedNodes[i, j] = nodes.Count > index ? nodes[index] : new Node();
                 }
             }
 
             return serializedNodes;
-        }*/
+        }
 
         public static Map BuildMapFromJson(string json)
         {
-
             Console.WriteLine("Starting BuildMapFromJson method...");
 
             try
@@ -339,7 +372,8 @@ namespace SkyNet.Entidades.Mapa
                     serializationModel.UAVCounter,
                     serializationModel.SizeOffset,
                     serializationModel.HQList,
-                    (int)serializationModel.RecyclingCounter
+                    (int)serializationModel.RecyclingCounter,
+                    SerializeNodes(serializationModel.Grid, serializationModel.MapSize)
                 );
 
                 Console.WriteLine("Map object created successfully.");
@@ -350,10 +384,10 @@ namespace SkyNet.Entidades.Mapa
                 Map.UAVCounter = serializationModel.UAVCounter;
                 map.SizeOffset = serializationModel.SizeOffset;
                 map.HQList = serializationModel.HQList.Select(hq =>
-                     new HeadQuarters(
-                                     hq.Operators,
-                                     hq.LocationHeadQuarters
-                                        )).ToList() ?? new List<HeadQuarters>(); 
+                    new HeadQuarters(
+                        hq.Operators,
+                        hq.LocationHeadQuarters
+                    )).ToList() ?? new List<HeadQuarters>();
                 map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
 
                 Console.WriteLine("Map properties set successfully.");
@@ -369,8 +403,8 @@ namespace SkyNet.Entidades.Mapa
             {
                 Console.WriteLine("BuildMapFromJson method finished.");
             }
-
         }
+
 
         public List<MechanicalOperator> GetAllOperators()
         {
@@ -396,6 +430,43 @@ namespace SkyNet.Entidades.Mapa
             Console.WriteLine(message);
             Thread.Sleep(1500);
             Console.Clear();
+        }
+        private static int GetIndex(int x, int y)
+        {
+            return x * MapSize + y;
+        }
+        
+        private static Node[,] DeserializeNodes(List<Node> nodes, int mapSize)
+        {
+            Node[,] grid = new Node[mapSize, mapSize];
+
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    int index = i * mapSize + j;
+                    grid[i, j] = nodes.Count > index ? nodes[index] : new Node();  // Maneja posibles elementos faltantes
+                }
+            }
+
+            return grid;
+        }
+        private void UpdateNodeParentReferences()
+        {
+            for (int i = 0; i < MapSize; i++)
+            {
+                for (int j = 0; j < MapSize; j++)
+                {
+                    Node currentNode = Grid[i, j];
+
+                    if (currentNode.Parent != null)
+                    {
+                        int parentX = currentNode.Parent.NodeLocation.LocationX;
+                        int parentY = currentNode.Parent.NodeLocation.LocationY;
+                        currentNode.Parent = Grid[parentX, parentY];
+                    }
+                }
+            }
         }
     }
 }
