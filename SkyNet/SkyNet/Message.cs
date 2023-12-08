@@ -94,5 +94,25 @@ namespace SkyNet
         {
             Console.WriteLine("BuildMapFromJson method finished.");
         }
+        public static void SaveGameName()
+        {
+            Console.WriteLine("Enter the name for the saved game:");
+        }
+        public static void InvalidName()
+        {
+            Console.WriteLine("Invalid game name. The game was not saved.");
+        }
+        public static void GameSavedSuccessfully()
+        {
+            Console.WriteLine("Game saved successfully");
+        }
+        public static void LoadGameSuccessfully(string name)
+        {
+            Console.WriteLine($"Game '{name}' loaded successfully");
+        }
+        public static void NoGameSaved()
+        {
+            Console.WriteLine("No saved games folder found.");
+        }
     }
 }
