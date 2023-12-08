@@ -129,7 +129,7 @@ namespace SkyNet.Menu
             Console.WriteLine("6. Destroy Operator               ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine(" -------------------------------");
+            Console.WriteLine(" -------------------------------- ");
             Console.SetCursorPosition(W, H);
             H++;
             Console.Write("     Pick an option: ");
@@ -570,13 +570,14 @@ namespace SkyNet.Menu
 
                 Console.WriteLine("Executing General Order...");
                 Thread.Sleep(2000);
+                ClearMenuRemains();
+
+                GetConsoleSizeAfterMap();
+                H++;
+                Console.SetCursorPosition(W, H);
 
                 // Execute General Order for weight
                 selectedOperator.GeneralOrderWeight(Map.Grid, operatorId, whatHeadquarter, safety);
-
-                ClearMenuRemains();
-                GetConsoleSizeAfterMap();
-                Console.SetCursorPosition(W, H);
             }
             else
             {
@@ -616,13 +617,15 @@ namespace SkyNet.Menu
 
                 Console.WriteLine("Executing General Order...");
                 Thread.Sleep(2000);
+                ClearMenuRemains();
+
+                GetConsoleSizeAfterMap();
+                H++;
+                Console.SetCursorPosition(W, H);
+
 
                 // Execute General Order for healing
                 selectedOperator.GeneralOrderHeal(Map.Grid, operatorId, whatHeadquarter, safety);
-
-                ClearMenuRemains();
-                GetConsoleSizeAfterMap();
-                Console.SetCursorPosition(W, H);
             }
             else
             {
@@ -676,6 +679,7 @@ namespace SkyNet.Menu
             // Get safety input from the user
             safety = AskForSafety();
             H++;
+            Console.SetCursorPosition(W, H);
 
             // Move the operator to the specified location
             MoveOperatorToLocation(selectedOperator, location, safety);
@@ -684,6 +688,7 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
+            ClearMenuRemains();
         }
 
         //Performs the MoveTo action
@@ -1039,7 +1044,7 @@ namespace SkyNet.Menu
                 else if (selected == 1)
                 {
                     continueLoop = false;
-                    
+
                 }
                 else if (selected == 100)
                 {
