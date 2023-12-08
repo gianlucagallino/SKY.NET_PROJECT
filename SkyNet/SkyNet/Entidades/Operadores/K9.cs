@@ -31,6 +31,7 @@ namespace SkyNet.Entidades.Operadores
         public K9(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 250;
+            CurrentLoad = 0;
             MaxLoadOriginal = 250;
             OptimalSpeed = 100;
             Battery = new Battery();
@@ -45,7 +46,7 @@ namespace SkyNet.Entidades.Operadores
         }
         public override string ToString()
         {
-            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%";
+            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%, Current Load:{CurrentLoad}KG";
         }
     }
 }

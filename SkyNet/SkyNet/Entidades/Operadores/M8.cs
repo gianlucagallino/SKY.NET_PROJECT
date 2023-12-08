@@ -28,6 +28,7 @@ namespace SkyNet.Entidades.Operadores
         public M8(int xposition, int yposition) : base(xposition, yposition)
         {
             MaxLoad = 40;
+            CurrentLoad = 0;
             MaxLoadOriginal = 40;
             OptimalSpeed = 250;
             Battery.MAHCapacity = 12250;
@@ -41,7 +42,7 @@ namespace SkyNet.Entidades.Operadores
         }
         public override string ToString()
         {
-            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%";
+            return $"MAH Capacity: {Battery.MAHCapacity}, Current Charge: {Battery.CurrentChargePercentage}%, Current Load:{CurrentLoad}KG";
         }
     }
 }
