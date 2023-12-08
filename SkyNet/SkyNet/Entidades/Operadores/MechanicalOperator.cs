@@ -1,6 +1,4 @@
 ﻿using SkyNet.Entidades.Mapa;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /*
@@ -22,7 +20,7 @@ namespace SkyNet.Entidades.Operadores
     {
 
         private Dictionary<int, Action<MechanicalOperator>> terrainDamages;
-        private List<int> LastVisitedLocations { get; set; } 
+        private List<int> LastVisitedLocations { get; set; }
         public string Id { get; set; }
         public bool BusyStatus { get; set; }
         public Battery Battery { get; set; }
@@ -44,7 +42,7 @@ namespace SkyNet.Entidades.Operadores
         public bool DistanceFlag { get; private set; }
 
         [JsonConstructor]
- 
+
         public MechanicalOperator()
         {
             BusyStatus = false;
@@ -68,7 +66,7 @@ namespace SkyNet.Entidades.Operadores
             ExecutedInstructions = 0;
             DamagesReceived = 0;
             LocationP = new Location(0, 0);
-            
+
         }
 
         protected MechanicalOperator(double maxLoad, double minLoad, Battery battery, Location location, string status, string id)
@@ -122,7 +120,7 @@ namespace SkyNet.Entidades.Operadores
             return time;
         }
 
-
+        //Calculates movement speed taking debuffs into account
         public double CalculateMovementSpeed()
         {
             double batteryPercentageSpent = 100 - Battery.CurrentChargePercentage / Battery.MAHCapacity * 100;
@@ -131,6 +129,7 @@ namespace SkyNet.Entidades.Operadores
             return finalSpeed;
         }
 
+        //Movement function. 
         public void MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
             double finalSpeed = CalculateMovementSpeed();
@@ -150,7 +149,7 @@ namespace SkyNet.Entidades.Operadores
             {
                 Console.WriteLine("No path found for this unit.");
                 DistanceFlag = false;
-                return; // Early exit when no path is found
+                return; // Early return when no path is found
             }
 
             ProcessMovement(path, loc, hqNumber, opId, terrainType);
@@ -165,6 +164,7 @@ namespace SkyNet.Entidades.Operadores
             AddToLastVisitedLocations(loc);
         }
 
+        //Interacts with each node in the path and applies the corresponding debuffs. 
         private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType)
         {
             int nodeCounter = 0;
@@ -192,8 +192,8 @@ namespace SkyNet.Entidades.Operadores
                     action.Invoke(this);
                 }
 
-                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * nodeCounter; 
-                TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);
+                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * nodeCounter;
+                TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);//This alters the time spent in relation to the speed of the operator. 
             }
         }
 
@@ -203,7 +203,7 @@ namespace SkyNet.Entidades.Operadores
             return 0.05 * (distance / 10);
         }
 
-       // Method designed for future functionalities.Loads the specified weight if it is valid and the servo is not stuck.
+        // Method designed for future-proofing functionalities. Loads the specified weight if it is valid and the servo is not stuck. (Unused, but relevant)
         public void LoadWeight(double amountKG)
         {
             if (IsValidWeight(amountKG) && !DamageSimulatorP.StuckServo)
@@ -219,123 +219,181 @@ namespace SkyNet.Entidades.Operadores
             return amountKG >= 0;
         }
 
-        //a refactorizar
+
         public void TransferBattery(MechanicalOperator destination, double amountPercentage, bool safety, int whatHq, string opId)
         {
-            destination.BusyStatus = true;
-            BusyStatus = true;
+            try
+            {
+                // Set both operators to busy
+                destination.BusyStatus = true;
+                BusyStatus = true;
 
-            if (amountPercentage < 0)
-            {
-                Console.WriteLine("Amount must be non-negative for Transfer Battery.");
-            }
-            if (AreOperatorsInSameLocation(destination))
-            {
-                if (ValidateBatteryTransfer(amountPercentage))
+                if (amountPercentage < 0)
                 {
-                    destination.Battery.ChargeBattery(amountPercentage);
-                    Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                    SimulateTime(TimeSimulator.TransferBattery);
-                    EnergyConsumed += (float)CalculateBatteryConsumption(amountPercentage);
-                    ExecutedInstructions++;
+                    Console.WriteLine("Amount must be non-negative for Transfer Battery.");
+                    return;
+                }
+
+                if (AreOperatorsInSameLocation(destination))
+                {
+                    PerformBatteryTransferSameLocation(destination, amountPercentage);
                 }
                 else
                 {
-                    Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
-                    BusyStatus = false;
+                    // Move the current operator to the destination location
+                    MoveTo(destination.LocationP, safety, whatHq, opId);
+
+                    // Calculate the path and distance to the destination
+                    AStarAlgorithm astar = new AStarAlgorithm();
+                    Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
+                    Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
+                    List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
+                    double distance = CalculatePathDistance(path);
+
+                    // Validate and perform battery transfer
+                    PerformBatteryTransferDifferentLocation(destination, amountPercentage, distance);
                 }
             }
-            else
-            { // Si no están en la misma ubicación, mueve el operador actual hacia la ubicación del destino.
-                MoveTo(destination.LocationP, safety, whatHq, opId);
-
-
-                AStarAlgorithm astar = new AStarAlgorithm();
-                Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
-                Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
-                List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
-                double distance = CalculatePathDistance(path);
-
-                if (ValidateBatteryTransfer(amountPercentage))
-                {
-                    destination.Battery.ChargeBattery(amountPercentage);
-                    Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
-                    Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                    SimulateTime(TimeSimulator.TransferBattery);
-                    EnergyConsumed += (float)CalculateBatteryConsumption(distance);
-                    ExecutedInstructions++;
-                }
-            }
-
-        }
-
-        //refactorizar
-        public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
-        {
-            destination.BusyStatus = true;
-            BusyStatus = true;
-            if (amountKG < 0)
+            catch (Exception ex)
             {
-                Console.WriteLine("Amount must be non-negative for TransferLoad.");
+                Console.WriteLine($"An error occurred during the battery transfer: {ex.Message}");
+            }
+            finally
+            {
                 destination.BusyStatus = false;
                 BusyStatus = false;
-                return;
-            }
-
-            if (AreOperatorsInSameLocation(destination))
-            {
-                if (destination.CurrentLoad + amountKG < destination.MaxLoad)
-                {
-                    destination.CurrentLoad += amountKG;
-                    CurrentLoad -= amountKG;
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                    SimulateTime(TimeSimulator.TransferLoad);
-                    ExecutedInstructions++;
-                }
-                else
-                {
-                    Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                }
-            }
-            else
-            {
-
-                MoveTo(destination.LocationP, safety, whatHq, opId);
-                AStarAlgorithm astar = new AStarAlgorithm();
-                Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
-                Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
-                List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
-                double distance = CalculatePathDistance(path);
-
-
-                if (destination.CurrentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
-                {
-                    destination.CurrentLoad += amountKG;
-                    CurrentLoad -= amountKG;
-                    Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                    SimulateTime(TimeSimulator.TransferLoad);
-                    EnergyConsumed += (float)CalculateBatteryConsumption(distance);
-                    ExecutedInstructions++;
-                }
-                else
-                {
-                    Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
-                    destination.BusyStatus = false;
-                    BusyStatus = false;
-                }
             }
         }
 
-        //refactorizar
+        //Performs a battery transefer
+        private void PerformBatteryTransferSameLocation(MechanicalOperator destination, double amountPercentage)
+        {
+            if (ValidateBatteryTransfer(amountPercentage))
+            {
+                // Perform battery transfer between operators
+                destination.Battery.ChargeBattery(amountPercentage);
+                Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+
+                // Simulate time, update energy consumed, increment executed instructions
+                SimulateTime(TimeSimulator.TransferBattery);
+                ExecutedInstructions++;
+            }
+            else
+            {
+                Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+            }
+        }
+
+        //Performs a battery transfer while accounting for travel costs
+        private void PerformBatteryTransferDifferentLocation(MechanicalOperator destination, double amountPercentage, double distance)
+        {
+            if (ValidateBatteryTransfer(amountPercentage))
+            {
+                // Perform battery transfer between operators
+                destination.Battery.ChargeBattery(amountPercentage);
+                Battery.DecreaseBattery(CalculatePercentage(destination, amountPercentage));
+                Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+
+                // Simulate time, update energy consumed, and increment executed instructions
+                SimulateTime(TimeSimulator.TransferBattery);
+                EnergyConsumed += (float)CalculateBatteryConsumption(distance);
+                ExecutedInstructions++;
+            }
+            else
+            {
+                Console.WriteLine("Transfer Battery aborted due to battery validation failure.");
+            }
+        }
+
+        //Transfers a physical load between operators. 
+        public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
+        {
+            try
+            {
+                // Set both operators to busy
+                destination.BusyStatus = true;
+                BusyStatus = true;
+
+                if (amountKG < 0)
+                {
+                    Console.WriteLine("Amount must be non-negative for TransferLoad.");
+                    return;
+                }
+
+                if (AreOperatorsInSameLocation(destination))
+                {
+                    PerformLoadTransfer(destination, amountKG);
+                }
+                else
+                {
+                    // Move the current operator to the destination location
+                    MoveTo(destination.LocationP, safety, whatHq, opId);
+
+                    // Calculate the path and distance to the destination
+                    AStarAlgorithm astar = new AStarAlgorithm();
+                    Node currNode = Map.Grid[this.LocationP.LocationX, this.LocationP.LocationY];
+                    Node destinationNode = Map.Grid[destination.LocationP.LocationX, destination.LocationP.LocationY];
+                    List<Node> path = astar.FindPath(currNode, destinationNode, Map.Grid, safety, !this.Id.Contains("UAV"));
+                    double distance = CalculatePathDistance(path);
+
+                    // Validate and perform load transfer with battery consumption
+                    PerformLoadTransferWithBatteryConsumption(destination, amountKG, distance);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during the load transfer: {ex.Message}");
+            }
+            finally
+            {
+                destination.BusyStatus = false;
+                BusyStatus = false;
+            }
+        }
+
+        //This is used for load transfers in the same location
+        private void PerformLoadTransfer(MechanicalOperator destination, double amountKG)
+        {
+            // Check if destination operator can hold the load
+            if (destination.CurrentLoad + amountKG <= destination.MaxLoad)
+            {
+                // Perform load transfer
+                destination.CurrentLoad += amountKG;
+                CurrentLoad -= amountKG;
+
+                // Simulate time and increment executed instructions
+                SimulateTime(TimeSimulator.TransferLoad);
+                ExecutedInstructions++;
+            }
+            else
+            {
+                Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+            }
+        }
+
+        //This is used for load transfers in different locations
+        private void PerformLoadTransferWithBatteryConsumption(MechanicalOperator destination, double amountKG, double distance)
+        {
+            // Check if destination operator can hold the load and validate battery transfer
+            if (destination.CurrentLoad + amountKG <= destination.MaxLoad && ValidateBatteryTransfer(CalculateBatteryConsumption(distance)))
+            {
+                // Perform load transfer with battery consumption
+                destination.CurrentLoad += amountKG;
+                CurrentLoad -= amountKG;
+                Battery.DecreaseBattery(CalculateBatteryConsumption(distance));
+
+                // Simulate time, update energy consumed, and increment executed instructions
+                SimulateTime(TimeSimulator.TransferLoad);
+                EnergyConsumed += (float)CalculateBatteryConsumption(distance);
+                ExecutedInstructions++;
+            }
+            else
+            {
+                Console.WriteLine("TransferLoad failed. Destination operator cannot hold that much load.");
+            }
+        }
+
+        //Calculates the distance in real units between nodes (10km)
         private double CalculatePathDistance(List<Node> nodes)
         {
             double totalDistance = 0;
@@ -355,12 +413,12 @@ namespace SkyNet.Entidades.Operadores
             return Math.Abs(node.NodeLocation.LocationX - loc.LocationX) + Math.Abs(node.NodeLocation.LocationY - loc.LocationY);
         }
 
-
         private bool AreOperatorsInSameLocation(MechanicalOperator destination)
         {
-            return LocationP == destination.LocationP;
+            return LocationP.Equals(destination.LocationP);
         }
 
+        //Calculates battery drain
         public double CalculatePercentage(MechanicalOperator destination, double amountPercentage)
         {
             double increaseAmperes = destination.Battery.MAHCapacity * amountPercentage / 100;
@@ -368,6 +426,7 @@ namespace SkyNet.Entidades.Operadores
 
             return decreasePercentage;
         }
+
         public bool ValidateBatteryTransfer(double amountPercentage)
         {
             double decreasePercentage = CalculatePercentage(this, amountPercentage);
@@ -382,6 +441,7 @@ namespace SkyNet.Entidades.Operadores
                 return false;
             }
         }
+
         public List<Node> GetLocal(Location A, int terrainType)
         {
             List<Node> nodeList = new List<Node>();
@@ -401,18 +461,23 @@ namespace SkyNet.Entidades.Operadores
 
             return nodeList;
         }
+
         private void MoveToAndProcess(Node destination, double loadAmount, bool safety, int whatHq, string opId)
         {
             MoveTo(destination.NodeLocation, safety, whatHq, opId);
             CurrentLoad = loadAmount;
         }
+
+        //Handles general orders requiring weight load
         private void HandleOrderWeight(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
         {
             List<Node> closestNodes = GetLocal(LocationP, terrainType);
             Node mostClosestNode = FindClosestNode(closestNodes);
             MoveToAndProcess(mostClosestNode, loadAmount, safety, whatHq, opId);
         }
-        private void HandleOrderHeal(Node[,] grid, int terrainType, double loadAmount, bool safety, int whatHq, string opId)
+
+        //Handles general orders requiring healing 
+        private void HandleOrderHeal(Node[,] grid, int terrainType, bool safety, int whatHq, string opId)
         {
             List<Node> closestNodes = GetLocal(LocationP, terrainType);
             Node mostClosestNode = FindClosestNode(closestNodes);
@@ -445,7 +510,7 @@ namespace SkyNet.Entidades.Operadores
         }
 
 
-
+        //Checks for operator damages
         private bool IsDamaged()
         {
             if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
@@ -458,6 +523,8 @@ namespace SkyNet.Entidades.Operadores
             { return false; }
 
         }
+
+        //Finds the nearest HQ
         public Location FindHeadquartersLocation(Node[,] grid)
         {
             Location nearestHeadquarters = null;
@@ -484,32 +551,7 @@ namespace SkyNet.Entidades.Operadores
             return nearestHeadquarters;
         }
 
-        public Location FindDumpsterLocation(Node[,] grid)
-        {
-            Location nearestHeadquarters = null;
-            double minDistance = double.MaxValue;
-
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    if (grid[i, j] != null && grid[i, j].TerrainType == 1)
-                    {
-                        Location headquartersLocation = grid[i, j].NodeLocation;
-                        double distance = CalculateDistanceToNode(new Location(LocationP.LocationX, LocationP.LocationY),
-                          new Node(headquartersLocation.LocationX, headquartersLocation.LocationY));
-
-                        if (distance < minDistance)
-                        {
-                            minDistance = distance;
-                            nearestHeadquarters = headquartersLocation;
-                        }
-                    }
-                }
-            }
-            return nearestHeadquarters;
-        }
-
+        //Chances the battery
         public void BatteryChange(Node[,] grid, bool safety, int whatHq, string opId)
         {
             if (DamageSimulatorP.PerforatedBattery)
@@ -521,13 +563,13 @@ namespace SkyNet.Entidades.Operadores
                 ExecutedInstructions++;
             }
         }
+
+        //Wrapper for the healing general order
         public void GeneralOrderHeal(Node[,] grid, string opId, int whatHq, bool safety)
         {
             if (IsDamaged())
             {
-                Location nearestHeadquarters = FindHeadquartersLocation(grid);
-                MoveTo(nearestHeadquarters, safety, whatHq, opId);
-
+                HandleOrderHeal(grid, 5, safety, whatHq, opId); //5 is the headquarter terrain type code
                 DamageSimulatorP.Repair(this);
                 SimulateTime(TimeSimulator.DamageRepair);
                 ExecutedInstructions++;
@@ -538,11 +580,12 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
+        //Wrapper for the loading weight general order
         public void GeneralOrderWeight(Node[,] grid, string opId, int whatHq, bool safety)
         {
             if (!BusyStatus)
             {
-                HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId);
+                HandleOrderWeight(grid, 1, MaxLoad, safety, whatHq, opId); //1 is the dumpster terrain type code
                 if (DistanceFlag)
                 {
                     ExecutedInstructions++;
@@ -551,16 +594,17 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
+        //Stores the last 3 visited locations to be logged in SQL
         private void AddToLastVisitedLocations(Location location)
         {
             int loc = Convert.ToInt32(location.ToString());
-            if (loc != null) 
-            { 
+            if (loc != null)
+            {
                 LastVisitedLocations.Add(loc);
-            
+
                 if (LastVisitedLocations.Count > 3)
                 {
-                LastVisitedLocations.RemoveAt(0); 
+                    LastVisitedLocations.RemoveAt(0);
                 }
             }
             else { loc = 0; }

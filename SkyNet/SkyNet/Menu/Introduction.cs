@@ -275,7 +275,7 @@
             Console.WriteLine("\t| option in the menu. To load a file, choose your desired file.  |");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t| Your ongoing match will be overwritten with the loaded data.   |");
+            Console.WriteLine("\t| You CANT continue a saved game, but you can see how it ended.  |");
             Console.SetCursorPosition(W, H);
             H++;
             Console.WriteLine("\t|________________________________________________________________|");
