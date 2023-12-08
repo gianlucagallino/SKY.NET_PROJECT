@@ -226,7 +226,7 @@
             Console.WriteLine("\t ________________________________________________________________ ");
             Console.SetCursorPosition(W, H);
             H++;
-            Console.WriteLine("\t|                    Headquarter Tutorial:                        |");
+            Console.WriteLine("\t|                    Headquarter Tutorial:                       |");
             Console.SetCursorPosition(W, H);
             H++;
             Console.WriteLine("\t|                                                                |");

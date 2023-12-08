@@ -1,5 +1,4 @@
 ﻿using SkyNet.Entidades.Operadores;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
@@ -23,7 +22,7 @@ namespace SkyNet.Entidades.Mapa
          * 4-Sitio de reciclaje (Implementar maximo 5)
          * 5-Cuartel general(maximo 3)
       */
-         
+
     [Serializable]
     public class Node
     {
@@ -31,7 +30,7 @@ namespace SkyNet.Entidades.Mapa
         private static Random rng = new Random();
 
 
-        
+
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
@@ -46,7 +45,7 @@ namespace SkyNet.Entidades.Mapa
         [JsonConstructor]
         public Node()
         {
-                
+
         }
         public Node(int horizontal, int vertical)
         {

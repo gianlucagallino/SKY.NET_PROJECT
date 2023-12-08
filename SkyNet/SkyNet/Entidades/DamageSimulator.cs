@@ -1,5 +1,4 @@
 ﻿using SkyNet.Entidades.Operadores;
-using System;
 using System.Text.Json.Serialization;
 
 /*

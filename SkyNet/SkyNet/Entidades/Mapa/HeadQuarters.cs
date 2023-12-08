@@ -25,7 +25,7 @@ namespace SkyNet.Entidades.Mapa
         [JsonConstructor]
         public HeadQuarters()
         {
-                
+
         }
         public HeadQuarters(List<MechanicalOperator> operators, Location locationHeadQuarters)
         {
@@ -89,7 +89,7 @@ namespace SkyNet.Entidades.Mapa
                     return CreateUAV(xPosition, yPosition);
             }
 
-            return null; 
+            return null;
         }
 
         private void GenerateRandomAmountOfOperators()

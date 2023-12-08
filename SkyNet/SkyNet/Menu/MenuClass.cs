@@ -1090,10 +1090,10 @@ namespace SkyNet.Menu
         private void ClearMenuRemains()
         {
             GetConsoleSizeAfterMap();
-            for (int i = 0; i < 10; i++)  //CAMBIAR A 30 PRE ENTREGA+
+            for (int i = 0; i < 30; i++)
             {
                 Console.SetCursorPosition(W, H);
-                Console.WriteLine("                                                                                                 ");
+                Console.WriteLine("                                                                                                                           ");
                 H++;
             }
         }

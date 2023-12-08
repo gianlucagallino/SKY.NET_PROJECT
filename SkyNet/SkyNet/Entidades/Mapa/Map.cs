@@ -111,7 +111,7 @@ namespace SkyNet.Entidades.Mapa
 
                 if (int.TryParse(Console.ReadLine(), out tempNum))
                 {
-                    if (tempNum >= 10 && tempNum <= 100)
+                    if (tempNum >= 30 && tempNum <= 100)
                     {
                         isValidInput = true;
                     }

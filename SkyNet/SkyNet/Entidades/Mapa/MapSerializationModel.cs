@@ -1,11 +1,4 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 /*
     La clase MapSerializationModel es un modelo de serialización diseñado para almacenar información relevante sobre el estado del juego, 
@@ -36,7 +29,7 @@ namespace SkyNet.Entidades.Mapa
         public List<HeadQuarters> HQList { get; set; }
         [JsonPropertyName("RecyclingCounter")]
         public int RecyclingCounter { get; set; }
-        
+
 
         [JsonPropertyName("Grid")]
         public List<Node> Grid { get; set; }

@@ -87,10 +87,10 @@ namespace SkyNet.Entidades
             bool ok = false;
 
             if (amountBatteryPercentage >= 0 && amountBatteryPercentage <= CurrentChargePercentage)
-            { 
+            {
                 ok = true;
             }
-             return ok ;
+            return ok;
         }
 
     }

@@ -1,5 +1,4 @@
 using SkyNet.Entidades.Mapa;
-using System.Text.Json;
 
 namespace SkyNet.Menu
 {

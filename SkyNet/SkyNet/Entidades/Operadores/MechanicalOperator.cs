@@ -130,13 +130,12 @@ namespace SkyNet.Entidades.Operadores
             return finalSpeed;
         }
 
-        //Movement function. 
         public bool MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
             bool returnFlag = true;
             double finalSpeed = CalculateMovementSpeed();
             OptimalSpeed = finalSpeed;
-            
+
             int terrainType = Map.Grid[LocationP.LocationX, LocationP.LocationY].TerrainType;
 
             Node start = new Node(LocationP.LocationX, LocationP.LocationY);
@@ -151,7 +150,7 @@ namespace SkyNet.Entidades.Operadores
             {
                 Message.PathNotFound();
                 DistanceFlag = false;
-                returnFlag= false; // Early return when no path is found
+                returnFlag = false; // Early return when no path is found
             }
             else
             {
@@ -169,7 +168,7 @@ namespace SkyNet.Entidades.Operadores
             }
             return returnFlag;
         }
-    
+
 
         //Interacts with each node in the path and applies the corresponding debuffs. 
         private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType, Node goal)
@@ -203,12 +202,11 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        //Calculates battery consumption to simulate realistic energy consumption during operator movement per nodes.
         private double CalculateBatteryConsumption(double distance)
         {
             return 0.05 * (distance / 10);
         }
-        
+
 
         // Method designed for future-proofing functionalities. Loads the specified weight if it is valid and the servo is not stuck. (Unused, but relevant)
         public void LoadWeight(double amountKG)
@@ -272,7 +270,6 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        //Performs a battery transefer
         private void PerformBatteryTransferSameLocation(MechanicalOperator destination, double amountPercentage)
         {
             if (ValidateBatteryTransfer(amountPercentage))
@@ -312,7 +309,6 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        //Transfers a physical load between operators. 
         public void TransferLoad(MechanicalOperator destination, double amountKG, bool safety, int whatHq, string opId)
         {
             try
@@ -345,7 +341,7 @@ namespace SkyNet.Entidades.Operadores
 
                     // Validate and perform load transfer with battery consumption
                     PerformLoadTransferWithBatteryConsumption(destination, amountKG, distance);
-                    
+
                 }
             }
             catch (Exception ex)
@@ -359,7 +355,6 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        //This is used for load transfers in the same location
         private void PerformLoadTransfer(MechanicalOperator destination, double amountKG)
         {
             // Check if destination operator can hold the load
@@ -401,11 +396,11 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
-        //Calculates the distance in real units between nodes (10km)
+        //Calculates the true distance in real units between nodes (10km)
         private double CalculatePathDistance(List<Node> nodes)
         {
             double totalDistance = 0;
-            const double distanceInterval = 10; //Distance interval between nodes. 
+            const double distanceInterval = 10;
 
             for (int i = 0; i < nodes.Count - 1; i++)
             {
@@ -450,6 +445,7 @@ namespace SkyNet.Entidades.Operadores
             }
         }
 
+        //Gets a list of nodes with a certain terrain type
         public List<Node> GetLocal(Location A, int terrainType)
         {
             List<Node> nodeList = new List<Node>();
@@ -519,7 +515,6 @@ namespace SkyNet.Entidades.Operadores
         }
 
 
-        //Checks for operator damages
         private bool IsDamaged()
         {
             if (DamageSimulatorP.DamagedEngine || DamageSimulatorP.StuckServo || DamageSimulatorP.PerforatedBattery
@@ -560,7 +555,6 @@ namespace SkyNet.Entidades.Operadores
             return nearestHeadquarters;
         }
 
-        //Chances the battery
         public void BatteryChange(Node[,] grid, bool safety, int whatHq, string opId)
         {
             if (DamageSimulatorP.PerforatedBattery)

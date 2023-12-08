@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkyNet
+﻿namespace SkyNet
 {
     public static class Message
     {
@@ -68,7 +62,7 @@ namespace SkyNet
         public static void OperatorNotDamaged()
         {
             Console.WriteLine("This operator is not damaged.");
-            
+
         }
         public static void DesiredMapSize()
         {
@@ -90,7 +84,7 @@ namespace SkyNet
         {
             Console.WriteLine("Map properties set successfully.");
         }
-        public static void BuildMapFinished() 
+        public static void BuildMapFinished()
         {
             Console.WriteLine("BuildMapFromJson method finished.");
         }
