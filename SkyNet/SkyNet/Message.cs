@@ -70,5 +70,29 @@ namespace SkyNet
             Console.WriteLine("This operator is not damaged.");
             
         }
+        public static void DesiredMapSize()
+        {
+            Console.Write("Please, enter your desired map size between 30-100 (Recommended: 30): ");
+        }
+        public static void StartingBuildMap()
+        {
+            Console.WriteLine("Starting BuildMapFromJson method...");
+        }
+        public static void DeserializationSuccessfully()
+        {
+            Console.WriteLine("Serialization model deserialized successfully.");
+        }
+        public static void MapCreated()
+        {
+            Console.WriteLine("Map object created successfully.");
+        }
+        public static void PropertiesMapCreated()
+        {
+            Console.WriteLine("Map properties set successfully.");
+        }
+        public static void BuildMapFinished() 
+        {
+            Console.WriteLine("BuildMapFromJson method finished.");
+        }
     }
 }

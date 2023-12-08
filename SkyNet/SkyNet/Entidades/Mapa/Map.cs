@@ -105,7 +105,7 @@ namespace SkyNet.Entidades.Mapa
             while (!isValidInput)
             {
                 Console.SetCursorPosition(XCenter, YCenter);
-                Console.Write("Please, enter your desired map size between 30-100 (Recommended: 30): ");
+                Message.DesiredMapSize();
 
                 // Check if the input is a valid integer
                 if (int.TryParse(Console.ReadLine(), out tempNum))
@@ -357,13 +357,13 @@ namespace SkyNet.Entidades.Mapa
 
         public static Map BuildMapFromJson(string json)
         {
-            Console.WriteLine("Starting BuildMapFromJson method...");
+            Message.StartingBuildMap();
 
             try
             {
                 MapSerializationModel serializationModel = JsonSerializer.Deserialize<MapSerializationModel>(json);
 
-                Console.WriteLine("Serialization model deserialized successfully.");
+                Message.DeserializationSuccessfully();
 
                 Map map = new Map(
                     serializationModel.MapSize,
@@ -376,7 +376,7 @@ namespace SkyNet.Entidades.Mapa
                     SerializeNodes(serializationModel.Grid, serializationModel.MapSize)
                 );
 
-                Console.WriteLine("Map object created successfully.");
+                Message.MapCreated();
 
                 Map.MapSize = serializationModel.MapSize;
                 Map.M8Counter = serializationModel.M8Counter;
@@ -390,7 +390,7 @@ namespace SkyNet.Entidades.Mapa
                     )).ToList() ?? new List<HeadQuarters>();
                 map.RecyclingCounter = (int)serializationModel.RecyclingCounter;
 
-                Console.WriteLine("Map properties set successfully.");
+                Message.PropertiesMapCreated();
 
                 return map;
             }
@@ -401,7 +401,7 @@ namespace SkyNet.Entidades.Mapa
             }
             finally
             {
-                Console.WriteLine("BuildMapFromJson method finished.");
+                Message.BuildMapFinished();
             }
         }
 
