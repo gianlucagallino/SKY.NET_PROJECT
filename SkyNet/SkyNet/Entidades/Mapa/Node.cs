@@ -1,4 +1,6 @@
 ﻿using SkyNet.Entidades.Operadores;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SkyNet.Entidades.Mapa
 {
@@ -26,6 +28,7 @@ namespace SkyNet.Entidades.Mapa
 
         public int TerrainType { get; set; }
         public bool IsDangerous { get; set; }
+        [JsonPropertyName("NodeLocation")]
         public Location NodeLocation { get; set; }
         public int F { get; set; }
         public int G { get; set; }
@@ -33,6 +36,11 @@ namespace SkyNet.Entidades.Mapa
         public Node Parent { get; set; }
         public List<MechanicalOperator> OperatorsInNode { get; set; }
 
+        [JsonConstructor]
+        public Node()
+        {
+                
+        }
         public Node(int horizontal, int vertical)
         {
             NodeLocation = new Location(horizontal, vertical);
@@ -57,7 +65,13 @@ namespace SkyNet.Entidades.Mapa
 
             return 3;                // 14% chance of getting 3
         }
-
+        public string SerializeToJson()
+        {
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+        }
     }
 }
 
