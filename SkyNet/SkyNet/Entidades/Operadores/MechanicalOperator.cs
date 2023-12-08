@@ -152,7 +152,7 @@ namespace SkyNet.Entidades.Operadores
                 return false; // Early return when no path is found
             }
 
-            ProcessMovement(path, loc, hqNumber, opId, terrainType);
+            ProcessMovement(path, loc, hqNumber, opId, terrainType, goal);
 
             double distance = CalculatePathDistance(path);
             double batteryConsumption = CalculateBatteryConsumption(distance);
@@ -163,11 +163,11 @@ namespace SkyNet.Entidades.Operadores
             ExecutedInstructions++;
             AddToLastVisitedLocations(loc);
 
-            return true;
+            return true;                
         }
 
         //Interacts with each node in the path and applies the corresponding debuffs. 
-        private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType)
+        private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType, Node goal)
         {
             int nodeCounter = 0;
             foreach (Node node in path)
@@ -175,27 +175,26 @@ namespace SkyNet.Entidades.Operadores
                 nodeCounter++;
                 Location tempLocation = node.NodeLocation;
 
-                if (tempLocation.Equals(destination))
+                if (tempLocation.LocationX == destination.LocationX && tempLocation.LocationY == destination.LocationY)
                 {
-                    Message.DestinationReached();
+                    Console.WriteLine("Destination reached!");
 
                     Map.Grid[LocationP.LocationX, LocationP.LocationY].OperatorsInNode.Remove(this);
-                    Map.Grid[node.NodeLocation.LocationX, node.NodeLocation.LocationY].OperatorsInNode.Add(this);
-
+                    Map.Grid[goal.NodeLocation.LocationX, goal.NodeLocation.LocationY].OperatorsInNode.Add(this);
                     foreach (MechanicalOperator op in Map.GetInstance().HQList[hqNumber].Operators)
                     {
-                        if (op.Id == opId) op.LocationP = node.NodeLocation;
+                        if (op.Id == opId) op.LocationP = goal.NodeLocation;
                     }
-                }
 
-                // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
-                if (TerrainDamages.TryGetValue(terrainType, out var action))
-                {
-                    action.Invoke(this);
-                }
+                    // Verifica si el tipo de terreno está en el diccionario y ejecuta la función correspondiente
+                    if (TerrainDamages.TryGetValue(terrainType, out var action))
+                    {
+                        action.Invoke(this);
+                    }
 
-                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * nodeCounter;
-                TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);//This alters the time spent in relation to the speed of the operator. 
+                    int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * nodeCounter;
+                    TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);//This alters the time spent in relation to the speed of the operator. 
+                }
             }
         }
 
@@ -204,6 +203,7 @@ namespace SkyNet.Entidades.Operadores
         {
             return 0.05 * (distance / 10);
         }
+        
 
         // Method designed for future-proofing functionalities. Loads the specified weight if it is valid and the servo is not stuck. (Unused, but relevant)
         public void LoadWeight(double amountKG)

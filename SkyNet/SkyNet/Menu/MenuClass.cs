@@ -360,7 +360,7 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
 
                 // Move operator to HQ location
-                if (oper.MoveTo(Map.GetInstance().HQList[selectedHQIndex - 1].LocationHeadQuarters, safety, selectedHQIndex - 1, oper.Id)) Message.DestinationReached();
+                oper.MoveTo(Map.GetInstance().HQList[selectedHQIndex - 1].LocationHeadQuarters, safety, selectedHQIndex - 1, oper.Id);
                 H++;
 
                 Console.SetCursorPosition(W, H);
@@ -685,7 +685,7 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
 
             // Move the operator to the specified location
-            if (selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id)) Message.DestinationReached();
+            selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id);
 
             UpdateMap();
         }
