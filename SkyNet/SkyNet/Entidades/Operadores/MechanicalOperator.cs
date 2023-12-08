@@ -167,8 +167,10 @@ namespace SkyNet.Entidades.Operadores
 
         private void ProcessMovement(List<Node> path, Location destination, int hqNumber, string opId, int terrainType)
         {
+            int nodeCounter = 0;
             foreach (Node node in path)
             {
+                nodeCounter++;
                 Location tempLocation = node.NodeLocation;
 
                 if (tempLocation.Equals(destination))
@@ -190,18 +192,18 @@ namespace SkyNet.Entidades.Operadores
                     action.Invoke(this);
                 }
 
-                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * 10; //deve ser la cant nodos movidos!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                int timeSpentMoveToPerNode = SimulateTime(TimeSimulator.MoveToPerNode) * nodeCounter; 
                 TimeSpent += timeSpentMoveToPerNode + timeSpentMoveToPerNode * ((100 - OptimalSpeed) / 100);
             }
         }
 
-        //Esto hay que aclarar bien. no se entiende???????
+        //Calculates battery consumption to simulate realistic energy consumption during operator movement per nodes.
         private double CalculateBatteryConsumption(double distance)
         {
             return 0.05 * (distance / 10);
         }
 
-        //esto no se usa, donde se deberia usar?????
+       // Method designed for future functionalities.Loads the specified weight if it is valid and the servo is not stuck.
         public void LoadWeight(double amountKG)
         {
             if (IsValidWeight(amountKG) && !DamageSimulatorP.StuckServo)
@@ -286,7 +288,6 @@ namespace SkyNet.Entidades.Operadores
 
             if (AreOperatorsInSameLocation(destination))
             {
-                //calcula que la carga actual mas lo que se quiera sumar no supere la carga maxima del operador
                 if (destination.CurrentLoad + amountKG < destination.MaxLoad)
                 {
                     destination.CurrentLoad += amountKG;
