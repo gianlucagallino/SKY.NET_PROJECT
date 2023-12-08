@@ -130,7 +130,7 @@ namespace SkyNet.Entidades.Operadores
         }
 
         //Movement function. 
-        public void MoveTo(Location loc, bool safety, int hqNumber, string opId)
+        public bool MoveTo(Location loc, bool safety, int hqNumber, string opId)
         {
             double finalSpeed = CalculateMovementSpeed();
             OptimalSpeed = finalSpeed;
@@ -149,7 +149,7 @@ namespace SkyNet.Entidades.Operadores
             {
                 Message.PathNotFound();
                 DistanceFlag = false;
-                return; // Early return when no path is found
+                return false; // Early return when no path is found
             }
 
             ProcessMovement(path, loc, hqNumber, opId, terrainType);
@@ -162,6 +162,8 @@ namespace SkyNet.Entidades.Operadores
             EnergyConsumed += (float)batteryConsumption;
             ExecutedInstructions++;
             AddToLastVisitedLocations(loc);
+
+            return true;
         }
 
         //Interacts with each node in the path and applies the corresponding debuffs. 

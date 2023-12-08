@@ -172,14 +172,21 @@ namespace SkyNet.Menu
         //Game exit related Functions
         private void Exit()
         {
-            Console.WriteLine("Are you sure you want to exit?" +
-                              "\n Press 1 if you want to exit and save the game" +
-                              "\n Press 2 if you want to exit without saving ");
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("Are you sure you want to exit?");
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.WriteLine("Press 1 if you want to exit and save the game");
+            H++;
+            Console.SetCursorPosition(W, H);
+            Console.Write("Press 2 if you want to exit without saving ");
 
             int response;
             while (!int.TryParse(Console.ReadLine(), out response) || (response != 1 && response != 2))
             {
-                Console.WriteLine("Invalid input. Try again.");
+                H++;
+                Console.SetCursorPosition(W, H);
+                Console.Write("Invalid input. Try again.");
             }
 
             if (response == 1)
@@ -300,9 +307,6 @@ namespace SkyNet.Menu
             Console.SetCursorPosition(W, H);
             Console.WriteLine($"Operator Status at coordinates ({xInput}, {yInput}):");
             H++;
-
-            ClearMenuRemains();
-
             // Display operator status
             if (Map.Grid[xInput, yInput].OperatorsInNode.Count == 0)
             {
@@ -358,7 +362,7 @@ namespace SkyNet.Menu
                 Console.SetCursorPosition(W, H);
 
                 // Move operator to HQ location
-                oper.MoveTo(Map.GetInstance().HQList[selectedHQIndex - 1].LocationHeadQuarters, safety, selectedHQIndex - 1, oper.Id);
+                if (oper.MoveTo(Map.GetInstance().HQList[selectedHQIndex - 1].LocationHeadQuarters, safety, selectedHQIndex - 1, oper.Id)) Message.DestinationReached();
                 H++;
 
                 Console.SetCursorPosition(W, H);
@@ -683,7 +687,7 @@ namespace SkyNet.Menu
             int indexer = Convert.ToInt32(selectedHQ);
 
             // Move the operator to the specified location
-            selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id);
+            if (selectedOperator.MoveTo(location, safety, indexer - 1, selectedOperator.Id)) Message.DestinationReached();
 
             UpdateMap();
         }
